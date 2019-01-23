@@ -1,0 +1,5 @@
+applications:
+- name: atrs
+  services:
+  - atrs-db # cf create-service elephantsql turtle atrs-db
+  path: ROOT.war

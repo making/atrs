@@ -1,2 +1,8 @@
 eclipse
 target
+*.iml
+.idea
+flyway
+*.tar.gz
+memo.md
+*.war

@@ -2,12 +2,19 @@
 
 This is a reference application for developers to learn how to build applications with Macchinetta Server Framework & Macchinetta Client Libraries.
 
-## How to run the application
+## How to deploy to Pivotal Web Services(Cloud Foundry)
 
-### Download source code
+```
+./setup-flyway.sh
+mvn clean package -DskipTests=true
+cp atrs-web/target/atrs.war ROOT.war
+jar -uvf ROOT.war .profile flyway/lib flyway/jars flyway/sql
 
-Download source code from [here](https://github.com/Macchinetta/atrs/releases "here").
-Extract the zip file at any location of choice.
+cf create-service elephantsql turtle atrs-db
+cf push
+```
+
+## How to run the application locally
 
 ### Install PostgreSQL
 
@@ -22,7 +29,9 @@ First of all, create database named 'atrs'.
 After that, execute the command below at the directory where the downloaded source code is unzipped.
 
 ```console
-$ mvn sql:execute -f atrs-initdb/pom.xml
+$ cd atrs-initdb
+$ mvn sql:execute
+$ cd -
 ```
 
 It is assumed that maven is already installed.
