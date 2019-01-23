@@ -16,6 +16,13 @@
  */
 package jp.co.ntt.atrs.domain.service.b1;
 
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
 import jp.co.ntt.atrs.domain.common.exception.AtrsBusinessException;
 import jp.co.ntt.atrs.domain.common.masterdata.BoardingClassProvider;
 import jp.co.ntt.atrs.domain.common.masterdata.FareTypeProvider;
@@ -35,19 +42,12 @@ import jp.co.ntt.atrs.domain.repository.flight.VacantSeatSearchCriteriaDto;
 import jp.co.ntt.atrs.domain.service.b0.TicketSharedService;
 import org.joda.time.Days;
 import org.joda.time.LocalDate;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.Assert;
 import org.terasoluna.gfw.common.date.jodatime.JodaTimeDateFactory;
 import org.terasoluna.gfw.common.exception.BusinessException;
 
-import javax.inject.Inject;
-import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
 
 /**
  * 空席照会サービス実装クラス。
@@ -58,187 +58,191 @@ import java.util.Map;
 @Transactional
 public class TicketSearchServiceImpl implements TicketSearchService {
 
-    /**
-     * 日付、時刻取得インターフェース。
-     */
-    @Inject
-    JodaTimeDateFactory dateFactory;
+	/**
+	 * 日付、時刻取得インターフェース。
+	 */
+	private final JodaTimeDateFactory dateFactory;
 
-    /**
-     * フライト情報リポジトリ。
-     */
-    @Inject
-    FlightRepository flightRepository;
+	/**
+	 * フライト情報リポジトリ。
+	 */
+	private final FlightRepository flightRepository;
 
-    /**
-     * 区間情報提供クラス。
-     */
-    @Inject
-    RouteProvider routeProvider;
+	/**
+	 * 区間情報提供クラス。
+	 */
+	private final RouteProvider routeProvider;
 
-    /**
-     * 運賃種別情報提供クラス。
-     */
-    @Inject
-    FareTypeProvider fareTypeProvider;
+	/**
+	 * 運賃種別情報提供クラス。
+	 */
+	private final FareTypeProvider fareTypeProvider;
 
-    /**
-     * フライト基本情報提供クラス。
-     */
-    @Inject
-    FlightMasterProvider flightMasterProvider;
+	/**
+	 * フライト基本情報提供クラス。
+	 */
+	private final FlightMasterProvider flightMasterProvider;
 
-    /**
-     * 搭乗クラス情報提供クラス。
-     */
-    @Inject
-    BoardingClassProvider boardingClassProvider;
+	/**
+	 * 搭乗クラス情報提供クラス。
+	 */
+	private final BoardingClassProvider boardingClassProvider;
 
-    /**
-     * チケット予約共通サービス。
-     */
-    @Inject
-    TicketSharedService ticketSharedService;
+	/**
+	 * チケット予約共通サービス。
+	 */
+	private final TicketSharedService ticketSharedService;
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public List<FlightVacantInfoDto> searchFlight(TicketSearchCriteriaDto searchCriteria)
-            throws BusinessException {
+	public TicketSearchServiceImpl(JodaTimeDateFactory dateFactory,
+			FlightRepository flightRepository, RouteProvider routeProvider,
+			FareTypeProvider fareTypeProvider, FlightMasterProvider flightMasterProvider,
+			BoardingClassProvider boardingClassProvider,
+			TicketSharedService ticketSharedService) {
+		this.dateFactory = dateFactory;
+		this.flightRepository = flightRepository;
+		this.routeProvider = routeProvider;
+		this.fareTypeProvider = fareTypeProvider;
+		this.flightMasterProvider = flightMasterProvider;
+		this.boardingClassProvider = boardingClassProvider;
+		this.ticketSharedService = ticketSharedService;
+	}
 
-        // 引数チェック
-        Assert.notNull(searchCriteria);
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public List<FlightVacantInfoDto> searchFlight(TicketSearchCriteriaDto searchCriteria)
+			throws BusinessException {
 
-        Date depDate = searchCriteria.getDepDate();
-        BoardingClassCd boardingClassCd = searchCriteria.getBoardingClassCd();
-        String depAirportCd = searchCriteria.getDepartureAirportCd();
-        String arrAirportCd = searchCriteria.getArrivalAirportCd();
-        FlightType flightType = searchCriteria.getFlightType();
+		// 引数チェック
+		Assert.notNull(searchCriteria);
 
-        Assert.notNull(depDate);
-        Assert.notNull(boardingClassCd);
-        Assert.hasText(depAirportCd);
-        Assert.hasText(arrAirportCd);
-        Assert.notNull(flightType);
+		Date depDate = searchCriteria.getDepDate();
+		BoardingClassCd boardingClassCd = searchCriteria.getBoardingClassCd();
+		String depAirportCd = searchCriteria.getDepartureAirportCd();
+		String arrAirportCd = searchCriteria.getArrivalAirportCd();
+		FlightType flightType = searchCriteria.getFlightType();
 
-        // 搭乗日が照会可能な範囲かチェック
-        ticketSharedService.validateDepatureDate(depDate);
+		Assert.notNull(depDate);
+		Assert.notNull(boardingClassCd);
+		Assert.hasText(depAirportCd);
+		Assert.hasText(arrAirportCd);
+		Assert.notNull(flightType);
 
-        // 指定された出発空港・到着空港に該当する区間が存在するかどうかチェック
-        Route route =
-                routeProvider.getRouteByAirportCd(depAirportCd, arrAirportCd);
-        if (route == null) {
-            throw new AtrsBusinessException(TicketSearchErrorCode.E_AR_B1_2002);
-        }
+		// 搭乗日が照会可能な範囲かチェック
+		ticketSharedService.validateDepatureDate(depDate);
 
-        // システム日付が搭乗日から何日前かを計算
-        LocalDate sysLocalDate = dateFactory.newDateTime().toLocalDate();
-        LocalDate depLocalDate = new LocalDate(depDate);
-        int beforeDayNum = Days.daysBetween(sysLocalDate, depLocalDate).getDays();
+		// 指定された出発空港・到着空港に該当する区間が存在するかどうかチェック
+		Route route = routeProvider.getRouteByAirportCd(depAirportCd, arrAirportCd);
+		if (route == null) {
+			throw new AtrsBusinessException(TicketSearchErrorCode.E_AR_B1_2002);
+		}
 
-        // フライト種別に応じて運賃種別コードを空席照会条件Dtoに設定
-        List<FareTypeCd> fareTypeList = FareTypeUtil.getFareTypeCdList(flightType);
+		// システム日付が搭乗日から何日前かを計算
+		LocalDate sysLocalDate = dateFactory.newDateTime().toLocalDate();
+		LocalDate depLocalDate = new LocalDate(depDate);
+		int beforeDayNum = Days.daysBetween(sysLocalDate, depLocalDate).getDays();
 
-        VacantSeatSearchCriteriaDto criteria = new VacantSeatSearchCriteriaDto(depDate,
-                route, boardingClassCd, beforeDayNum, fareTypeList);
+		// フライト種別に応じて運賃種別コードを空席照会条件Dtoに設定
+		List<FareTypeCd> fareTypeList = FareTypeUtil.getFareTypeCdList(flightType);
 
-        // リポジトリから照会結果を取得
-        List<Flight> flightList =
-                flightRepository.findByVacantSeatSearchCriteria(criteria);
+		VacantSeatSearchCriteriaDto criteria = new VacantSeatSearchCriteriaDto(depDate,
+				route, boardingClassCd, beforeDayNum, fareTypeList);
 
-        // 照会結果件数をチェック
-        if (flightList.isEmpty()) {
-            throw new FlightNotFoundException();
-        }
+		// リポジトリから照会結果を取得
+		List<Flight> flightList = flightRepository
+				.findByVacantSeatSearchCriteria(criteria);
 
-        // 取得したフライトに関連するエンティティを設定
-        for (Flight flight : flightList) {
-            FareTypeCd fareTypeCd = flight.getFareType().getFareTypeCd();
-            flight.setFareType(fareTypeProvider.getFareType(fareTypeCd));
-            flight.setFlightMaster(flightMasterProvider.getFlightMaster(flight
-                    .getFlightMaster().getFlightName()));
-            flight.setBoardingClass(boardingClassProvider.getBoardingClass(flight
-                    .getBoardingClass().getBoardingClassCd()));
-        }
+		// 照会結果件数をチェック
+		if (flightList.isEmpty()) {
+			throw new FlightNotFoundException();
+		}
 
-        // 基本運賃の計算
-        int basicFare = ticketSharedService.calculateBasicFare(route.getBasicFare(),
-                boardingClassCd, depDate);
+		// 取得したフライトに関連するエンティティを設定
+		for (Flight flight : flightList) {
+			FareTypeCd fareTypeCd = flight.getFareType().getFareTypeCd();
+			flight.setFareType(fareTypeProvider.getFareType(fareTypeCd));
+			flight.setFlightMaster(flightMasterProvider
+					.getFlightMaster(flight.getFlightMaster().getFlightName()));
+			flight.setBoardingClass(boardingClassProvider
+					.getBoardingClass(flight.getBoardingClass().getBoardingClassCd()));
+		}
 
-        // 照会結果のリストを作成
-        List<FlightVacantInfoDto> flightVacantInfoList =
-                createFlightVacantInfoList(flightList, basicFare);
+		// 基本運賃の計算
+		int basicFare = ticketSharedService.calculateBasicFare(route.getBasicFare(),
+				boardingClassCd, depDate);
 
-        return flightVacantInfoList;
-    }
+		// 照会結果のリストを作成
+		List<FlightVacantInfoDto> flightVacantInfoList = createFlightVacantInfoList(
+				flightList, basicFare);
 
-    /**
-     * フライトリストから空席状況一覧リストを作成する。
-     * 
-     * @param flightList フライトリスト
-     * @param basicFare 基本運賃
-     * @return 空席状況一覧リスト
-     */
-    private List<FlightVacantInfoDto> createFlightVacantInfoList(
-        List<Flight> flightList, int basicFare) {
+		return flightVacantInfoList;
+	}
 
-        // 空席状況一覧Map
-        Map<String, FlightVacantInfoDto> vacantInfoMap = new LinkedHashMap<>();
+	/**
+	 * フライトリストから空席状況一覧リストを作成する。
+	 * 
+	 * @param flightList フライトリスト
+	 * @param basicFare 基本運賃
+	 * @return 空席状況一覧リスト
+	 */
+	private List<FlightVacantInfoDto> createFlightVacantInfoList(List<Flight> flightList,
+			int basicFare) {
 
-        DecimalFormat fareFormatter = new DecimalFormat("###,###");
+		// 空席状況一覧Map
+		Map<String, FlightVacantInfoDto> vacantInfoMap = new LinkedHashMap<>();
 
-        for (Flight flight : flightList) {
+		DecimalFormat fareFormatter = new DecimalFormat("###,###");
 
-            FlightMaster flightMaster = flight.getFlightMaster();
-            String departureTime = flightMaster.getDepartureTime();
-            FlightVacantInfoDto vacantInfo = vacantInfoMap.get(departureTime);
-            if (vacantInfo == null) {
-                vacantInfo = createFlightVacantInfo(flight);
-                vacantInfoMap.put(departureTime, vacantInfo);
-            }
+		for (Flight flight : flightList) {
 
-            // 運賃種別情報を設定
-            FareType fareType = flight.getFareType();
-            int fare = ticketSharedService.calculateFare(
-                    basicFare, fareType.getDiscountRate());
-            FareTypeVacantInfoDto fareTypeVacantInfo =
-                    new FareTypeVacantInfoDto(
-                            fareType.getFareTypeName(),
-                            fareFormatter.format(fare),
-                            flight.getVacantNum());
+			FlightMaster flightMaster = flight.getFlightMaster();
+			String departureTime = flightMaster.getDepartureTime();
+			FlightVacantInfoDto vacantInfo = vacantInfoMap.get(departureTime);
+			if (vacantInfo == null) {
+				vacantInfo = createFlightVacantInfo(flight);
+				vacantInfoMap.put(departureTime, vacantInfo);
+			}
 
-            vacantInfo.addFareTypeVacantInfo(
-                    fareType.getFareTypeCd(), fareTypeVacantInfo);
-        }
+			// 運賃種別情報を設定
+			FareType fareType = flight.getFareType();
+			int fare = ticketSharedService.calculateFare(basicFare,
+					fareType.getDiscountRate());
+			FareTypeVacantInfoDto fareTypeVacantInfo = new FareTypeVacantInfoDto(
+					fareType.getFareTypeName(), fareFormatter.format(fare),
+					flight.getVacantNum());
 
-        // リストに変換して返却
-        return new ArrayList<>(vacantInfoMap.values());
-    }
+			vacantInfo.addFareTypeVacantInfo(fareType.getFareTypeCd(),
+					fareTypeVacantInfo);
+		}
 
-    /**
-     * 空席状況情報を作成する。
-     * 
-     * @param flight フライト情報
-     * @return 空席照会結果
-     */
-    private FlightVacantInfoDto createFlightVacantInfo(Flight flight) {
+		// リストに変換して返却
+		return new ArrayList<>(vacantInfoMap.values());
+	}
 
-        FlightVacantInfoDto vacantInfo = new FlightVacantInfoDto();
+	/**
+	 * 空席状況情報を作成する。
+	 * 
+	 * @param flight フライト情報
+	 * @return 空席照会結果
+	 */
+	private FlightVacantInfoDto createFlightVacantInfo(Flight flight) {
 
-        FlightMaster flightMaster = flight.getFlightMaster();
-        vacantInfo.setFlightName(flightMaster.getFlightName());
-        Route route = flightMaster.getRoute();
-        vacantInfo.setDepAirportName(route.getDepartureAirport().getName());
-        vacantInfo.setArrAirportName(route.getArrivalAirport().getName());
-        String depTime = DateTimeUtil.toFormatTimeString(flightMaster.getDepartureTime());
-        vacantInfo.setDepTime(depTime);
-        String arrTime = DateTimeUtil.toFormatTimeString(flightMaster.getArrivalTime());
-        vacantInfo.setArrTime(arrTime);
-        vacantInfo.setDepDate(DateTimeUtil.toFormatDateString(flight.getDepartureDate()));
-        vacantInfo.setBoardingClassCd(flight.getBoardingClass().getBoardingClassCd());
+		FlightVacantInfoDto vacantInfo = new FlightVacantInfoDto();
 
-        return vacantInfo;
-    }
+		FlightMaster flightMaster = flight.getFlightMaster();
+		vacantInfo.setFlightName(flightMaster.getFlightName());
+		Route route = flightMaster.getRoute();
+		vacantInfo.setDepAirportName(route.getDepartureAirport().getName());
+		vacantInfo.setArrAirportName(route.getArrivalAirport().getName());
+		String depTime = DateTimeUtil.toFormatTimeString(flightMaster.getDepartureTime());
+		vacantInfo.setDepTime(depTime);
+		String arrTime = DateTimeUtil.toFormatTimeString(flightMaster.getArrivalTime());
+		vacantInfo.setArrTime(arrTime);
+		vacantInfo.setDepDate(DateTimeUtil.toFormatDateString(flight.getDepartureDate()));
+		vacantInfo.setBoardingClassCd(flight.getBoardingClass().getBoardingClassCd());
+
+		return vacantInfo;
+	}
 
 }

@@ -17,11 +17,10 @@
 package jp.co.ntt.atrs.domain.service.a0;
 
 import jp.co.ntt.atrs.domain.repository.member.MemberRepository;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
-
-import javax.inject.Inject;
 
 /**
  * 会員共通サービス実装クラス。
@@ -31,23 +30,26 @@ import javax.inject.Inject;
 @Service
 public class MembershipSharedServiceImpl implements MembershipSharedService {
 
-    /**
-     * カード会員情報リポジトリ。
-     */
-    @Inject
-    MemberRepository memberRepository;
+	/**
+	 * カード会員情報リポジトリ。
+	 */
+	private final MemberRepository memberRepository;
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @Transactional(readOnly = true)
-    public boolean isMember(String membershipNumber) {
+	public MembershipSharedServiceImpl(MemberRepository memberRepository) {
+		this.memberRepository = memberRepository;
+	}
 
-        Assert.hasText(membershipNumber);
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	@Transactional(readOnly = true)
+	public boolean isMember(String membershipNumber) {
 
-        // 該当する会員情報が存在するか判定
-        return (memberRepository.findOne(membershipNumber) != null);
-    }
+		Assert.hasText(membershipNumber);
+
+		// 該当する会員情報が存在するか判定
+		return (memberRepository.findOne(membershipNumber) != null);
+	}
 
 }

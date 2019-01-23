@@ -16,8 +16,6 @@
  */
 package jp.co.ntt.atrs.app.c0;
 
-import javax.inject.Inject;
-
 import jp.co.ntt.atrs.app.c2.MemberUpdateForm;
 import jp.co.ntt.atrs.domain.common.util.DateTimeUtil;
 import jp.co.ntt.atrs.domain.model.Member;
@@ -36,105 +34,109 @@ import org.springframework.util.StringUtils;
 @Component
 public class MemberHelper {
 
-    /**
-     * Beanマッパー。
-     */
-    @Inject
-    Mapper beanMapper;
+	/**
+	 * Beanマッパー。
+	 */
+	private final Mapper beanMapper;
 
-    /**
-     * 日付、時刻取得インターフェース。
-     */
-    @Inject
-    JodaTimeDateFactory dateFactory;
+	/**
+	 * 日付、時刻取得インターフェース。
+	 */
+	private final JodaTimeDateFactory dateFactory;
 
-    /**
-     * 会員登録可能な最小生年月日。
-     */
-    @Value("${atrs.dateOfBirthMinDate}")
-    private String dateOfBirthMinDate;
+	/**
+	 * 会員登録可能な最小生年月日。
+	 */
+	private final String dateOfBirthMinDate;
 
-    /**
-     * 会員情報フォームをカード会員情報に変換する。
-     * 
-     * @param memberForm 会員情報フォーム
-     * @return カード会員情報
-     */
-    public Member toMember(IMemberForm memberForm) {
+	public MemberHelper(Mapper beanMapper, JodaTimeDateFactory dateFactory,
+			@Value("${atrs.dateOfBirthMinDate}") String dateOfBirthMinDate) {
+		this.beanMapper = beanMapper;
+		this.dateFactory = dateFactory;
+		this.dateOfBirthMinDate = dateOfBirthMinDate;
+	}
 
-        // MemberFormからmemberへ詰め替える
-        Member member = beanMapper.map(memberForm, Member.class);
+	/**
+	 * 会員情報フォームをカード会員情報に変換する。
+	 * 
+	 * @param memberForm 会員情報フォーム
+	 * @return カード会員情報
+	 */
+	public Member toMember(IMemberForm memberForm) {
 
-        // 電話番号
-        String tel = String.format("%s-%s-%s", memberForm.getTel1(),
-            memberForm.getTel2(), memberForm.getTel3());
-        member.setTel(tel);
+		// MemberFormからmemberへ詰め替える
+		Member member = beanMapper.map(memberForm, Member.class);
 
-        // 郵便番号
-        String zipCode = memberForm.getZipCode1() + memberForm.getZipCode2();
-        member.setZipCode(zipCode);
+		// 電話番号
+		String tel = String.format("%s-%s-%s", memberForm.getTel1(), memberForm.getTel2(),
+				memberForm.getTel3());
+		member.setTel(tel);
 
-        // クレジットカード期限
-        String creditTerm = String.format("%s/%s", memberForm.getCreditMonth(),
-            memberForm.getCreditYear());
-        member.setCreditTerm(creditTerm);
+		// 郵便番号
+		String zipCode = memberForm.getZipCode1() + memberForm.getZipCode2();
+		member.setZipCode(zipCode);
 
-        return member;
+		// クレジットカード期限
+		String creditTerm = String.format("%s/%s", memberForm.getCreditMonth(),
+				memberForm.getCreditYear());
+		member.setCreditTerm(creditTerm);
 
-    }
+		return member;
 
-    /**
-     * カード会員情報を会員情報フォームに変換する。
-     * 
-     * @param member カード会員情報
-     * @return 会員情報フォーム
-     */
-    public MemberUpdateForm toMemberUpdateForm(Member member) {
+	}
 
-        MemberUpdateForm memberUpdateForm =
-            beanMapper.map(member, MemberUpdateForm.class);
+	/**
+	 * カード会員情報を会員情報フォームに変換する。
+	 * 
+	 * @param member カード会員情報
+	 * @return 会員情報フォーム
+	 */
+	public MemberUpdateForm toMemberUpdateForm(Member member) {
 
-        // 電話番号
-        String[] tel = member.getTel().split("-");
-        if (tel.length == 3) {
-            memberUpdateForm.setTel1(tel[0]);
-            memberUpdateForm.setTel2(tel[1]);
-            memberUpdateForm.setTel3(tel[2]);
-        }
+		MemberUpdateForm memberUpdateForm = beanMapper.map(member,
+				MemberUpdateForm.class);
 
-        // 郵便番号
-        if (StringUtils.hasLength(member.getZipCode())
-            && member.getZipCode().length() >= 7) {
-            memberUpdateForm.setZipCode1(member.getZipCode().substring(0, 3));
-            memberUpdateForm.setZipCode2(member.getZipCode().substring(3, 7));
-        }
+		// 電話番号
+		String[] tel = member.getTel().split("-");
+		if (tel.length == 3) {
+			memberUpdateForm.setTel1(tel[0]);
+			memberUpdateForm.setTel2(tel[1]);
+			memberUpdateForm.setTel3(tel[2]);
+		}
 
-        // クレジットカード期限
-        String[] creditTerm = member.getCreditTerm().split("/");
-        if (creditTerm.length == 2) {
-            memberUpdateForm.setCreditMonth(creditTerm[0]);
-            memberUpdateForm.setCreditYear(creditTerm[1]);
-        }
+		// 郵便番号
+		if (StringUtils.hasLength(member.getZipCode())
+				&& member.getZipCode().length() >= 7) {
+			memberUpdateForm.setZipCode1(member.getZipCode().substring(0, 3));
+			memberUpdateForm.setZipCode2(member.getZipCode().substring(3, 7));
+		}
 
-        return memberUpdateForm;
-    }
+		// クレジットカード期限
+		String[] creditTerm = member.getCreditTerm().split("/");
+		if (creditTerm.length == 2) {
+			memberUpdateForm.setCreditMonth(creditTerm[0]);
+			memberUpdateForm.setCreditYear(creditTerm[1]);
+		}
 
-    /**
-     * 会員登録可能な最小生年月日を取得する。
-     * 
-     * @return 会員登録可能な最小生年月日
-     */
-    public String getDateOfBirthMinDate() {
-        return dateOfBirthMinDate;
-    }
+		return memberUpdateForm;
+	}
 
-    /**
-     * 会員登録可能な最大生年月日を取得する。
-     * 
-     * @return 会員登録可能な最大生年月日
-     */
-    public String getDateOfBirthMaxDate() {
-        return DateTimeUtil.toFormatDateString(dateFactory.newDate());
-    }
+	/**
+	 * 会員登録可能な最小生年月日を取得する。
+	 * 
+	 * @return 会員登録可能な最小生年月日
+	 */
+	public String getDateOfBirthMinDate() {
+		return dateOfBirthMinDate;
+	}
+
+	/**
+	 * 会員登録可能な最大生年月日を取得する。
+	 * 
+	 * @return 会員登録可能な最大生年月日
+	 */
+	public String getDateOfBirthMaxDate() {
+		return DateTimeUtil.toFormatDateString(dateFactory.newDate());
+	}
 
 }

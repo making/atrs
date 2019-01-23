@@ -22,8 +22,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.inject.Inject;
-
 import jp.co.ntt.atrs.app.a0.AuthenticationHelper;
 import jp.co.ntt.atrs.app.b0.LineType;
 import jp.co.ntt.atrs.app.b0.SelectFlightDto;
@@ -61,305 +59,311 @@ import org.springframework.stereotype.Component;
 @Component
 public class TicketReserveHelper {
 
-    /**
-     * Beanマッパー。
-     */
-    @Inject
-    Mapper beanMapper;
+	/**
+	 * Beanマッパー。
+	 */
+	private final Mapper beanMapper;
 
-    /**
-     * 日付、時刻取得インターフェース。
-     */
-    @Inject
-    JodaTimeDateFactory dateFactory;
+	/**
+	 * 日付、時刻取得インターフェース。
+	 */
+	private final JodaTimeDateFactory dateFactory;
 
-    /**
-     * 認証共通Helper。
-     */
-    @Inject
-    AuthenticationHelper authenticationHelper;
+	/**
+	 * 認証共通Helper。
+	 */
+	private final AuthenticationHelper authenticationHelper;
 
-    /**
-     * チケット予約サービス。
-     */
-    @Inject
-    TicketReserveService ticketReserveService;
+	/**
+	 * チケット予約サービス。
+	 */
+	private final TicketReserveService ticketReserveService;
 
-    /**
-     * チケット予約共通サービス。
-     */
-    @Inject
-    TicketSharedService ticketSharedService;
+	/**
+	 * チケット予約共通サービス。
+	 */
+	private final TicketSharedService ticketSharedService;
 
-    /**
-     * フライト基本情報提供クラス。
-     */
-    @Inject
-    FlightMasterProvider flightMasterProvider;
+	/**
+	 * フライト基本情報提供クラス。
+	 */
+	private final FlightMasterProvider flightMasterProvider;
 
-    /**
-     * チケット情報の妥当性をチェックし、申し込み内容確認画面に表示するデータを生成する。
-     * 
-     * @param ticketReserveForm チケット予約フォーム
-     * @param flightList フライト情報リスト
-     * @return 申し込み内容確認画面出力用DTO
-     */
-    public ReserveConfirmOutputDto reserveConfirm(TicketReserveForm ticketReserveForm,
-                                                  List<Flight> flightList) {
+	public TicketReserveHelper(Mapper beanMapper, JodaTimeDateFactory dateFactory,
+			AuthenticationHelper authenticationHelper,
+			TicketReserveService ticketReserveService,
+			TicketSharedService ticketSharedService,
+			FlightMasterProvider flightMasterProvider) {
+		this.beanMapper = beanMapper;
+		this.dateFactory = dateFactory;
+		this.authenticationHelper = authenticationHelper;
+		this.ticketReserveService = ticketReserveService;
+		this.ticketSharedService = ticketSharedService;
+		this.flightMasterProvider = flightMasterProvider;
+	}
 
-        // 値の存在する搭乗者が先になるよう設定
-        ticketReserveForm.resetPassengersIndex();
+	/**
+	 * チケット情報の妥当性をチェックし、申し込み内容確認画面に表示するデータを生成する。
+	 * 
+	 * @param ticketReserveForm チケット予約フォーム
+	 * @param flightList フライト情報リスト
+	 * @return 申し込み内容確認画面出力用DTO
+	 */
+	public ReserveConfirmOutputDto reserveConfirm(TicketReserveForm ticketReserveForm,
+			List<Flight> flightList) {
 
-        // 予約情報生成
-        Reservation reservation = createReservation(ticketReserveForm, flightList);
+		// 値の存在する搭乗者が先になるよう設定
+		ticketReserveForm.resetPassengersIndex();
 
-        // 予約情報の業務ロジックチェック
-        ticketReserveService.validateReservation(reservation);
+		// 予約情報生成
+		Reservation reservation = createReservation(ticketReserveForm, flightList);
 
-        // 予約チケットの合計金額取得
-        int totalFare = calculateTotalFare(flightList, reservation);
+		// 予約情報の業務ロジックチェック
+		ticketReserveService.validateReservation(reservation);
 
-        // 画面出力DTO生成
-        ReserveConfirmOutputDto outputDto = new ReserveConfirmOutputDto();
-        outputDto.setTotalFare(totalFare);
+		// 予約チケットの合計金額取得
+		int totalFare = calculateTotalFare(flightList, reservation);
 
-        return outputDto;
-    }
+		// 画面出力DTO生成
+		ReserveConfirmOutputDto outputDto = new ReserveConfirmOutputDto();
+		outputDto.setTotalFare(totalFare);
 
-    /**
-     * チケットを予約する。
-     * 
-     * @param ticketReserveForm チケット予約フォーム
-     * @param flightList フライト情報リスト
-     * @return チケット予約完了画面出力用DTO
-     */
-    public ReserveCompleteOutputDto reserve(TicketReserveForm ticketReserveForm,
-                                            List<Flight> flightList) {
+		return outputDto;
+	}
 
-        // 予約情報生成
-        Reservation reservation = createReservation(ticketReserveForm, flightList);
+	/**
+	 * チケットを予約する。
+	 * 
+	 * @param ticketReserveForm チケット予約フォーム
+	 * @param flightList フライト情報リスト
+	 * @return チケット予約完了画面出力用DTO
+	 */
+	public ReserveCompleteOutputDto reserve(TicketReserveForm ticketReserveForm,
+			List<Flight> flightList) {
 
-        // 予約情報の業務ロジックチェック
-        ticketReserveService.validateReservation(reservation);
+		// 予約情報生成
+		Reservation reservation = createReservation(ticketReserveForm, flightList);
 
-        // 予約情報登録
-        reservation.setReserveDate(dateFactory.newDate());
-        reservation.setTotalFare(calculateTotalFare(flightList, reservation));
-        TicketReserveDto ticketReserveDto =
-            ticketReserveService.registerReservation(reservation);
+		// 予約情報の業務ロジックチェック
+		ticketReserveService.validateReservation(reservation);
 
-        // 画面出力DTO生成
-        ReserveCompleteOutputDto outputDto = new ReserveCompleteOutputDto();
-        outputDto.setReserveNo(ticketReserveDto.getReserveNo());
-        outputDto.setPaymentDate(ticketReserveDto.getPaymentDate());
-        outputDto.setTotalFare(reservation.getTotalFare());
+		// 予約情報登録
+		reservation.setReserveDate(dateFactory.newDate());
+		reservation.setTotalFare(calculateTotalFare(flightList, reservation));
+		TicketReserveDto ticketReserveDto = ticketReserveService
+				.registerReservation(reservation);
 
-        return outputDto;
-    }
+		// 画面出力DTO生成
+		ReserveCompleteOutputDto outputDto = new ReserveCompleteOutputDto();
+		outputDto.setReserveNo(ticketReserveDto.getReserveNo());
+		outputDto.setPaymentDate(ticketReserveDto.getPaymentDate());
+		outputDto.setTotalFare(reservation.getTotalFare());
 
-    /**
-     * フライト情報リストから画面表示に使用する選択フライト情報DTOのリストを作成する。
-     * 
-     * @param flightList フライト情報リスト
-     * @return 選択フライト情報DTOのリスト
-     */
-    public List<SelectFlightDto> createSelectFlightDtoList(List<Flight> flightList) {
+		return outputDto;
+	}
 
-        List<SelectFlightDto> selectFlightDtoList = new ArrayList<>();
-        for (int i = 0; i < flightList.size(); i++) {
-            // フライト情報から選択フライト情報DTOを生成
-            SelectFlightDto selectFlight =
-                beanMapper.map(flightList.get(i), SelectFlightDto.class);
+	/**
+	 * フライト情報リストから画面表示に使用する選択フライト情報DTOのリストを作成する。
+	 * 
+	 * @param flightList フライト情報リスト
+	 * @return 選択フライト情報DTOのリスト
+	 */
+	public List<SelectFlightDto> createSelectFlightDtoList(List<Flight> flightList) {
 
-            // 路線種別を設定
-            selectFlight.setLineType(i == 0 ? LineType.OUTWARD : LineType.HOMEWARD);
+		List<SelectFlightDto> selectFlightDtoList = new ArrayList<>();
+		for (int i = 0; i < flightList.size(); i++) {
+			// フライト情報から選択フライト情報DTOを生成
+			SelectFlightDto selectFlight = beanMapper.map(flightList.get(i),
+					SelectFlightDto.class);
 
-            // 運賃を算出し設定
-            int basicFare = flightList.get(i).getFlightMaster().getRoute().getBasicFare();
-            int baseFare = ticketSharedService.calculateBasicFare(basicFare,
-                selectFlight.getBoardingClassCd(),
-                selectFlight.getDepartureDate());
-            int discountRate = flightList.get(i).getFareType().getDiscountRate();
-            int fare = ticketSharedService.calculateFare(baseFare, discountRate);
-            selectFlight.setFare(fare);
+			// 路線種別を設定
+			selectFlight.setLineType(i == 0 ? LineType.OUTWARD : LineType.HOMEWARD);
 
-            selectFlightDtoList.add(selectFlight);
-        }
+			// 運賃を算出し設定
+			int basicFare = flightList.get(i).getFlightMaster().getRoute().getBasicFare();
+			int baseFare = ticketSharedService.calculateBasicFare(basicFare,
+					selectFlight.getBoardingClassCd(), selectFlight.getDepartureDate());
+			int discountRate = flightList.get(i).getFareType().getDiscountRate();
+			int fare = ticketSharedService.calculateFare(baseFare, discountRate);
+			selectFlight.setFare(fare);
 
-        return selectFlightDtoList;
-    }
+			selectFlightDtoList.add(selectFlight);
+		}
 
-    /**
-     * デフォルト値を持つチケット予約フォームを生成する。
-     * 
-     * @param userDetails ログイン情報を保持するオブジェクト
-     * @return チケット予約フォーム
-     */
-    public TicketReserveForm createTicketReserveForm(AtrsUserDetails userDetails) {
+		return selectFlightDtoList;
+	}
 
-        TicketReserveForm ticketReserveForm = new TicketReserveForm();
+	/**
+	 * デフォルト値を持つチケット予約フォームを生成する。
+	 * 
+	 * @param userDetails ログイン情報を保持するオブジェクト
+	 * @return チケット予約フォーム
+	 */
+	public TicketReserveForm createTicketReserveForm(AtrsUserDetails userDetails) {
 
-        if (authenticationHelper.isAuthenticatedPrincipal(userDetails)) {
-            // ログイン中の場合
+		TicketReserveForm ticketReserveForm = new TicketReserveForm();
 
-            // ログインユーザに該当する会員情報取得
-            Member member = ticketReserveService.findMember(userDetails.getUsername());
+		if (authenticationHelper.isAuthenticatedPrincipal(userDetails)) {
+			// ログイン中の場合
 
-            // 予約代表者情報にログインユーザの会員情報を設定
-            beanMapper.map(member, ticketReserveForm);
-            // 電話番号設定
-            String[] tel = member.getTel().split("-");
-            if (tel.length == 3) {
-                ticketReserveForm.setRepTel1(tel[0]);
-                ticketReserveForm.setRepTel2(tel[1]);
-                ticketReserveForm.setRepTel3(tel[2]);
-            }
-            // 生年月日から年齢を算出し設定
-            ticketReserveForm.setRepAge(calculateAge(member.getBirthday()));
+			// ログインユーザに該当する会員情報取得
+			Member member = ticketReserveService.findMember(userDetails.getUsername());
 
-            // 一番目の搭乗者情報に予約代表者情報(ログインユーザ情報)を設定
-            PassengerForm passengerForm =
-                beanMapper.map(ticketReserveForm, PassengerForm.class);
-            ticketReserveForm.setPassenger(0, passengerForm);
-        }
+			// 予約代表者情報にログインユーザの会員情報を設定
+			beanMapper.map(member, ticketReserveForm);
+			// 電話番号設定
+			String[] tel = member.getTel().split("-");
+			if (tel.length == 3) {
+				ticketReserveForm.setRepTel1(tel[0]);
+				ticketReserveForm.setRepTel2(tel[1]);
+				ticketReserveForm.setRepTel3(tel[2]);
+			}
+			// 生年月日から年齢を算出し設定
+			ticketReserveForm.setRepAge(calculateAge(member.getBirthday()));
 
-        return ticketReserveForm;
-    }
+			// 一番目の搭乗者情報に予約代表者情報(ログインユーザ情報)を設定
+			PassengerForm passengerForm = beanMapper.map(ticketReserveForm,
+					PassengerForm.class);
+			ticketReserveForm.setPassenger(0, passengerForm);
+		}
 
-    /**
-     * 予約情報オブジェクトを生成する。
-     * 
-     * @param flightList フライト情報のリスト
-     * @param ticketReserveForm チケット予約フォーム
-     * @return reservation 予約情報
-     */
-    private Reservation createReservation(TicketReserveForm ticketReserveForm,
-                                          List<Flight> flightList) {
+		return ticketReserveForm;
+	}
 
-        // 搭乗者情報リスト生成
-        List<Passenger> passengerList = new ArrayList<>();
-        for (PassengerForm passengerForm : ticketReserveForm.getPassengerFormList()) {
-            if (!passengerForm.isEmpty()) {
-                Passenger passenger = beanMapper.map(passengerForm, Passenger.class);
-                passengerList.add(passenger);
-            }
-        }
+	/**
+	 * 予約情報オブジェクトを生成する。
+	 * 
+	 * @param flightList フライト情報のリスト
+	 * @param ticketReserveForm チケット予約フォーム
+	 * @return reservation 予約情報
+	 */
+	private Reservation createReservation(TicketReserveForm ticketReserveForm,
+			List<Flight> flightList) {
 
-        // 予約フライト情報リスト生成
-        List<ReserveFlight> reserveFlightList = new ArrayList<>();
-        for (Flight flight : flightList) {
-            ReserveFlight reserveFlight = new ReserveFlight();
-            reserveFlight.setFlight(flight);
-            reserveFlight.setPassengerList(passengerList);
-            reserveFlightList.add(reserveFlight);
-        }
+		// 搭乗者情報リスト生成
+		List<Passenger> passengerList = new ArrayList<>();
+		for (PassengerForm passengerForm : ticketReserveForm.getPassengerFormList()) {
+			if (!passengerForm.isEmpty()) {
+				Passenger passenger = beanMapper.map(passengerForm, Passenger.class);
+				passengerList.add(passenger);
+			}
+		}
 
-        // 予約情報生成
-        Reservation reservation = new Reservation();
-        beanMapper.map(ticketReserveForm, reservation);
-        String repTel = String.format("%s-%s-%s",
-            ticketReserveForm.getRepTel1(),
-            ticketReserveForm.getRepTel2(),
-            ticketReserveForm.getRepTel3());
-        reservation.setRepTel(repTel);
-        reservation.setReserveFlightList(reserveFlightList);
+		// 予約フライト情報リスト生成
+		List<ReserveFlight> reserveFlightList = new ArrayList<>();
+		for (Flight flight : flightList) {
+			ReserveFlight reserveFlight = new ReserveFlight();
+			reserveFlight.setFlight(flight);
+			reserveFlight.setPassengerList(passengerList);
+			reserveFlightList.add(reserveFlight);
+		}
 
-        return reservation;
-    }
+		// 予約情報生成
+		Reservation reservation = new Reservation();
+		beanMapper.map(ticketReserveForm, reservation);
+		String repTel = String.format("%s-%s-%s", ticketReserveForm.getRepTel1(),
+				ticketReserveForm.getRepTel2(), ticketReserveForm.getRepTel3());
+		reservation.setRepTel(repTel);
+		reservation.setReserveFlightList(reserveFlightList);
 
-    /**
-     * 予約チケットの合計金額を計算する。
-     * 
-     * @param flightList フライト情報のリスト
-     * @param reservation 予約情報
-     * @return 予約チケットの合計金額
-     */
-    private int calculateTotalFare(List<Flight> flightList, Reservation reservation) {
+		return reservation;
+	}
 
-        ReserveFlight reserveFlight = reservation.getReserveFlightList().get(0);
-        List<Passenger> passengers = reserveFlight.getPassengerList();
-        int totalFare = ticketReserveService.calculateTotalFare(flightList, passengers);
+	/**
+	 * 予約チケットの合計金額を計算する。
+	 * 
+	 * @param flightList フライト情報のリスト
+	 * @param reservation 予約情報
+	 * @return 予約チケットの合計金額
+	 */
+	private int calculateTotalFare(List<Flight> flightList, Reservation reservation) {
 
-        return totalFare;
-    }
+		ReserveFlight reserveFlight = reservation.getReserveFlightList().get(0);
+		List<Passenger> passengers = reserveFlight.getPassengerList();
+		int totalFare = ticketReserveService.calculateTotalFare(flightList, passengers);
 
-    /**
-     * 生年月日より年齢を計算する。
-     * 
-     * @param birthday 生年月日
-     * @return 年齢
-     */
-    private Integer calculateAge(Date birthday) {
+		return totalFare;
+	}
 
-        DateTime today = dateFactory.newDateTime();
-        DateTime birthdayDateTime = new DateTime(birthday);
+	/**
+	 * 生年月日より年齢を計算する。
+	 * 
+	 * @param birthday 生年月日
+	 * @return 年齢
+	 */
+	private Integer calculateAge(Date birthday) {
 
-        return Years.yearsBetween(birthdayDateTime, today).getYears();
-    }
+		DateTime today = dateFactory.newDateTime();
+		DateTime birthdayDateTime = new DateTime(birthday);
 
-    /**
-     * 選択フライト情報からリダイレクト時の照会条件パラメータマップを生成する。
-     *
-     * @param selectFlightFormList 選択フライト情報リスト
-     * @return パラメータマップ
-     */
-    public Map<String, String> createParameterMapForFlightSearch(
-        List<SelectFlightForm> selectFlightFormList) {
+		return Years.yearsBetween(birthdayDateTime, today).getYears();
+	}
 
-        if (CollectionUtils.isEmpty(selectFlightFormList)) {
-            throw new BadRequestException("select flight is empty.");
-        }
+	/**
+	 * 選択フライト情報からリダイレクト時の照会条件パラメータマップを生成する。
+	 *
+	 * @param selectFlightFormList 選択フライト情報リスト
+	 * @return パラメータマップ
+	 */
+	public Map<String, String> createParameterMapForFlightSearch(
+			List<SelectFlightForm> selectFlightFormList) {
 
-        SelectFlightForm owFlight = selectFlightFormList.get(0);
-        String flightName = owFlight.getFlightName();
-        FlightMaster flightMaster = flightMasterProvider.getFlightMaster(flightName);
-        if (flightMaster == null) {
-            throw new BadRequestException("flight is null. value:" + flightName);
-        }
+		if (CollectionUtils.isEmpty(selectFlightFormList)) {
+			throw new BadRequestException("select flight is empty.");
+		}
 
-        Map<String, String> params = new LinkedHashMap<>();
+		SelectFlightForm owFlight = selectFlightFormList.get(0);
+		String flightName = owFlight.getFlightName();
+		FlightMaster flightMaster = flightMasterProvider.getFlightMaster(flightName);
+		if (flightMaster == null) {
+			throw new BadRequestException("flight is null. value:" + flightName);
+		}
 
-        String outwardDate = DateTimeUtil.toFormatDateString(owFlight.getDepDate());
-        String homewardDate = "";
-        if (selectFlightFormList.size() == 2) {
-            // 往復の場合
-            params.put("flightType", FlightType.RT.getCode());
-            SelectFlightForm hwFlight = selectFlightFormList.get(1);
-            homewardDate = DateTimeUtil.toFormatDateString(hwFlight.getDepDate());
-        } else {
-            // 片道の場合
-            params.put("flightType", FlightType.OW.getCode());
-        }
+		Map<String, String> params = new LinkedHashMap<>();
 
-        Route route = flightMaster.getRoute();
-        params.put("depAirportCd", route.getDepartureAirport().getCode());
-        params.put("arrAirportCd", route.getArrivalAirport().getCode());
-        params.put("outwardDate", outwardDate);
-        params.put("homewardDate", homewardDate);
-        params.put("boardingClassCd", owFlight.getBoardingClassCd().getCode());
+		String outwardDate = DateTimeUtil.toFormatDateString(owFlight.getDepDate());
+		String homewardDate = "";
+		if (selectFlightFormList.size() == 2) {
+			// 往復の場合
+			params.put("flightType", FlightType.RT.getCode());
+			SelectFlightForm hwFlight = selectFlightFormList.get(1);
+			homewardDate = DateTimeUtil.toFormatDateString(hwFlight.getDepDate());
+		}
+		else {
+			// 片道の場合
+			params.put("flightType", FlightType.OW.getCode());
+		}
 
-        return params;
-    }
+		Route route = flightMaster.getRoute();
+		params.put("depAirportCd", route.getDepartureAirport().getCode());
+		params.put("arrAirportCd", route.getArrivalAirport().getCode());
+		params.put("outwardDate", outwardDate);
+		params.put("homewardDate", homewardDate);
+		params.put("boardingClassCd", owFlight.getBoardingClassCd().getCode());
 
-    /**
-     * フライト情報のリストをチェックする。
-     * <p>
-     * チェックエラーがある場合(業務エラー含む)、不正リクエスト例外をスローする。
-     * </p>
-     * 
-     * @param flightList フライト情報のリスト
-     * @throws BadRequestException 不正リクエスト例外
-     */
-    public void validateFlightList(List<Flight> flightList) throws BadRequestException {
+		return params;
+	}
 
-        // フライト情報チェック
-        try {
-            ticketSharedService.validateFlightList(flightList);
-        } catch (InvalidFlightException | BusinessException e) {
+	/**
+	 * フライト情報のリストをチェックする。
+	 * <p>
+	 * チェックエラーがある場合(業務エラー含む)、不正リクエスト例外をスローする。
+	 * </p>
+	 * 
+	 * @param flightList フライト情報のリスト
+	 * @throws BadRequestException 不正リクエスト例外
+	 */
+	public void validateFlightList(List<Flight> flightList) throws BadRequestException {
 
-            // 不正リクエスト例外をスロー(業務エラーがある場合は改ざんとみなす)
-            throw new BadRequestException(e);
-        }
-    }
+		// フライト情報チェック
+		try {
+			ticketSharedService.validateFlightList(flightList);
+		}
+		catch (InvalidFlightException | BusinessException e) {
+
+			// 不正リクエスト例外をスロー(業務エラーがある場合は改ざんとみなす)
+			throw new BadRequestException(e);
+		}
+	}
 
 }

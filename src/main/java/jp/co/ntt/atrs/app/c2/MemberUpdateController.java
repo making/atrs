@@ -18,8 +18,6 @@ package jp.co.ntt.atrs.app.c2;
 
 import java.security.Principal;
 
-import javax.inject.Inject;
-
 import jp.co.ntt.atrs.app.c0.MemberHelper;
 import jp.co.ntt.atrs.domain.common.message.MessageKeys;
 import jp.co.ntt.atrs.domain.model.Member;
@@ -49,158 +47,163 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @RequestMapping("member/update")
 public class MemberUpdateController {
 
-    /**
-     * 会員情報変更サービス。
-     */
-    @Inject
-    MemberUpdateService memberUpdateService;
+	/**
+	 * 会員情報変更サービス。
+	 */
+	private final MemberUpdateService memberUpdateService;
 
-    /**
-     * 会員情報Helper。
-     */
-    @Inject
-    MemberHelper memberHelper;
+	/**
+	 * 会員情報Helper。
+	 */
+	private final MemberHelper memberHelper;
 
-    /**
-     * 会員情報変更フォームのバリデータ。
-     */
-    @Inject
-    MemberUpdateValidator memberUpdateValidator;
+	/**
+	 * 会員情報変更フォームのバリデータ。
+	 */
+	private final MemberUpdateValidator memberUpdateValidator;
 
-    /**
-     * 会員情報変更フォームのバリデータをバインダに追加する。
-     * 
-     * @param binder バインダ
-     */
-    @InitBinder("memberUpdateForm")
-    public void initBinder(WebDataBinder binder) {
-        binder.addValidators(memberUpdateValidator);
-    }
+	public MemberUpdateController(MemberUpdateService memberUpdateService,
+			MemberHelper memberHelper, MemberUpdateValidator memberUpdateValidator) {
+		this.memberUpdateService = memberUpdateService;
+		this.memberHelper = memberHelper;
+		this.memberUpdateValidator = memberUpdateValidator;
+	}
 
-    /**
-     * 会員情報変更フォームを初期化する。
-     * 
-     * @return 会員情報変更フォーム
-     */
-    @ModelAttribute("memberUpdateForm")
-    public MemberUpdateForm setUpForm() {
-        MemberUpdateForm memberUpdateForm = new MemberUpdateForm();
-        return memberUpdateForm;
-    }
+	/**
+	 * 会員情報変更フォームのバリデータをバインダに追加する。
+	 * 
+	 * @param binder バインダ
+	 */
+	@InitBinder("memberUpdateForm")
+	public void initBinder(WebDataBinder binder) {
+		binder.addValidators(memberUpdateValidator);
+	}
 
-    /**
-     * 会員情報変更画面を表示する。
-     * 
-     * @param model 出力情報を保持するクラス
-     * @param principal ログイン情報を持つオブジェクト
-     * @return View論理名
-     */
-    @RequestMapping(method = RequestMethod.GET, params = "form")
-    public String updateForm(Model model, Principal principal) {
+	/**
+	 * 会員情報変更フォームを初期化する。
+	 * 
+	 * @return 会員情報変更フォーム
+	 */
+	@ModelAttribute("memberUpdateForm")
+	public MemberUpdateForm setUpForm() {
+		MemberUpdateForm memberUpdateForm = new MemberUpdateForm();
+		return memberUpdateForm;
+	}
 
-        // ログインユーザ情報から会員番号を取得
-        String membershipNumber = principal.getName();
+	/**
+	 * 会員情報変更画面を表示する。
+	 * 
+	 * @param model 出力情報を保持するクラス
+	 * @param principal ログイン情報を持つオブジェクト
+	 * @return View論理名
+	 */
+	@RequestMapping(method = RequestMethod.GET, params = "form")
+	public String updateForm(Model model, Principal principal) {
 
-        // 会員情報から会員情報変更フォームを生成し、設定
-        Member member = memberUpdateService.findMember(membershipNumber);
-        MemberUpdateForm memberUpdateForm = memberHelper.toMemberUpdateForm(member);
-        model.addAttribute(memberUpdateForm);
+		// ログインユーザ情報から会員番号を取得
+		String membershipNumber = principal.getName();
 
-        // カレンダー表示制御のため、生年月日入力可能日付を設定
-        model.addAttribute("dateOfBirthMinDate", memberHelper.getDateOfBirthMinDate());
-        model.addAttribute("dateOfBirthMaxDate", memberHelper.getDateOfBirthMaxDate());
+		// 会員情報から会員情報変更フォームを生成し、設定
+		Member member = memberUpdateService.findMember(membershipNumber);
+		MemberUpdateForm memberUpdateForm = memberHelper.toMemberUpdateForm(member);
+		model.addAttribute(memberUpdateForm);
 
-        return "C2/memberUpdateForm";
-    }
+		// カレンダー表示制御のため、生年月日入力可能日付を設定
+		model.addAttribute("dateOfBirthMinDate", memberHelper.getDateOfBirthMinDate());
+		model.addAttribute("dateOfBirthMaxDate", memberHelper.getDateOfBirthMaxDate());
 
-    /**
-     * 会員情報の変更を行う。
-     * <ul>
-     * <li>チェックエラーがある場合、会員情報変更画面を再表示する。</li>
-     * <li>更新成功の場合、更新完了メッセージを設定して会員情報変更画面を表示する。</li>
-     * </ul>
-     * 
-     * @param memberUpdateForm 会員情報変更フォーム
-     * @param model 出力情報を保持するクラス
-     * @param redirectAttributes フラッシュスコープ格納用オブジェクト
-     * @param result チェック結果を保持するクラス
-     * @param principal ログイン情報を持つオブジェクト
-     * @return View論理名
-     */
-    @RequestMapping(method = RequestMethod.POST)
-    public String update(@Validated MemberUpdateForm memberUpdateForm,
-                         BindingResult result, Model model,
-                         RedirectAttributes redirectAttributes, Principal principal) {
+		return "C2/memberUpdateForm";
+	}
 
-        if (result.hasErrors()) {
-            // 検証エラーがある場合は画面再表示
-            return updateRedo(memberUpdateForm, model);
-        }
+	/**
+	 * 会員情報の変更を行う。
+	 * <ul>
+	 * <li>チェックエラーがある場合、会員情報変更画面を再表示する。</li>
+	 * <li>更新成功の場合、更新完了メッセージを設定して会員情報変更画面を表示する。</li>
+	 * </ul>
+	 * 
+	 * @param memberUpdateForm 会員情報変更フォーム
+	 * @param model 出力情報を保持するクラス
+	 * @param redirectAttributes フラッシュスコープ格納用オブジェクト
+	 * @param result チェック結果を保持するクラス
+	 * @param principal ログイン情報を持つオブジェクト
+	 * @return View論理名
+	 */
+	@RequestMapping(method = RequestMethod.POST)
+	public String update(@Validated MemberUpdateForm memberUpdateForm,
+			BindingResult result, Model model, RedirectAttributes redirectAttributes,
+			Principal principal) {
 
-        // ログインユーザ情報から会員番号を取得
-        String membershipNumber = principal.getName();
+		if (result.hasErrors()) {
+			// 検証エラーがある場合は画面再表示
+			return updateRedo(memberUpdateForm, model);
+		}
 
-        // 入力パスワードが登録情報と一致しているかチェック(未入力の場合はチェックされない)
-        try {
-            memberUpdateService.checkMemberPassword(
-                memberUpdateForm.getCurrentPassword(), membershipNumber);
-        } catch (BusinessException e) {
+		// ログインユーザ情報から会員番号を取得
+		String membershipNumber = principal.getName();
 
-            // パスワード不一致の場合、メッセージ設定後に画面再表示
-            model.addAttribute(e.getResultMessages());
+		// 入力パスワードが登録情報と一致しているかチェック(未入力の場合はチェックされない)
+		try {
+			memberUpdateService.checkMemberPassword(memberUpdateForm.getCurrentPassword(),
+					membershipNumber);
+		}
+		catch (BusinessException e) {
 
-            return updateRedo(memberUpdateForm, model);
-        }
+			// パスワード不一致の場合、メッセージ設定後に画面再表示
+			model.addAttribute(e.getResultMessages());
 
-        // 会員情報更新
-        Member member = memberHelper.toMember(memberUpdateForm);
-        member.setMembershipNumber(membershipNumber);
-        memberUpdateService.updateMember(member);
+			return updateRedo(memberUpdateForm, model);
+		}
 
-        // 更新した会員情報をログインユーザ情報に設定
-        Authentication authentication = (Authentication) principal;
-        AtrsUserDetails userDetails = (AtrsUserDetails) authentication.getPrincipal();
-        Member loginMember = memberUpdateService.findMemberForLogin(membershipNumber);
-        userDetails.setMember(loginMember);
+		// 会員情報更新
+		Member member = memberHelper.toMember(memberUpdateForm);
+		member.setMembershipNumber(membershipNumber);
+		memberUpdateService.updateMember(member);
 
-        // 更新完了メッセージ設定
-        ResultMessages messages =
-            ResultMessages.success().add(MessageKeys.I_AR_C2_2001.key());
-        redirectAttributes.addFlashAttribute(messages);
+		// 更新した会員情報をログインユーザ情報に設定
+		Authentication authentication = (Authentication) principal;
+		AtrsUserDetails userDetails = (AtrsUserDetails) authentication.getPrincipal();
+		Member loginMember = memberUpdateService.findMemberForLogin(membershipNumber);
+		userDetails.setMember(loginMember);
 
-        // リダイレクトで会員情報変更画面を表示
-        return "redirect:/member/update?complete";
-    }
+		// 更新完了メッセージ設定
+		ResultMessages messages = ResultMessages.success()
+				.add(MessageKeys.I_AR_C2_2001.key());
+		redirectAttributes.addFlashAttribute(messages);
 
-    /**
-     * 会員情報変更完了の会員情報変更画面を表示する。
-     * 
-     * @param model 出力情報を保持するクラス
-     * @param principal ログイン情報を持つオブジェクト
-     * @return View論理名
-     */
-    @RequestMapping(method = RequestMethod.GET, params = "complete")
-    public String updateComplete(Model model, Principal principal) {
+		// リダイレクトで会員情報変更画面を表示
+		return "redirect:/member/update?complete";
+	}
 
-        // 再検索して会員情報変更画面を表示
-        return updateForm(model, principal);
-    }
+	/**
+	 * 会員情報変更完了の会員情報変更画面を表示する。
+	 * 
+	 * @param model 出力情報を保持するクラス
+	 * @param principal ログイン情報を持つオブジェクト
+	 * @return View論理名
+	 */
+	@RequestMapping(method = RequestMethod.GET, params = "complete")
+	public String updateComplete(Model model, Principal principal) {
 
-    /**
-     * 会員情報変更画面を再表示する。
-     * 
-     * @param memberUpdateForm 会員情報変更フォーム
-     * @param model 出力情報を保持するクラス
-     * @return View論理名
-     */
-    @RequestMapping(method = RequestMethod.POST, params = "redo")
-    public String updateRedo(MemberUpdateForm memberUpdateForm, Model model) {
+		// 再検索して会員情報変更画面を表示
+		return updateForm(model, principal);
+	}
 
-        // カレンダー表示制御のため、生年月日入力可能日付を設定
-        model.addAttribute("dateOfBirthMinDate", memberHelper.getDateOfBirthMinDate());
-        model.addAttribute("dateOfBirthMaxDate", memberHelper.getDateOfBirthMaxDate());
+	/**
+	 * 会員情報変更画面を再表示する。
+	 * 
+	 * @param memberUpdateForm 会員情報変更フォーム
+	 * @param model 出力情報を保持するクラス
+	 * @return View論理名
+	 */
+	@RequestMapping(method = RequestMethod.POST, params = "redo")
+	public String updateRedo(MemberUpdateForm memberUpdateForm, Model model) {
 
-        return "C2/memberUpdateForm";
-    }
+		// カレンダー表示制御のため、生年月日入力可能日付を設定
+		model.addAttribute("dateOfBirthMinDate", memberHelper.getDateOfBirthMinDate());
+		model.addAttribute("dateOfBirthMaxDate", memberHelper.getDateOfBirthMaxDate());
+
+		return "C2/memberUpdateForm";
+	}
 
 }

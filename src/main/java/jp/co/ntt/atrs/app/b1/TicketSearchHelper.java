@@ -18,8 +18,6 @@ package jp.co.ntt.atrs.app.b1;
 
 import java.util.List;
 
-import javax.inject.Inject;
-
 import jp.co.ntt.atrs.app.common.exception.BadRequestException;
 import jp.co.ntt.atrs.domain.model.BoardingClassCd;
 import jp.co.ntt.atrs.domain.model.Flight;
@@ -40,103 +38,112 @@ import org.springframework.stereotype.Component;
 @Component
 public class TicketSearchHelper {
 
-    /**
-     * 日付、時刻取得インターフェース。
-     */
-    @Inject
-    JodaTimeDateFactory dateFactory;
+	/**
+	 * 日付、時刻取得インターフェース。
+	 */
+	private final JodaTimeDateFactory dateFactory;
 
-    /**
-     * チケット予約共通サービス。
-     */
-    @Inject
-    TicketSharedService ticketSharedService;
+	/**
+	 * チケット予約共通サービス。
+	 */
+	private final TicketSharedService ticketSharedService;
 
-    /**
-     * デフォルトフライト種別。
-     */
-    @Value("${default.flightType}")
-    private FlightType defaultFlightType;
+	/**
+	 * デフォルトフライト種別。
+	 */
+	private final FlightType defaultFlightType;
 
-    /**
-     * デフォルト出発空港コード。
-     */
-    @Value("${default.depAirportCd}")
-    private String defaultDepAirportCd;
+	/**
+	 * デフォルト出発空港コード。
+	 */
+	private final String defaultDepAirportCd;
 
-    /**
-     * デフォルト到着空港コード。
-     */
-    @Value("${default.arrAirportCd}")
-    private String defaultArrAirportCd;
+	/**
+	 * デフォルト到着空港コード。
+	 */
+	private final String defaultArrAirportCd;
 
-    /**
-     * デフォルト搭乗クラスコード。
-     */
-    @Value("${default.boardingClassCd}")
-    private BoardingClassCd defaultBoardingClassCd;
+	/**
+	 * デフォルト搭乗クラスコード。
+	 */
+	private final BoardingClassCd defaultBoardingClassCd;
 
-    /**
-     * 往路の到着時刻に対し、復路で予約可能となる出発時刻までの時間間隔(分)。
-     */
-    @Value("${atrs.reserveIntervalTime}")
-    private int reserveIntervalTime;
+	/**
+	 * 往路の到着時刻に対し、復路で予約可能となる出発時刻までの時間間隔(分)。
+	 */
+	private final int reserveIntervalTime;
 
-    /**
-     * デフォルト値を持つ空席照会フォームを作成する。
-     * 
-     * @return 空席照会フォーム
-     */
-    public TicketSearchForm createDefaultTicketSearchForm() {
+	public TicketSearchHelper(JodaTimeDateFactory dateFactory,
+			TicketSharedService ticketSharedService,
+			@Value("${default.flightType}") FlightType defaultFlightType,
+			@Value("${default.depAirportCd}") String defaultDepAirportCd,
+			@Value("${default.arrAirportCd}") String defaultArrAirportCd,
+			@Value("${default.boardingClassCd}") BoardingClassCd defaultBoardingClassCd,
+			@Value("${atrs.reserveIntervalTime}") int reserveIntervalTime) {
+		this.dateFactory = dateFactory;
+		this.ticketSharedService = ticketSharedService;
+		this.defaultFlightType = defaultFlightType;
+		this.defaultDepAirportCd = defaultDepAirportCd;
+		this.defaultArrAirportCd = defaultArrAirportCd;
+		this.defaultBoardingClassCd = defaultBoardingClassCd;
+		this.reserveIntervalTime = reserveIntervalTime;
+	}
 
-        TicketSearchForm ticketSearchForm = new TicketSearchForm();
-        ticketSearchForm.setFlightType(defaultFlightType);
-        ticketSearchForm.setDepAirportCd(defaultDepAirportCd);
-        ticketSearchForm.setArrAirportCd(defaultArrAirportCd);
-        ticketSearchForm.setOutwardDate(dateFactory.newDate());
-        ticketSearchForm.setHomewardDate(dateFactory.newDate());
-        ticketSearchForm.setBoardingClassCd(defaultBoardingClassCd);
+	/**
+	 * デフォルト値を持つ空席照会フォームを作成する。
+	 * 
+	 * @return 空席照会フォーム
+	 */
+	public TicketSearchForm createDefaultTicketSearchForm() {
 
-        return ticketSearchForm;
-    }
+		TicketSearchForm ticketSearchForm = new TicketSearchForm();
+		ticketSearchForm.setFlightType(defaultFlightType);
+		ticketSearchForm.setDepAirportCd(defaultDepAirportCd);
+		ticketSearchForm.setArrAirportCd(defaultArrAirportCd);
+		ticketSearchForm.setOutwardDate(dateFactory.newDate());
+		ticketSearchForm.setHomewardDate(dateFactory.newDate());
+		ticketSearchForm.setBoardingClassCd(defaultBoardingClassCd);
 
-    /**
-     * 空席照会画面(TOP画面)の表示情報を作成する。
-     * 
-     * @return 空席照会画面(TOP画面)の表示情報
-     */
-    public FlightSearchOutputDto createFlightSearchOutputDto() {
+		return ticketSearchForm;
+	}
 
-        FlightSearchOutputDto outputDto = new FlightSearchOutputDto();
-        outputDto.setBeginningPeriod(dateFactory.newDate());
-        outputDto.setEndingPeriod(ticketSharedService.getSearchLimitDate().toDate());
-        outputDto.setReserveIntervalTime(reserveIntervalTime);
+	/**
+	 * 空席照会画面(TOP画面)の表示情報を作成する。
+	 * 
+	 * @return 空席照会画面(TOP画面)の表示情報
+	 */
+	public FlightSearchOutputDto createFlightSearchOutputDto() {
 
-        return outputDto;
-    }
+		FlightSearchOutputDto outputDto = new FlightSearchOutputDto();
+		outputDto.setBeginningPeriod(dateFactory.newDate());
+		outputDto.setEndingPeriod(ticketSharedService.getSearchLimitDate().toDate());
+		outputDto.setReserveIntervalTime(reserveIntervalTime);
 
-    /**
-     * フライト情報のリストをチェックする。
-     * <p>
-     * 業務チェックエラーの場合、業務例外をスローする。
-     * 他のエラーの場合、不正リクエスト例外をスローする。
-     * </p>
-     * 
-     * @param flightList フライト情報のリスト
-     * @throws BusinessException 業務例外
-     * @throws BadRequestException 不正リクエスト例外
-     */
-    public void validateFlightList(List<Flight> flightList)
-        throws BusinessException, BadRequestException {
+		return outputDto;
+	}
 
-        // フライト情報チェック
-        try {
-            ticketSharedService.validateFlightList(flightList);
-        } catch (InvalidFlightException e) {
+	/**
+	 * フライト情報のリストをチェックする。
+	 * <p>
+	 * 業務チェックエラーの場合、業務例外をスローする。 他のエラーの場合、不正リクエスト例外をスローする。
+	 * </p>
+	 * 
+	 * @param flightList フライト情報のリスト
+	 * @throws BusinessException 業務例外
+	 * @throws BadRequestException 不正リクエスト例外
+	 */
+	public void validateFlightList(List<Flight> flightList)
+			throws BusinessException, BadRequestException {
 
-            // 業務チェックエラー以外のエラーの場合、不正リクエスト例外をスロー
-            throw new BadRequestException(e);
-        }
-    }
+		// フライト情報チェック
+		try {
+			ticketSharedService.validateFlightList(flightList);
+		}
+		catch (InvalidFlightException e) {
+
+			// 業務チェックエラー以外のエラーの場合、不正リクエスト例外をスロー
+			throw new BadRequestException(e);
+		}
+	}
 
 }

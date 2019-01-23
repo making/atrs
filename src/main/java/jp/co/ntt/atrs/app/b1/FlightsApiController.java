@@ -19,8 +19,6 @@ package jp.co.ntt.atrs.app.b1;
 import java.util.List;
 import java.util.Locale;
 
-import javax.inject.Inject;
-
 import jp.co.ntt.atrs.app.a0.ErrorResultDto;
 import jp.co.ntt.atrs.domain.service.b1.FlightNotFoundException;
 import jp.co.ntt.atrs.domain.service.b1.FlightVacantInfoDto;
@@ -55,144 +53,155 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @RequestMapping("api")
 public class FlightsApiController {
 
-    /**
-     * メッセージソース。
-     */
-    @Inject
-    MessageSource messageSource;
+	/**
+	 * メッセージソース。
+	 */
+	private final MessageSource messageSource;
 
-    /**
-     * Beanマッパー。
-     */
-    @Inject
-    Mapper beanMapper;
+	/**
+	 * Beanマッパー。
+	 */
+	private final Mapper beanMapper;
 
-    /**
-     * 空席照会サービス。
-     */
-    @Inject
-    TicketSearchService ticketSearchService;
+	/**
+	 * 空席照会サービス。
+	 */
+	private final TicketSearchService ticketSearchService;
 
-    /**
-     * 空席照会条件フォームのバリデータ。
-     */
-    @Inject
-    FlightSearchCriteriaValidator flightSearchCriteriaValidator;
+	/**
+	 * 空席照会条件フォームのバリデータ。
+	 */
+	private final FlightSearchCriteriaValidator flightSearchCriteriaValidator;
 
-    /**
-     * 空席照会条件フォームのバリデータをバインダに追加する。
-     * 
-     * @param binder バインダ
-     */
-    @InitBinder("flightSearchCriteriaForm")
-    public void initBinderForFlightSearchCriteria(WebDataBinder binder) {
-        binder.addValidators(flightSearchCriteriaValidator);
-    }
+	public FlightsApiController(MessageSource messageSource, Mapper beanMapper,
+			TicketSearchService ticketSearchService,
+			FlightSearchCriteriaValidator flightSearchCriteriaValidator) {
+		this.messageSource = messageSource;
+		this.beanMapper = beanMapper;
+		this.ticketSearchService = ticketSearchService;
+		this.flightSearchCriteriaValidator = flightSearchCriteriaValidator;
+	}
 
-    /**
-     * フライトの空席状況を取得する。
-     * <ul>
-     * <li>空席照会条件に合致するフライト情報から生成した空席状況一覧リストを返却する。</li>
-     * <li>空席照会条件が不正な場合、該当するフライトが存在しない場合はエラーメッセージを返却する。</li>
-     * </ul>
-     * [応答HTTPステータスコード]
-     * <ul>
-     * <li>正常:200</li>
-     * <li>空席照会条件不正:400</li>
-     * <li>該当するフライトが存在しない:404</li>
-     * <li>システムエラー:500</li>
-     * </ul>
-     * 
-     * @param flightSearchCriteriaForm 空席照会条件フォーム
-     * @return 空席状況一覧リスト
-     */
-    @RequestMapping(value = "flights", method = RequestMethod.GET)
-    @ResponseBody
-    public List<FlightVacantInfoDto> getFlights(
-        @Validated FlightSearchCriteriaForm flightSearchCriteriaForm) {
+	/**
+	 * 空席照会条件フォームのバリデータをバインダに追加する。
+	 * 
+	 * @param binder バインダ
+	 */
+	@InitBinder("flightSearchCriteriaForm")
+	public void initBinderForFlightSearchCriteria(WebDataBinder binder) {
+		binder.addValidators(flightSearchCriteriaValidator);
+	}
 
-        // 空席照会
-        TicketSearchCriteriaDto searchCriteriaDto =
-            beanMapper.map(flightSearchCriteriaForm, TicketSearchCriteriaDto.class);
-        List<FlightVacantInfoDto> flights =
-            ticketSearchService.searchFlight(searchCriteriaDto);
+	/**
+	 * フライトの空席状況を取得する。
+	 * <ul>
+	 * <li>空席照会条件に合致するフライト情報から生成した空席状況一覧リストを返却する。</li>
+	 * <li>空席照会条件が不正な場合、該当するフライトが存在しない場合はエラーメッセージを返却する。</li>
+	 * </ul>
+	 * [応答HTTPステータスコード]
+	 * <ul>
+	 * <li>正常:200</li>
+	 * <li>空席照会条件不正:400</li>
+	 * <li>該当するフライトが存在しない:404</li>
+	 * <li>システムエラー:500</li>
+	 * </ul>
+	 * 
+	 * @param flightSearchCriteriaForm 空席照会条件フォーム
+	 * @return 空席状況一覧リスト
+	 */
+	@RequestMapping(value = "flights", method = RequestMethod.GET)
+	@ResponseBody
+	public List<FlightVacantInfoDto> getFlights(
+			@Validated FlightSearchCriteriaForm flightSearchCriteriaForm) {
 
-        return flights;
-    }
+		// 空席照会
+		TicketSearchCriteriaDto searchCriteriaDto = beanMapper
+				.map(flightSearchCriteriaForm, TicketSearchCriteriaDto.class);
+		List<FlightVacantInfoDto> flights = ticketSearchService
+				.searchFlight(searchCriteriaDto);
 
-    /**
-     * 入力値に不正な値が指定された場合の例外ハンドリングを行う。
-     * <p>エラー情報にエラーメッセージを設定して返却する。</p>
-     *
-     * @param e バインド例外
-     * @param locale ロケールオブジェクト
-     * @return エラー情報
-     */
-    @ExceptionHandler(BindException.class)
-    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
-    @ResponseBody
-    public ErrorResultDto handleBindException(BindException e, Locale locale) {
+		return flights;
+	}
 
-        ErrorResultDto result = new ErrorResultDto();
+	/**
+	 * 入力値に不正な値が指定された場合の例外ハンドリングを行う。
+	 * <p>
+	 * エラー情報にエラーメッセージを設定して返却する。
+	 * </p>
+	 *
+	 * @param e バインド例外
+	 * @param locale ロケールオブジェクト
+	 * @return エラー情報
+	 */
+	@ExceptionHandler(BindException.class)
+	@ResponseStatus(value = HttpStatus.BAD_REQUEST)
+	@ResponseBody
+	public ErrorResultDto handleBindException(BindException e, Locale locale) {
 
-        // メッセージ設定
-        for (FieldError fieldError : e.getBindingResult().getFieldErrors()) {
-            result.add(messageSource.getMessage(fieldError, locale));
-        }
-        for (ObjectError objectError : e.getBindingResult().getGlobalErrors()) {
-            result.add(messageSource.getMessage(objectError, locale));
-        }
+		ErrorResultDto result = new ErrorResultDto();
 
-        return result;
-    }
+		// メッセージ設定
+		for (FieldError fieldError : e.getBindingResult().getFieldErrors()) {
+			result.add(messageSource.getMessage(fieldError, locale));
+		}
+		for (ObjectError objectError : e.getBindingResult().getGlobalErrors()) {
+			result.add(messageSource.getMessage(objectError, locale));
+		}
 
-    /**
-     * 空席照会条件が不正な場合の例外ハンドリングを行う。
-     * <p>エラー情報にエラーメッセージを設定して返却する。</p>
-     *
-     * @param e 業務例外
-     * @param locale ロケールオブジェクト
-     * @return エラー情報
-     */
-    @ExceptionHandler(BusinessException.class)
-    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
-    @ResponseBody
-    public ErrorResultDto handleBusinessException(BusinessException e, Locale locale) {
+		return result;
+	}
 
-        ErrorResultDto result = new ErrorResultDto();
+	/**
+	 * 空席照会条件が不正な場合の例外ハンドリングを行う。
+	 * <p>
+	 * エラー情報にエラーメッセージを設定して返却する。
+	 * </p>
+	 *
+	 * @param e 業務例外
+	 * @param locale ロケールオブジェクト
+	 * @return エラー情報
+	 */
+	@ExceptionHandler(BusinessException.class)
+	@ResponseStatus(value = HttpStatus.BAD_REQUEST)
+	@ResponseBody
+	public ErrorResultDto handleBusinessException(BusinessException e, Locale locale) {
 
-        // メッセージ設定
-        for (ResultMessage resultMessage : e.getResultMessages().getList()) {
-            result.add(messageSource.getMessage(new DefaultMessageSourceResolvable(
-                resultMessage.getCode()), locale));
-        }
+		ErrorResultDto result = new ErrorResultDto();
 
-        return result;
-    }
+		// メッセージ設定
+		for (ResultMessage resultMessage : e.getResultMessages().getList()) {
+			result.add(messageSource.getMessage(
+					new DefaultMessageSourceResolvable(resultMessage.getCode()), locale));
+		}
 
-    /**
-     * 空席照会条件に合致するフライト情報が存在しない場合の例外ハンドリングを行う。
-     * <p>エラー情報にエラーメッセージを設定して返却する。</p>
-     *
-     * @param e フライト情報非存在業務例外
-     * @param locale ロケールオブジェクト
-     * @return エラー情報
-     */
-    @ExceptionHandler(FlightNotFoundException.class)
-    @ResponseStatus(value = HttpStatus.NOT_FOUND)
-    @ResponseBody
-    public ErrorResultDto handleFlightNotFoundException(FlightNotFoundException e,
-                                                        Locale locale) {
+		return result;
+	}
 
-        ErrorResultDto result = new ErrorResultDto();
+	/**
+	 * 空席照会条件に合致するフライト情報が存在しない場合の例外ハンドリングを行う。
+	 * <p>
+	 * エラー情報にエラーメッセージを設定して返却する。
+	 * </p>
+	 *
+	 * @param e フライト情報非存在業務例外
+	 * @param locale ロケールオブジェクト
+	 * @return エラー情報
+	 */
+	@ExceptionHandler(FlightNotFoundException.class)
+	@ResponseStatus(value = HttpStatus.NOT_FOUND)
+	@ResponseBody
+	public ErrorResultDto handleFlightNotFoundException(FlightNotFoundException e,
+			Locale locale) {
 
-        // メッセージ設定
-        for (ResultMessage resultMessage : e.getResultMessages().getList()) {
-            result.add(messageSource.getMessage(new DefaultMessageSourceResolvable(
-                resultMessage.getCode()), locale));
-        }
+		ErrorResultDto result = new ErrorResultDto();
 
-        return result;
-    }
+		// メッセージ設定
+		for (ResultMessage resultMessage : e.getResultMessages().getList()) {
+			result.add(messageSource.getMessage(
+					new DefaultMessageSourceResolvable(resultMessage.getCode()), locale));
+		}
+
+		return result;
+	}
 
 }

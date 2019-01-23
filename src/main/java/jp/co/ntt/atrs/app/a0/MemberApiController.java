@@ -16,8 +16,6 @@
  */
 package jp.co.ntt.atrs.app.a0;
 
-import javax.inject.Inject;
-
 import jp.co.ntt.atrs.domain.service.a0.MembershipSharedService;
 
 import org.springframework.http.HttpStatus;
@@ -38,31 +36,34 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @RequestMapping("api/member")
 public class MemberApiController {
 
-    /**
-     * 会員共通サービス。
-     */
-    @Inject
-    MembershipSharedService membershipSharedService;
+	/**
+	 * 会員共通サービス。
+	 */
+	private final MembershipSharedService membershipSharedService;
 
-    /**
-     * 存在する会員番号かを判定する。
-     * 
-     * @param membershipNumber 会員番号
-     * @return OKステータス:存在する、NOT_FOUNDステータス:存在しない
-     */
-    @RequestMapping(value = "available", method = RequestMethod.GET)
-    @ResponseBody
-    public ResponseEntity<Object> getAvailable(
-            @RequestParam("membershipNumber") String membershipNumber) {
+	public MemberApiController(MembershipSharedService membershipSharedService) {
+		this.membershipSharedService = membershipSharedService;
+	}
 
-        // 値がない場合は、メッセージ表示不要のため OK を返却
-        if (StringUtils.isEmpty(membershipNumber)) {
-            return new ResponseEntity<>(HttpStatus.OK);
-        }
+	/**
+	 * 存在する会員番号かを判定する。
+	 * 
+	 * @param membershipNumber 会員番号
+	 * @return OKステータス:存在する、NOT_FOUNDステータス:存在しない
+	 */
+	@RequestMapping(value = "available", method = RequestMethod.GET)
+	@ResponseBody
+	public ResponseEntity<Object> getAvailable(
+			@RequestParam("membershipNumber") String membershipNumber) {
 
-        return membershipSharedService.isMember(membershipNumber) ?
-                new ResponseEntity<>(HttpStatus.OK) :
-                new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    }
+		// 値がない場合は、メッセージ表示不要のため OK を返却
+		if (StringUtils.isEmpty(membershipNumber)) {
+			return new ResponseEntity<>(HttpStatus.OK);
+		}
+
+		return membershipSharedService.isMember(membershipNumber)
+				? new ResponseEntity<>(HttpStatus.OK)
+				: new ResponseEntity<>(HttpStatus.NOT_FOUND);
+	}
 
 }

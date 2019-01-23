@@ -16,8 +16,6 @@
  */
 package jp.co.ntt.atrs.app.c1;
 
-import javax.inject.Inject;
-
 import jp.co.ntt.atrs.app.c0.MemberValidator;
 import jp.co.ntt.atrs.domain.service.c1.MemberRegisterErrorCode;
 
@@ -34,43 +32,46 @@ import org.springframework.validation.Validator;
 @Component
 public class MemberRegisterValidator implements Validator {
 
-    /**
-     * 会員情報バリデータ。
-     */
-    @Inject
-    MemberValidator memberValidator;
+	/**
+	 * 会員情報バリデータ。
+	 */
+	private final MemberValidator memberValidator;
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public boolean supports(Class<?> clazz) {
-        return MemberRegisterForm.class.isAssignableFrom(clazz);
-    }
+	public MemberRegisterValidator(MemberValidator memberValidator) {
+		this.memberValidator = memberValidator;
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void validate(Object target, Errors errors) {
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean supports(Class<?> clazz) {
+		return MemberRegisterForm.class.isAssignableFrom(clazz);
+	}
 
-        MemberRegisterForm form = (MemberRegisterForm) target;
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void validate(Object target, Errors errors) {
 
-        // パスワードチェック
-        if (!errors.hasFieldErrors("password")
-            && !errors.hasFieldErrors("reEnterPassword")) {
+		MemberRegisterForm form = (MemberRegisterForm) target;
 
-            String password = form.getPassword();
-            String reEnterPassword = form.getReEnterPassword();
-            if (!password.equals(reEnterPassword)) {
+		// パスワードチェック
+		if (!errors.hasFieldErrors("password")
+				&& !errors.hasFieldErrors("reEnterPassword")) {
 
-                // パスワードと再入力パスワードが異なる場合エラー
-                errors.reject(MemberRegisterErrorCode.E_AR_C1_5001.code());
-            }
-        }
+			String password = form.getPassword();
+			String reEnterPassword = form.getReEnterPassword();
+			if (!password.equals(reEnterPassword)) {
 
-        // 共通チェック
-        ValidationUtils.invokeValidator(memberValidator, form, errors);
+				// パスワードと再入力パスワードが異なる場合エラー
+				errors.reject(MemberRegisterErrorCode.E_AR_C1_5001.code());
+			}
+		}
 
-    }
+		// 共通チェック
+		ValidationUtils.invokeValidator(memberValidator, form, errors);
+
+	}
 }

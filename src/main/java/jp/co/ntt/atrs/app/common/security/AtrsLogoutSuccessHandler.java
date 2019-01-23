@@ -19,7 +19,6 @@ package jp.co.ntt.atrs.app.common.security;
 import java.io.IOException;
 
 import javax.annotation.PostConstruct;
-import javax.inject.Inject;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -39,30 +38,32 @@ import org.springframework.stereotype.Component;
 @Component
 public class AtrsLogoutSuccessHandler extends SimpleUrlLogoutSuccessHandler {
 
-    /**
-     * イベント発行Publisher。
-     */
-    @Inject
-    ApplicationEventPublisher eventPublisher;
+	/**
+	 * イベント発行Publisher。
+	 */
+	private final ApplicationEventPublisher eventPublisher;
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response,
-                                Authentication authentication)
-        throws IOException, ServletException {
+	public AtrsLogoutSuccessHandler(ApplicationEventPublisher eventPublisher) {
+		this.eventPublisher = eventPublisher;
+	}
 
-        if (authentication != null) {
-            // ログアウト成功イベントを発行
-            eventPublisher.publishEvent(new AtrsLogoutSuccessEvent(authentication));
-        }
-        super.handle(request, response, authentication);
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response,
+			Authentication authentication) throws IOException, ServletException {
 
-    @PostConstruct
-    public void init() {
-        this.setDefaultTargetUrl("/");
-    }
+		if (authentication != null) {
+			// ログアウト成功イベントを発行
+			eventPublisher.publishEvent(new AtrsLogoutSuccessEvent(authentication));
+		}
+		super.handle(request, response, authentication);
+	}
+
+	@PostConstruct
+	public void init() {
+		this.setDefaultTargetUrl("/");
+	}
 
 }

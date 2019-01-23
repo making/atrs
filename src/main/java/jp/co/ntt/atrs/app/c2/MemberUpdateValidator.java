@@ -16,8 +16,6 @@
  */
 package jp.co.ntt.atrs.app.c2;
 
-import javax.inject.Inject;
-
 import jp.co.ntt.atrs.app.c0.MemberValidator;
 import jp.co.ntt.atrs.domain.service.c2.MemberUpdateErrorCode;
 
@@ -35,60 +33,63 @@ import org.springframework.validation.Validator;
 @Component
 public class MemberUpdateValidator implements Validator {
 
-    /**
-     * 会員情報バリデータ。
-     */
-    @Inject
-    MemberValidator memberValidator;
+	/**
+	 * 会員情報バリデータ。
+	 */
+	private final MemberValidator memberValidator;
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public boolean supports(Class<?> clazz) {
-        return MemberUpdateForm.class.isAssignableFrom(clazz);
-    }
+	public MemberUpdateValidator(MemberValidator memberValidator) {
+		this.memberValidator = memberValidator;
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void validate(Object target, Errors errors) {
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean supports(Class<?> clazz) {
+		return MemberUpdateForm.class.isAssignableFrom(clazz);
+	}
 
-        MemberUpdateForm form = (MemberUpdateForm) target;
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void validate(Object target, Errors errors) {
 
-        // パスワードチェック
-        if (!errors.hasFieldErrors("currentPassword")
-            && !errors.hasFieldErrors("password")
-            && !errors.hasFieldErrors("reEnterPassword")) {
+		MemberUpdateForm form = (MemberUpdateForm) target;
 
-            String currentPassword = form.getCurrentPassword();
-            String password = form.getPassword();
-            String reEnterPassword = form.getReEnterPassword();
+		// パスワードチェック
+		if (!errors.hasFieldErrors("currentPassword")
+				&& !errors.hasFieldErrors("password")
+				&& !errors.hasFieldErrors("reEnterPassword")) {
 
-            // 現在のパスワード、パスワード、パスワード再入力のいずれかが入力されているか
-            if (StringUtils.hasLength(currentPassword)
-                || StringUtils.hasLength(password)
-                || StringUtils.hasLength(reEnterPassword)) {
+			String currentPassword = form.getCurrentPassword();
+			String password = form.getPassword();
+			String reEnterPassword = form.getReEnterPassword();
 
-                if (!StringUtils.hasLength(currentPassword)
-                    || !StringUtils.hasLength(password)
-                    || !StringUtils.hasLength(reEnterPassword)) {
+			// 現在のパスワード、パスワード、パスワード再入力のいずれかが入力されているか
+			if (StringUtils.hasLength(currentPassword) || StringUtils.hasLength(password)
+					|| StringUtils.hasLength(reEnterPassword)) {
 
-                    // 空欄がある場合エラー
-                    errors.reject(MemberUpdateErrorCode.E_AR_C2_5002.code());
+				if (!StringUtils.hasLength(currentPassword)
+						|| !StringUtils.hasLength(password)
+						|| !StringUtils.hasLength(reEnterPassword)) {
 
-                } else if (!password.equals(reEnterPassword)) {
+					// 空欄がある場合エラー
+					errors.reject(MemberUpdateErrorCode.E_AR_C2_5002.code());
 
-                    // パスワードと再入力パスワードが異なる場合エラー
-                    errors.reject(MemberUpdateErrorCode.E_AR_C2_5001.code());
-                }
-            }
-        }
+				}
+				else if (!password.equals(reEnterPassword)) {
 
-        // 共通チェック
-        ValidationUtils.invokeValidator(memberValidator, form, errors);
+					// パスワードと再入力パスワードが異なる場合エラー
+					errors.reject(MemberUpdateErrorCode.E_AR_C2_5001.code());
+				}
+			}
+		}
 
-    }
+		// 共通チェック
+		ValidationUtils.invokeValidator(memberValidator, form, errors);
+
+	}
 
 }

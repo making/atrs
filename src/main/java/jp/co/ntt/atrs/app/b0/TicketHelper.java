@@ -21,8 +21,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.inject.Inject;
-
 import jp.co.ntt.atrs.app.common.exception.BadRequestException;
 import jp.co.ntt.atrs.domain.common.masterdata.BoardingClassProvider;
 import jp.co.ntt.atrs.domain.common.masterdata.FareTypeProvider;
@@ -44,89 +42,94 @@ import org.springframework.util.CollectionUtils;
 @Component
 public class TicketHelper {
 
-    /**
-     * 搭乗クラス情報提供クラス。
-     */
-    @Inject
-    BoardingClassProvider boardingClassProvider;
+	/**
+	 * 搭乗クラス情報提供クラス。
+	 */
+	private final BoardingClassProvider boardingClassProvider;
 
-    /**
-     * フライト基本情報提供クラス。
-     */
-    @Inject
-    FlightMasterProvider flightMasterProvider;
+	/**
+	 * フライト基本情報提供クラス。
+	 */
+	private final FlightMasterProvider flightMasterProvider;
 
-    /**
-     * 運賃種別情報提供クラス。
-     */
-    @Inject
-    FareTypeProvider fareTypeProvider;
+	/**
+	 * 運賃種別情報提供クラス。
+	 */
+	private final FareTypeProvider fareTypeProvider;
 
-    /**
-     * 選択フライト情報フォームをフライト情報に変換する。
-     * 
-     * @param selectFlightFormList 選択フライト情報フォームのリスト
-     * @return フライト情報のリスト
-     */
-    public List<Flight> toFlightList(List<SelectFlightForm> selectFlightFormList) {
+	public TicketHelper(BoardingClassProvider boardingClassProvider,
+			FlightMasterProvider flightMasterProvider,
+			FareTypeProvider fareTypeProvider) {
+		this.boardingClassProvider = boardingClassProvider;
+		this.flightMasterProvider = flightMasterProvider;
+		this.fareTypeProvider = fareTypeProvider;
+	}
 
-        List<Flight> flightList = new ArrayList<>();
+	/**
+	 * 選択フライト情報フォームをフライト情報に変換する。
+	 * 
+	 * @param selectFlightFormList 選択フライト情報フォームのリスト
+	 * @return フライト情報のリスト
+	 */
+	public List<Flight> toFlightList(List<SelectFlightForm> selectFlightFormList) {
 
-        for (SelectFlightForm selectFlightForm : selectFlightFormList) {
-            Flight flight = new Flight();
-            flight.setDepartureDate(selectFlightForm.getDepDate());
-            String flightName = selectFlightForm.getFlightName();
-            flight.setFlightMaster(flightMasterProvider.getFlightMaster(flightName));
-            FareTypeCd fareTypeCd = selectFlightForm.getFareTypeCd();
-            flight.setFareType(fareTypeProvider.getFareType(fareTypeCd));
-            BoardingClassCd boardingClassCd = selectFlightForm.getBoardingClassCd();
-            flight.setBoardingClass(boardingClassProvider
-                .getBoardingClass(boardingClassCd));
+		List<Flight> flightList = new ArrayList<>();
 
-            flightList.add(flight);
-        }
+		for (SelectFlightForm selectFlightForm : selectFlightFormList) {
+			Flight flight = new Flight();
+			flight.setDepartureDate(selectFlightForm.getDepDate());
+			String flightName = selectFlightForm.getFlightName();
+			flight.setFlightMaster(flightMasterProvider.getFlightMaster(flightName));
+			FareTypeCd fareTypeCd = selectFlightForm.getFareTypeCd();
+			flight.setFareType(fareTypeProvider.getFareType(fareTypeCd));
+			BoardingClassCd boardingClassCd = selectFlightForm.getBoardingClassCd();
+			flight.setBoardingClass(
+					boardingClassProvider.getBoardingClass(boardingClassCd));
 
-        return flightList;
-    }
+			flightList.add(flight);
+		}
 
-    /**
-     * 選択フライト情報からリダイレクト時の選択フライト情報パラメータマップを生成する。
-     *
-     * @param reservationFlightForm 予約フライトフォーム
-     * @return パラメータマップ
-     */
-    public Map<String, String> createParameterMapForSelectFlight(
-        IReservationFlightForm reservationFlightForm) {
+		return flightList;
+	}
 
-        List<SelectFlightForm> selectFlightFormList =
-            reservationFlightForm.getSelectFlightFormList();
+	/**
+	 * 選択フライト情報からリダイレクト時の選択フライト情報パラメータマップを生成する。
+	 *
+	 * @param reservationFlightForm 予約フライトフォーム
+	 * @return パラメータマップ
+	 */
+	public Map<String, String> createParameterMapForSelectFlight(
+			IReservationFlightForm reservationFlightForm) {
 
-        // 選択フライト情報がない場合はエラーとする
-        if (CollectionUtils.isEmpty(selectFlightFormList)) {
-            throw new BadRequestException("select flight is empty.");
-        }
+		List<SelectFlightForm> selectFlightFormList = reservationFlightForm
+				.getSelectFlightFormList();
 
-        // フライト種別がない場合はエラーとする
-        FlightType flightType = reservationFlightForm.getFlightType();
-        if (flightType == null) {
-            throw new BadRequestException("flightType is null.");
-        }
+		// 選択フライト情報がない場合はエラーとする
+		if (CollectionUtils.isEmpty(selectFlightFormList)) {
+			throw new BadRequestException("select flight is empty.");
+		}
 
-        // 選択フライト情報をマップに設定
-        Map<String, String> params = new LinkedHashMap<>();
-        params.put("flightType", flightType.getCode());
-        for (int i = 0; i < selectFlightFormList.size(); i++) {
-            SelectFlightForm selectFlight = selectFlightFormList.get(i);
-            String paramName = "selectFlightFormList[" + i + "]";
-            params.put(paramName + ".flightName", selectFlight.getFlightName());
-            params.put(paramName + ".fareTypeCd", selectFlight.getFareTypeCd().getCode());
-            params.put(paramName + ".depDate",
-                DateTimeUtil.toFormatDateString(selectFlight.getDepDate()));
-            params.put(paramName + ".boardingClassCd",
-                selectFlight.getBoardingClassCd().getCode());
-        }
+		// フライト種別がない場合はエラーとする
+		FlightType flightType = reservationFlightForm.getFlightType();
+		if (flightType == null) {
+			throw new BadRequestException("flightType is null.");
+		}
 
-        return params;
-    }
+		// 選択フライト情報をマップに設定
+		Map<String, String> params = new LinkedHashMap<>();
+		params.put("flightType", flightType.getCode());
+		for (int i = 0; i < selectFlightFormList.size(); i++) {
+			SelectFlightForm selectFlight = selectFlightFormList.get(i);
+			String paramName = "selectFlightFormList[" + i + "]";
+			params.put(paramName + ".flightName", selectFlight.getFlightName());
+			params.put(paramName + ".fareTypeCd", selectFlight.getFareTypeCd().getCode());
+			params.put(paramName + ".depDate",
+					DateTimeUtil.toFormatDateString(selectFlight.getDepDate()));
+			params.put(paramName + ".boardingClassCd",
+					selectFlight.getBoardingClassCd().getCode());
+		}
+
+		return params;
+	}
 
 }

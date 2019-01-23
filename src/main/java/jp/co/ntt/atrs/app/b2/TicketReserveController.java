@@ -20,8 +20,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.inject.Inject;
-
 import jp.co.ntt.atrs.app.b0.ReservationFlightForm;
 import jp.co.ntt.atrs.app.b0.SelectFlightDto;
 import jp.co.ntt.atrs.app.b0.SelectFlightForm;
@@ -54,257 +52,262 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @TransactionTokenCheck("ticket/reserve")
 public class TicketReserveController {
 
-    /**
-     * チケット予約共通Helper。
-     */
-    @Inject
-    TicketHelper ticketHelper;
+	/**
+	 * チケット予約共通Helper。
+	 */
+	private final TicketHelper ticketHelper;
 
-    /**
-     * チケット予約Helper。
-     */
-    @Inject
-    TicketReserveHelper ticketReserveHelper;
+	/**
+	 * チケット予約Helper。
+	 */
+	private final TicketReserveHelper ticketReserveHelper;
 
-    /**
-     * チケット予約フォームのバリデータ。
-     */
-    @Inject
-    TicketReserveValidator ticketReserveValidator;
+	/**
+	 * チケット予約フォームのバリデータ。
+	 */
+	private final TicketReserveValidator ticketReserveValidator;
 
-    /**
-     * チケット予約フォームのバリデータをバインダに追加する。
-     * 
-     * @param binder バインダ
-     */
-    @InitBinder("ticketReserveForm")
-    public void initBinderForTicketReserve(WebDataBinder binder) {
-        binder.addValidators(ticketReserveValidator);
-    }
+	public TicketReserveController(TicketHelper ticketHelper,
+			TicketReserveHelper ticketReserveHelper,
+			TicketReserveValidator ticketReserveValidator) {
+		this.ticketHelper = ticketHelper;
+		this.ticketReserveHelper = ticketReserveHelper;
+		this.ticketReserveValidator = ticketReserveValidator;
+	}
 
-    /**
-     * お客様情報入力画面を表示する。
-     * 
-     * @param reservationFlightForm 予約フライト選択フォーム
-     * @param userDetails ログイン情報を保持するオブジェクト
-     * @param model 出力情報を保持するオブジェクト
-     * @return View論理名
-     */
-    @RequestMapping(method = RequestMethod.GET, params = "form")
-    public String reserveForm(ReservationFlightForm reservationFlightForm,
-                              @AuthenticationPrincipal AtrsUserDetails userDetails, Model model) {
+	/**
+	 * チケット予約フォームのバリデータをバインダに追加する。
+	 * 
+	 * @param binder バインダ
+	 */
+	@InitBinder("ticketReserveForm")
+	public void initBinderForTicketReserve(WebDataBinder binder) {
+		binder.addValidators(ticketReserveValidator);
+	}
 
-        // チケット予約フォームにデフォルト値を設定
-        TicketReserveForm ticketReserveForm =
-            ticketReserveHelper.createTicketReserveForm(userDetails);
+	/**
+	 * お客様情報入力画面を表示する。
+	 * 
+	 * @param reservationFlightForm 予約フライト選択フォーム
+	 * @param userDetails ログイン情報を保持するオブジェクト
+	 * @param model 出力情報を保持するオブジェクト
+	 * @return View論理名
+	 */
+	@RequestMapping(method = RequestMethod.GET, params = "form")
+	public String reserveForm(ReservationFlightForm reservationFlightForm,
+			@AuthenticationPrincipal AtrsUserDetails userDetails, Model model) {
 
-        // 前画面で入力された選択フライトをチケット予約フォームに設定
-        ticketReserveForm.setSelectFlightFormList(reservationFlightForm
-            .getSelectFlightFormList());
-        ticketReserveForm.setFlightType(reservationFlightForm.getFlightType());
+		// チケット予約フォームにデフォルト値を設定
+		TicketReserveForm ticketReserveForm = ticketReserveHelper
+				.createTicketReserveForm(userDetails);
 
-        // 表示用選択フライト情報を設定
-        List<Flight> flightList =
-            ticketHelper.toFlightList(reservationFlightForm.getSelectFlightFormList());
-        List<SelectFlightDto> selectFlightDtoList =
-            ticketReserveHelper.createSelectFlightDtoList(flightList);
+		// 前画面で入力された選択フライトをチケット予約フォームに設定
+		ticketReserveForm
+				.setSelectFlightFormList(reservationFlightForm.getSelectFlightFormList());
+		ticketReserveForm.setFlightType(reservationFlightForm.getFlightType());
 
-        model.addAttribute(ticketReserveForm);
-        model.addAttribute("selectFlightDtoList", selectFlightDtoList);
+		// 表示用選択フライト情報を設定
+		List<Flight> flightList = ticketHelper
+				.toFlightList(reservationFlightForm.getSelectFlightFormList());
+		List<SelectFlightDto> selectFlightDtoList = ticketReserveHelper
+				.createSelectFlightDtoList(flightList);
 
-        return "B2/reserveForm";
-    }
+		model.addAttribute(ticketReserveForm);
+		model.addAttribute("selectFlightDtoList", selectFlightDtoList);
 
-    /**
-     * お客様情報入力画面を再表示する。
-     * 
-     * @param ticketReserveForm チケット予約フォーム
-     * @param model 出力情報を保持するオブジェクト
-     * @return View論理名
-     */
-    @RequestMapping(method = RequestMethod.POST, params = "redo")
-    public String reserveRedo(TicketReserveForm ticketReserveForm, Model model) {
+		return "B2/reserveForm";
+	}
 
-        // 表示用選択フライト情報を設定
-        List<Flight> flightList =
-            ticketHelper.toFlightList(ticketReserveForm.getSelectFlightFormList());
-        List<SelectFlightDto> selectFlightDtoList =
-            ticketReserveHelper.createSelectFlightDtoList(flightList);
-        model.addAttribute("selectFlightDtoList", selectFlightDtoList);
+	/**
+	 * お客様情報入力画面を再表示する。
+	 * 
+	 * @param ticketReserveForm チケット予約フォーム
+	 * @param model 出力情報を保持するオブジェクト
+	 * @return View論理名
+	 */
+	@RequestMapping(method = RequestMethod.POST, params = "redo")
+	public String reserveRedo(TicketReserveForm ticketReserveForm, Model model) {
 
-        return "B2/reserveForm";
-    }
+		// 表示用選択フライト情報を設定
+		List<Flight> flightList = ticketHelper
+				.toFlightList(ticketReserveForm.getSelectFlightFormList());
+		List<SelectFlightDto> selectFlightDtoList = ticketReserveHelper
+				.createSelectFlightDtoList(flightList);
+		model.addAttribute("selectFlightDtoList", selectFlightDtoList);
 
-    /**
-     * 予約代表者情報、搭乗者情報をチェックし、申し込み内容確認画面を表示する。
-     * <ul>
-     * <li>トランザクショントークンチェックのトランザクションを開始する。</li>
-     * <li>チェックエラーがある場合、お客様情報入力画面を再表示する。</li>
-     * <li>チェックOKの場合、申し込み内容確認画面を表示する。</li>
-     * </ul>
-     * 
-     * @param ticketReserveForm チケット予約フォーム
-     * @param result チェック結果
-     * @param model 出力情報を保持するオブジェクト
-     * @return View論理名
-     * @throws BadRequestException リクエスト不正例外
-     */
-    @TransactionTokenCheck(type = TransactionTokenType.BEGIN)
-    @RequestMapping(method = RequestMethod.POST, params = "confirm")
-    public String reserveConfirm(@Validated TicketReserveForm ticketReserveForm,
-                                 BindingResult result, Model model)
-        throws BadRequestException {
+		return "B2/reserveForm";
+	}
 
-        if (result.hasFieldErrors("selectFlightFormList*")
-            || result.hasFieldErrors("flightType")) {
+	/**
+	 * 予約代表者情報、搭乗者情報をチェックし、申し込み内容確認画面を表示する。
+	 * <ul>
+	 * <li>トランザクショントークンチェックのトランザクションを開始する。</li>
+	 * <li>チェックエラーがある場合、お客様情報入力画面を再表示する。</li>
+	 * <li>チェックOKの場合、申し込み内容確認画面を表示する。</li>
+	 * </ul>
+	 * 
+	 * @param ticketReserveForm チケット予約フォーム
+	 * @param result チェック結果
+	 * @param model 出力情報を保持するオブジェクト
+	 * @return View論理名
+	 * @throws BadRequestException リクエスト不正例外
+	 */
+	@TransactionTokenCheck(type = TransactionTokenType.BEGIN)
+	@RequestMapping(method = RequestMethod.POST, params = "confirm")
+	public String reserveConfirm(@Validated TicketReserveForm ticketReserveForm,
+			BindingResult result, Model model) throws BadRequestException {
 
-            // 非表示項目(選択フライト情報、フライト種別)に検証エラーがある場合は
-            // 改ざんとみなす
-            throw new BadRequestException("selectFlightFormList is invalid.");
-        }
+		if (result.hasFieldErrors("selectFlightFormList*")
+				|| result.hasFieldErrors("flightType")) {
 
-        if (result.hasErrors()) {
-            // その他の検証エラーがある場合は画面再表示
-            return reserveRedo(ticketReserveForm, model);
-        }
+			// 非表示項目(選択フライト情報、フライト種別)に検証エラーがある場合は
+			// 改ざんとみなす
+			throw new BadRequestException("selectFlightFormList is invalid.");
+		}
 
-        // 選択フライト情報の業務ロジックチェック
-        List<Flight> flightList =
-            ticketHelper.toFlightList(ticketReserveForm.getSelectFlightFormList());
-        ticketReserveHelper.validateFlightList(flightList);
+		if (result.hasErrors()) {
+			// その他の検証エラーがある場合は画面再表示
+			return reserveRedo(ticketReserveForm, model);
+		}
 
-        try {
-            // 予約情報の業務ロジックチェック後、申し込み内容確認画面表示情報を設定
-            ReserveConfirmOutputDto reserveConfirmOutputDto = ticketReserveHelper
-                .reserveConfirm(ticketReserveForm, flightList);
-            model.addAttribute(reserveConfirmOutputDto);
-        } catch (BusinessException e) {
+		// 選択フライト情報の業務ロジックチェック
+		List<Flight> flightList = ticketHelper
+				.toFlightList(ticketReserveForm.getSelectFlightFormList());
+		ticketReserveHelper.validateFlightList(flightList);
 
-            // 業務エラーがある場合、メッセージ設定後に画面再表示
-            model.addAttribute(e.getResultMessages());
+		try {
+			// 予約情報の業務ロジックチェック後、申し込み内容確認画面表示情報を設定
+			ReserveConfirmOutputDto reserveConfirmOutputDto = ticketReserveHelper
+					.reserveConfirm(ticketReserveForm, flightList);
+			model.addAttribute(reserveConfirmOutputDto);
+		}
+		catch (BusinessException e) {
 
-            return reserveRedo(ticketReserveForm, model);
-        }
+			// 業務エラーがある場合、メッセージ設定後に画面再表示
+			model.addAttribute(e.getResultMessages());
 
-        // 表示用選択フライト情報を設定
-        List<SelectFlightDto> selectFlightDtoList =
-            ticketReserveHelper.createSelectFlightDtoList(flightList);
-        model.addAttribute("selectFlightDtoList", selectFlightDtoList);
+			return reserveRedo(ticketReserveForm, model);
+		}
 
-        return "B2/reserveConfirm";
-    }
+		// 表示用選択フライト情報を設定
+		List<SelectFlightDto> selectFlightDtoList = ticketReserveHelper
+				.createSelectFlightDtoList(flightList);
+		model.addAttribute("selectFlightDtoList", selectFlightDtoList);
 
-    /**
-     * チケットを予約する。
-     * <ul>
-     * <li>トランザクショントークンチェックを行う。</li>
-     * <li>業務エラーがある場合、予約失敗画面をリダイレクトで表示する。</li>
-     * <li>予約に成功した場合、予約完了画面をリダイレクトで表示する。</li>
-     * </ul>
-     * 
-     * @param ticketReserveForm チケット予約フォーム
-     * @param result チェック結果
-     * @param model 出力情報を保持するオブジェクト
-     * @param redirectAttributes フラッシュスコープ格納用オブジェクト
-     * @return View論理名
-     * @throws BadRequestException リクエスト不正例外
-     */
-    @TransactionTokenCheck
-    @RequestMapping(method = RequestMethod.POST)
-    public String reserve(@Validated TicketReserveForm ticketReserveForm,
-                          BindingResult result, Model model,
-                          RedirectAttributes redirectAttributes) throws BadRequestException {
+		return "B2/reserveConfirm";
+	}
 
-        if (result.hasErrors()) {
-            // 非表示項目(選択フライト情報、予約代表者情報、搭乗者情報)に
-            // 検証エラーがある場合は改ざんとみなす
-            throw new BadRequestException(result);
-        }
+	/**
+	 * チケットを予約する。
+	 * <ul>
+	 * <li>トランザクショントークンチェックを行う。</li>
+	 * <li>業務エラーがある場合、予約失敗画面をリダイレクトで表示する。</li>
+	 * <li>予約に成功した場合、予約完了画面をリダイレクトで表示する。</li>
+	 * </ul>
+	 * 
+	 * @param ticketReserveForm チケット予約フォーム
+	 * @param result チェック結果
+	 * @param model 出力情報を保持するオブジェクト
+	 * @param redirectAttributes フラッシュスコープ格納用オブジェクト
+	 * @return View論理名
+	 * @throws BadRequestException リクエスト不正例外
+	 */
+	@TransactionTokenCheck
+	@RequestMapping(method = RequestMethod.POST)
+	public String reserve(@Validated TicketReserveForm ticketReserveForm,
+			BindingResult result, Model model, RedirectAttributes redirectAttributes)
+			throws BadRequestException {
 
-        // 選択フライト情報の業務ロジックチェック
-        List<Flight> flightList =
-            ticketHelper.toFlightList(ticketReserveForm.getSelectFlightFormList());
-        ticketReserveHelper.validateFlightList(flightList);
+		if (result.hasErrors()) {
+			// 非表示項目(選択フライト情報、予約代表者情報、搭乗者情報)に
+			// 検証エラーがある場合は改ざんとみなす
+			throw new BadRequestException(result);
+		}
 
-        try {
-            // チケット予約
-            ReserveCompleteOutputDto reserveCompleteOutputDto =
-                ticketReserveHelper.reserve(ticketReserveForm, flightList);
-            redirectAttributes.addFlashAttribute(reserveCompleteOutputDto);
-        } catch (BusinessException e) {
+		// 選択フライト情報の業務ロジックチェック
+		List<Flight> flightList = ticketHelper
+				.toFlightList(ticketReserveForm.getSelectFlightFormList());
+		ticketReserveHelper.validateFlightList(flightList);
 
-            // 業務エラーがある場合
+		try {
+			// チケット予約
+			ReserveCompleteOutputDto reserveCompleteOutputDto = ticketReserveHelper
+					.reserve(ticketReserveForm, flightList);
+			redirectAttributes.addFlashAttribute(reserveCompleteOutputDto);
+		}
+		catch (BusinessException e) {
 
-            // メッセージ設定
-            redirectAttributes.addFlashAttribute(e.getResultMessages());
+			// 業務エラーがある場合
 
-            // 表示用選択フライト情報を設定
-            List<SelectFlightDto> selectFlightDtoList =
-                ticketReserveHelper.createSelectFlightDtoList(flightList);
-            redirectAttributes.addFlashAttribute("selectFlightDtoList",
-                selectFlightDtoList);
+			// メッセージ設定
+			redirectAttributes.addFlashAttribute(e.getResultMessages());
 
-            // 予約失敗画面にリダイレクト
-            return "redirect:/ticket/reserve?fail";
-        }
+			// 表示用選択フライト情報を設定
+			List<SelectFlightDto> selectFlightDtoList = ticketReserveHelper
+					.createSelectFlightDtoList(flightList);
+			redirectAttributes.addFlashAttribute("selectFlightDtoList",
+					selectFlightDtoList);
 
-        // 予約完了画面にリダイレクト
-        return "redirect:/ticket/reserve?complete";
-    }
+			// 予約失敗画面にリダイレクト
+			return "redirect:/ticket/reserve?fail";
+		}
 
-    /**
-     * 予約完了画面を表示する。
-     * 
-     * @return View論理名
-     */
-    @RequestMapping(method = RequestMethod.GET, params = "complete")
-    public String reserveComplete() {
+		// 予約完了画面にリダイレクト
+		return "redirect:/ticket/reserve?complete";
+	}
 
-        return "B2/reserveComplete";
-    }
+	/**
+	 * 予約完了画面を表示する。
+	 * 
+	 * @return View論理名
+	 */
+	@RequestMapping(method = RequestMethod.GET, params = "complete")
+	public String reserveComplete() {
 
-    /**
-     * 予約失敗画面を表示する。
-     * 
-     * @return View論理名
-     */
-    @RequestMapping(method = RequestMethod.GET, params = "fail")
-    public String reserveFail() {
+		return "B2/reserveComplete";
+	}
 
-        return "B2/reserveFail";
-    }
+	/**
+	 * 予約失敗画面を表示する。
+	 * 
+	 * @return View論理名
+	 */
+	@RequestMapping(method = RequestMethod.GET, params = "fail")
+	public String reserveFail() {
 
-    /**
-     * 空席照会画面を表示する。
-     * <ul>
-     * <li>空席照会条件、選択フライト情報をパラメータ(クエリ文字列)に設定し、
-     * 空席照会画面をリダイレクトで表示する。</li>
-     * </ul>
-     * 
-     * @param reservationFlightForm 予約フライト選択フォーム
-     * @param model 出力情報を保持するオブジェクト
-     * @param redirectAttributes フラッシュスコープ格納用オブジェクト
-     * @return View論理名
-     */
-    @RequestMapping(method = RequestMethod.POST, params = "backToSearch")
-    public String reserveBackToSearch(ReservationFlightForm reservationFlightForm,
-                                      Model model, RedirectAttributes redirectAttributes) {
+		return "B2/reserveFail";
+	}
 
-        // 空席照会条件、選択フライト情報をリダイレクトパラメータに設定
-        Map<String, String> params = new LinkedHashMap<>();
-        List<SelectFlightForm> flightFormList =
-            reservationFlightForm.getSelectFlightFormList();
-        params.putAll(ticketReserveHelper
-            .createParameterMapForFlightSearch(flightFormList));
-        params.putAll(ticketHelper
-            .createParameterMapForSelectFlight(reservationFlightForm));
+	/**
+	 * 空席照会画面を表示する。
+	 * <ul>
+	 * <li>空席照会条件、選択フライト情報をパラメータ(クエリ文字列)に設定し、 空席照会画面をリダイレクトで表示する。</li>
+	 * </ul>
+	 * 
+	 * @param reservationFlightForm 予約フライト選択フォーム
+	 * @param model 出力情報を保持するオブジェクト
+	 * @param redirectAttributes フラッシュスコープ格納用オブジェクト
+	 * @return View論理名
+	 */
+	@RequestMapping(method = RequestMethod.POST, params = "backToSearch")
+	public String reserveBackToSearch(ReservationFlightForm reservationFlightForm,
+			Model model, RedirectAttributes redirectAttributes) {
 
-        for (String key : params.keySet()) {
-            redirectAttributes.addAttribute(key, params.get(key));
-        }
+		// 空席照会条件、選択フライト情報をリダイレクトパラメータに設定
+		Map<String, String> params = new LinkedHashMap<>();
+		List<SelectFlightForm> flightFormList = reservationFlightForm
+				.getSelectFlightFormList();
+		params.putAll(
+				ticketReserveHelper.createParameterMapForFlightSearch(flightFormList));
+		params.putAll(
+				ticketHelper.createParameterMapForSelectFlight(reservationFlightForm));
 
-        // 空席照会画面にリダイレクト
-        return "redirect:/ticket/search?redo";
-    }
+		for (String key : params.keySet()) {
+			redirectAttributes.addAttribute(key, params.get(key));
+		}
+
+		// 空席照会画面にリダイレクト
+		return "redirect:/ticket/search?redo";
+	}
 
 }

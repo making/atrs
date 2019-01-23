@@ -21,14 +21,13 @@ import jp.co.ntt.atrs.domain.common.logging.LogMessages;
 import jp.co.ntt.atrs.domain.model.Member;
 import jp.co.ntt.atrs.domain.model.MemberLogin;
 import jp.co.ntt.atrs.domain.repository.member.MemberRepository;
+import org.terasoluna.gfw.common.exception.SystemException;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
-import org.terasoluna.gfw.common.exception.SystemException;
-
-import javax.inject.Inject;
 
 /**
  * 会員情報変更を行うService実装クラス。
@@ -39,94 +38,98 @@ import javax.inject.Inject;
 @Transactional
 public class MemberUpdateServiceImpl implements MemberUpdateService {
 
-    /**
-     * 会員情報リポジトリ。
-     */
-    @Inject
-    MemberRepository memberRepository;
+	/**
+	 * 会員情報リポジトリ。
+	 */
+	private final MemberRepository memberRepository;
 
-    /**
-     * パスワードをハッシュ化するためのエンコーダ。
-     */
-    @Inject
-    PasswordEncoder passwordEncoder;
+	/**
+	 * パスワードをハッシュ化するためのエンコーダ。
+	 */
+	private final PasswordEncoder passwordEncoder;
 
-    /**
-     * 
-     * {@inheritDoc}
-     */
-    @Override
-    public Member findMember(String membershipNumber) {
+	public MemberUpdateServiceImpl(MemberRepository memberRepository,
+			PasswordEncoder passwordEncoder) {
+		this.memberRepository = memberRepository;
+		this.passwordEncoder = passwordEncoder;
+	}
 
-        Assert.hasText(membershipNumber);
+	/**
+	 * 
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Member findMember(String membershipNumber) {
 
-        return memberRepository.findOne(membershipNumber);
-    }
+		Assert.hasText(membershipNumber);
 
-    /**
-     * 
-     * {@inheritDoc}
-     */
-    @Override
-    public void updateMember(Member member) {
+		return memberRepository.findOne(membershipNumber);
+	}
 
-        Assert.notNull(member);
-        MemberLogin memberLogin = member.getMemberLogin();
-        Assert.notNull(memberLogin);
+	/**
+	 * 
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void updateMember(Member member) {
 
-        // 会員情報更新
-        int updateMemberCount = memberRepository.update(member);
-        if (updateMemberCount != 1) {
-            throw new SystemException(LogMessages.E_AR_A0_L9002.getCode(),
-                    LogMessages.E_AR_A0_L9002.getMessage(updateMemberCount, 1));
-        }
+		Assert.notNull(member);
+		MemberLogin memberLogin = member.getMemberLogin();
+		Assert.notNull(memberLogin);
 
-        // パスワードの変更がある場合のみ会員ログイン情報を更新
-        if (StringUtils.hasLength(memberLogin.getPassword())) {
+		// 会員情報更新
+		int updateMemberCount = memberRepository.update(member);
+		if (updateMemberCount != 1) {
+			throw new SystemException(LogMessages.E_AR_A0_L9002.getCode(),
+					LogMessages.E_AR_A0_L9002.getMessage(updateMemberCount, 1));
+		}
 
-            // パスワードのハッシュ化
-            memberLogin.setPassword(
-                    passwordEncoder.encode(member.getMemberLogin().getPassword()));
+		// パスワードの変更がある場合のみ会員ログイン情報を更新
+		if (StringUtils.hasLength(memberLogin.getPassword())) {
 
-            // 会員ログイン情報更新
-            int updateMemberLoginCount = memberRepository.updateMemberLogin(member);
-            if (updateMemberLoginCount != 1) {
-                throw new SystemException(LogMessages.E_AR_A0_L9002.getCode(),
-                        LogMessages.E_AR_A0_L9002.getMessage(updateMemberLoginCount, 1));
-            }
-        }
-    }
+			// パスワードのハッシュ化
+			memberLogin.setPassword(
+					passwordEncoder.encode(member.getMemberLogin().getPassword()));
 
-    /**
-     * 
-     * {@inheritDoc}
-     */
-    @Override
-    public void checkMemberPassword(String password, String membershipNumber) {
+			// 会員ログイン情報更新
+			int updateMemberLoginCount = memberRepository.updateMemberLogin(member);
+			if (updateMemberLoginCount != 1) {
+				throw new SystemException(LogMessages.E_AR_A0_L9002.getCode(),
+						LogMessages.E_AR_A0_L9002.getMessage(updateMemberLoginCount, 1));
+			}
+		}
+	}
 
-        // パスワードの変更がある場合のみパスワードを比較
-        if (StringUtils.hasLength(password)) {
+	/**
+	 * 
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void checkMemberPassword(String password, String membershipNumber) {
 
-            // 登録パスワードを取得
-            Member member = memberRepository.findOne(membershipNumber);
-            String currentPassword = member.getMemberLogin().getPassword();
+		// パスワードの変更がある場合のみパスワードを比較
+		if (StringUtils.hasLength(password)) {
 
-            // パスワード不一致の場合、業務例外をスロー
-            if (!passwordEncoder.matches(password, currentPassword)) {
-                throw new AtrsBusinessException(MemberUpdateErrorCode.E_AR_C2_2001);
-            }
-        }
-    }
+			// 登録パスワードを取得
+			Member member = memberRepository.findOne(membershipNumber);
+			String currentPassword = member.getMemberLogin().getPassword();
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Member findMemberForLogin(String membershipNumber) {
+			// パスワード不一致の場合、業務例外をスロー
+			if (!passwordEncoder.matches(password, currentPassword)) {
+				throw new AtrsBusinessException(MemberUpdateErrorCode.E_AR_C2_2001);
+			}
+		}
+	}
 
-        Assert.hasText(membershipNumber);
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Member findMemberForLogin(String membershipNumber) {
 
-        return memberRepository.findOneForLogin(membershipNumber);
-    }
+		Assert.hasText(membershipNumber);
+
+		return memberRepository.findOneForLogin(membershipNumber);
+	}
 
 }
