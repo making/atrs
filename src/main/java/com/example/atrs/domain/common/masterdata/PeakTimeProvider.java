@@ -16,20 +16,19 @@
  */
 package com.example.atrs.domain.common.masterdata;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
 
-import org.joda.time.DateTime;
-import org.joda.time.Interval;
+import com.example.atrs.domain.common.util.DateTimeUtil;
+import com.example.atrs.domain.model.PeakTime;
+import com.example.atrs.domain.repository.peaktime.PeakTimeRepository;
 
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
-
-import com.example.atrs.domain.model.PeakTime;
-import com.example.atrs.domain.repository.peaktime.PeakTimeRepository;
 
 /**
  * ピーク時期情報を提供するクラス。
@@ -71,12 +70,11 @@ public class PeakTimeProvider {
 		Assert.notNull(depDate);
 
 		for (PeakTime peakTime : peakTimeList) {
-			Interval peakTimeInterval = new Interval(
-					new DateTime(peakTime.getPeakStartDate()).withTimeAtStartOfDay(),
-					new DateTime(peakTime.getPeakEndDate()).withTimeAtStartOfDay()
-							.plus(1));
+			LocalDate startDate = DateTimeUtil.toLocalDate(peakTime.getPeakStartDate());
+			LocalDate endDate = DateTimeUtil.toLocalDate(peakTime.getPeakEndDate());
 			// 搭乗日が該当するピーク時期積算比率を返却
-			if (peakTimeInterval.contains(depDate.getTime())) {
+			LocalDate departureDate = DateTimeUtil.toLocalDate(depDate);
+			if (!(departureDate.isBefore(startDate) && departureDate.isAfter(endDate))) {
 				return peakTime;
 			}
 		}

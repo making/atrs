@@ -16,10 +16,11 @@
  */
 package com.example.atrs.app.b1;
 
+import java.time.Clock;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.List;
-
-import org.terasoluna.gfw.common.date.jodatime.JodaTimeDateFactory;
-import org.terasoluna.gfw.common.exception.BusinessException;
 
 import com.example.atrs.app.common.exception.BadRequestException;
 import com.example.atrs.domain.model.BoardingClassCd;
@@ -27,6 +28,7 @@ import com.example.atrs.domain.model.Flight;
 import com.example.atrs.domain.model.FlightType;
 import com.example.atrs.domain.service.b0.InvalidFlightException;
 import com.example.atrs.domain.service.b0.TicketSharedService;
+import org.terasoluna.gfw.common.exception.BusinessException;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -39,10 +41,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class TicketSearchHelper {
 
-	/**
-	 * 日付、時刻取得インターフェース。
-	 */
-	private final JodaTimeDateFactory dateFactory;
+	private final Clock clock;
 
 	/**
 	 * チケット予約共通サービス。
@@ -74,14 +73,13 @@ public class TicketSearchHelper {
 	 */
 	private final int reserveIntervalTime;
 
-	public TicketSearchHelper(JodaTimeDateFactory dateFactory,
-			TicketSharedService ticketSharedService,
+	public TicketSearchHelper(Clock clock, TicketSharedService ticketSharedService,
 			@Value("${default.flightType}") FlightType defaultFlightType,
 			@Value("${default.depAirportCd}") String defaultDepAirportCd,
 			@Value("${default.arrAirportCd}") String defaultArrAirportCd,
 			@Value("${default.boardingClassCd}") BoardingClassCd defaultBoardingClassCd,
 			@Value("${atrs.reserveIntervalTime}") int reserveIntervalTime) {
-		this.dateFactory = dateFactory;
+		this.clock = clock;
 		this.ticketSharedService = ticketSharedService;
 		this.defaultFlightType = defaultFlightType;
 		this.defaultDepAirportCd = defaultDepAirportCd;
@@ -101,8 +99,9 @@ public class TicketSearchHelper {
 		ticketSearchForm.setFlightType(defaultFlightType);
 		ticketSearchForm.setDepAirportCd(defaultDepAirportCd);
 		ticketSearchForm.setArrAirportCd(defaultArrAirportCd);
-		ticketSearchForm.setOutwardDate(dateFactory.newDate());
-		ticketSearchForm.setHomewardDate(dateFactory.newDate());
+		Date now = Date.from(Instant.now(this.clock));
+		ticketSearchForm.setOutwardDate(now);
+		ticketSearchForm.setHomewardDate(now);
 		ticketSearchForm.setBoardingClassCd(defaultBoardingClassCd);
 
 		return ticketSearchForm;
@@ -114,10 +113,11 @@ public class TicketSearchHelper {
 	 * @return 空席照会画面(TOP画面)の表示情報
 	 */
 	public FlightSearchOutputDto createFlightSearchOutputDto() {
-
+		Date now = Date.from(Instant.now(this.clock));
 		FlightSearchOutputDto outputDto = new FlightSearchOutputDto();
-		outputDto.setBeginningPeriod(dateFactory.newDate());
-		outputDto.setEndingPeriod(ticketSharedService.getSearchLimitDate().toDate());
+		outputDto.setBeginningPeriod(now);
+		outputDto.setEndingPeriod(Date.from(ticketSharedService.getSearchLimitDate()
+				.atStartOfDay(ZoneId.systemDefault()).toInstant()));
 		outputDto.setReserveIntervalTime(reserveIntervalTime);
 
 		return outputDto;

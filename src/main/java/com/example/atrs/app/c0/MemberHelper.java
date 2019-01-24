@@ -16,16 +16,19 @@
  */
 package com.example.atrs.app.c0;
 
-import com.github.dozermapper.core.Mapper;
-import org.terasoluna.gfw.common.date.jodatime.JodaTimeDateFactory;
+import java.time.Clock;
+import java.time.Instant;
+import java.time.ZoneId;
 
 import com.example.atrs.app.c2.MemberUpdateForm;
-import com.example.atrs.domain.common.util.DateTimeUtil;
 import com.example.atrs.domain.model.Member;
+import com.github.dozermapper.core.Mapper;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
+
+import static com.example.atrs.domain.common.util.DateTimeUtil.DATE_FORMATTER;
 
 /**
  * 会員情報Helper。
@@ -40,20 +43,17 @@ public class MemberHelper {
 	 */
 	private final Mapper beanMapper;
 
-	/**
-	 * 日付、時刻取得インターフェース。
-	 */
-	private final JodaTimeDateFactory dateFactory;
+	private final Clock clock;
 
 	/**
 	 * 会員登録可能な最小生年月日。
 	 */
 	private final String dateOfBirthMinDate;
 
-	public MemberHelper(Mapper beanMapper, JodaTimeDateFactory dateFactory,
+	public MemberHelper(Mapper beanMapper, Clock clock,
 			@Value("${atrs.dateOfBirthMinDate}") String dateOfBirthMinDate) {
 		this.beanMapper = beanMapper;
-		this.dateFactory = dateFactory;
+		this.clock = clock;
 		this.dateOfBirthMinDate = dateOfBirthMinDate;
 	}
 
@@ -137,7 +137,8 @@ public class MemberHelper {
 	 * @return 会員登録可能な最大生年月日
 	 */
 	public String getDateOfBirthMaxDate() {
-		return DateTimeUtil.toFormatDateString(dateFactory.newDate());
+		return Instant.now(this.clock).atZone(ZoneId.systemDefault())
+				.format(DATE_FORMATTER);
 	}
 
 }

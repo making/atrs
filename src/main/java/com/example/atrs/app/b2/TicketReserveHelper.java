@@ -16,18 +16,14 @@
  */
 package com.example.atrs.app.b2;
 
+import java.time.Clock;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-
-import com.github.dozermapper.core.Mapper;
-import org.apache.commons.collections.CollectionUtils;
-import org.joda.time.DateTime;
-import org.joda.time.Years;
-import org.terasoluna.gfw.common.date.jodatime.JodaTimeDateFactory;
-import org.terasoluna.gfw.common.exception.BusinessException;
 
 import com.example.atrs.app.a0.AuthenticationHelper;
 import com.example.atrs.app.b0.LineType;
@@ -49,6 +45,9 @@ import com.example.atrs.domain.service.b0.InvalidFlightException;
 import com.example.atrs.domain.service.b0.TicketSharedService;
 import com.example.atrs.domain.service.b2.TicketReserveDto;
 import com.example.atrs.domain.service.b2.TicketReserveService;
+import com.github.dozermapper.core.Mapper;
+import org.apache.commons.collections.CollectionUtils;
+import org.terasoluna.gfw.common.exception.BusinessException;
 
 import org.springframework.stereotype.Component;
 
@@ -65,10 +64,7 @@ public class TicketReserveHelper {
 	 */
 	private final Mapper beanMapper;
 
-	/**
-	 * 日付、時刻取得インターフェース。
-	 */
-	private final JodaTimeDateFactory dateFactory;
+	private final Clock clock;
 
 	/**
 	 * 認証共通Helper。
@@ -90,13 +86,13 @@ public class TicketReserveHelper {
 	 */
 	private final FlightMasterProvider flightMasterProvider;
 
-	public TicketReserveHelper(Mapper beanMapper, JodaTimeDateFactory dateFactory,
+	public TicketReserveHelper(Mapper beanMapper, Clock clock,
 			AuthenticationHelper authenticationHelper,
 			TicketReserveService ticketReserveService,
 			TicketSharedService ticketSharedService,
 			FlightMasterProvider flightMasterProvider) {
 		this.beanMapper = beanMapper;
-		this.dateFactory = dateFactory;
+		this.clock = clock;
 		this.authenticationHelper = authenticationHelper;
 		this.ticketReserveService = ticketReserveService;
 		this.ticketSharedService = ticketSharedService;
@@ -149,7 +145,8 @@ public class TicketReserveHelper {
 		ticketReserveService.validateReservation(reservation);
 
 		// 予約情報登録
-		reservation.setReserveDate(dateFactory.newDate());
+		Date now = Date.from(Instant.now(this.clock));
+		reservation.setReserveDate(now);
 		reservation.setTotalFare(calculateTotalFare(flightList, reservation));
 		TicketReserveDto ticketReserveDto = ticketReserveService
 				.registerReservation(reservation);
@@ -293,11 +290,8 @@ public class TicketReserveHelper {
 	 * @return 年齢
 	 */
 	private Integer calculateAge(Date birthday) {
-
-		DateTime today = dateFactory.newDateTime();
-		DateTime birthdayDateTime = new DateTime(birthday);
-
-		return Years.yearsBetween(birthdayDateTime, today).getYears();
+		Instant now = Instant.now(this.clock);
+		return (int) (Duration.between(birthday.toInstant(), now).toDays() / 365);
 	}
 
 	/**

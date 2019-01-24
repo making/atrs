@@ -133,11 +133,6 @@
             <version>${terasoluna.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.terasoluna.gfw</groupId>
-            <artifactId>terasoluna-gfw-jodatime</artifactId>
-            <version>${terasoluna.version}</version>
-        </dependency>
-        <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
             <scope>runtime</scope>

@@ -16,15 +16,17 @@
  */
 package com.example.atrs.domain.service.a1;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.terasoluna.gfw.common.date.jodatime.JodaTimeDateFactory;
-import org.terasoluna.gfw.common.exception.SystemException;
+import java.time.Clock;
+import java.time.Instant;
+import java.util.Date;
 
 import com.example.atrs.domain.common.logging.LogMessages;
 import com.example.atrs.domain.model.Member;
 import com.example.atrs.domain.model.MemberLogin;
 import com.example.atrs.domain.repository.member.MemberRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.terasoluna.gfw.common.exception.SystemException;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -45,19 +47,15 @@ public class AuthLoginServiceImpl implements AuthLoginService {
 	private static final Logger LOGGER = LoggerFactory
 			.getLogger(AuthLoginServiceImpl.class);
 
-	/**
-	 * 日付生成インターフェース。
-	 */
-	private final JodaTimeDateFactory dateFactory;
+	private final Clock clock;
 
 	/**
 	 * カード会員情報リポジトリ。
 	 */
 	private final MemberRepository memberRepository;
 
-	public AuthLoginServiceImpl(JodaTimeDateFactory dateFactory,
-			MemberRepository memberRepository) {
-		this.dateFactory = dateFactory;
+	public AuthLoginServiceImpl(Clock clock, MemberRepository memberRepository) {
+		this.clock = clock;
 		this.memberRepository = memberRepository;
 	}
 
@@ -71,8 +69,9 @@ public class AuthLoginServiceImpl implements AuthLoginService {
 		Assert.notNull(member);
 
 		// ログインフラグ、ログイン日時を更新
+		Instant now = Instant.now(this.clock);
 		MemberLogin memberLogin = member.getMemberLogin();
-		memberLogin.setLoginDateTime(dateFactory.newDate());
+		memberLogin.setLoginDateTime(Date.from(now));
 		memberLogin.setLoginFlg(true);
 		int updateCount = memberRepository.updateToLoginStatus(member);
 		if (updateCount != 1) {

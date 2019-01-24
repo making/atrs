@@ -16,15 +16,11 @@
  */
 package com.example.atrs.domain.service.b0;
 
+import java.time.Clock;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
-
-import org.joda.time.DateTime;
-import org.joda.time.Duration;
-import org.joda.time.Interval;
-import org.joda.time.LocalDate;
-import org.terasoluna.gfw.common.date.jodatime.JodaTimeDateFactory;
-import org.terasoluna.gfw.common.exception.BusinessException;
 
 import com.example.atrs.domain.common.exception.AtrsBusinessException;
 import com.example.atrs.domain.common.masterdata.BoardingClassProvider;
@@ -42,6 +38,7 @@ import com.example.atrs.domain.model.Route;
 import com.example.atrs.domain.repository.flight.FlightRepository;
 import com.example.atrs.domain.service.b1.TicketSearchErrorCode;
 import com.example.atrs.domain.service.b2.TicketReserveErrorCode;
+import org.terasoluna.gfw.common.exception.BusinessException;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -70,10 +67,7 @@ public class TicketSharedServiceImpl implements TicketSharedService {
 	 */
 	private final int limitDay;
 
-	/**
-	 * 日付、時刻取得インターフェース。
-	 */
-	private final JodaTimeDateFactory dateFactory;
+	private final Clock clock;
 
 	/**
 	 * 搭乗クラス情報提供クラス。
@@ -92,12 +86,12 @@ public class TicketSharedServiceImpl implements TicketSharedService {
 
 	public TicketSharedServiceImpl(
 			@Value("${atrs.reserveIntervalTime}") int reserveIntervalTime,
-			@Value("${atrs.limitDay}") int limitDay, JodaTimeDateFactory dateFactory,
+			@Value("${atrs.limitDay}") int limitDay, Clock clock,
 			BoardingClassProvider boardingClassProvider,
 			PeakTimeProvider peakTimeProvider, FlightRepository flightRepository) {
 		this.reserveIntervalTime = reserveIntervalTime;
 		this.limitDay = limitDay;
-		this.dateFactory = dateFactory;
+		this.clock = clock;
 		this.boardingClassProvider = boardingClassProvider;
 		this.peakTimeProvider = peakTimeProvider;
 		this.flightRepository = flightRepository;
@@ -109,8 +103,8 @@ public class TicketSharedServiceImpl implements TicketSharedService {
 	@Override
 	public LocalDate getSearchLimitDate() {
 		// 照会可能限界日付 = システム日付＋予約可能限界日数
-		LocalDate sysDate = dateFactory.newDateTime().toLocalDate();
-		LocalDate limitDate = sysDate.plusDays(limitDay);
+		LocalDate today = LocalDate.now(this.clock);
+		LocalDate limitDate = today.plusDays(limitDay);
 		return limitDate;
 	}
 
@@ -172,21 +166,20 @@ public class TicketSharedServiceImpl implements TicketSharedService {
 			Flight homewardFlight) throws BusinessException {
 
 		// 往路のフライトの到着時刻
-		DateTime outwardArriveDateTime = DateTimeUtil.toDateTime(
+		LocalDateTime outwardArriveDateTime = DateTimeUtil.toDateTime(
 				outwardFlight.getDepartureDate(),
 				outwardFlight.getFlightMaster().getArrivalTime());
 
 		// 復路のフライト出発時刻
-		DateTime homewardDepartureDateTime = DateTimeUtil.toDateTime(
+		LocalDateTime homewardDepartureDateTime = DateTimeUtil.toDateTime(
 				homewardFlight.getDepartureDate(),
 				homewardFlight.getFlightMaster().getDepartureTime());
 
 		// 選択した復路のフライトが搭乗範囲外の場合、業務例外をスロー
 		// (復路のフライトは往路のフライトの到着時刻より指定時間間隔以上経過した
 		// 出発時刻から搭乗可能となる)
-		Duration flightDuration = new Duration(outwardArriveDateTime,
-				homewardDepartureDateTime);
-		if (flightDuration.getStandardMinutes() < reserveIntervalTime) {
+		if (outwardArriveDateTime.plusMinutes(reserveIntervalTime)
+				.isAfter(homewardDepartureDateTime)) {
 			throw new AtrsBusinessException(TicketReserveErrorCode.E_AR_B2_2001);
 		}
 	}
@@ -269,13 +262,12 @@ public class TicketSharedServiceImpl implements TicketSharedService {
 	public void validateDepatureDate(Date departureDate) throws BusinessException {
 		Assert.notNull(departureDate);
 
-		DateTime sysDateMidnight = dateFactory.newDateTime().withTimeAtStartOfDay();
-		DateTime limitDateMidnight = getSearchLimitDate().toDateTimeAtStartOfDay();
+		LocalDate today = LocalDate.now(this.clock);
+		LocalDate limitDate = getSearchLimitDate();
 
 		// 指定された搭乗日が本日から照会可能限界日迄の間にあるかチェック
-		Interval reservationAvailableInterval = new Interval(sysDateMidnight,
-				limitDateMidnight.plusDays(1));
-		if (!reservationAvailableInterval.contains(departureDate.getTime())) {
+		LocalDate depDate = DateTimeUtil.toLocalDate(departureDate);
+		if (depDate.isBefore(today) || depDate.isAfter(limitDate)) {
 			throw new AtrsBusinessException(TicketSearchErrorCode.E_AR_B1_2001);
 		}
 	}
@@ -288,22 +280,22 @@ public class TicketSharedServiceImpl implements TicketSharedService {
 		Assert.notNull(fareType);
 		Assert.notNull(depDate);
 
-		DateTime depDateMidnight = new DateTime(depDate).withTimeAtStartOfDay();
+		LocalDate departureDate = DateTimeUtil.toLocalDate(depDate);
 
 		// 予約開始日付
-		DateTime rsrvAvailableStartDate = depDateMidnight
+		LocalDate rsrvAvailableStartDate = departureDate
 				.minusDays(fareType.getRsrvAvailableStartDayNum());
 
 		// 予約終了日付
-		DateTime rsrvAvailableEndDate = depDateMidnight
+		LocalDate rsrvAvailableEndDate = departureDate
 				.minusDays(fareType.getRsrvAvailableEndDayNum());
 
 		// 現在日付
-		DateTime sysDateMidnight = dateFactory.newDateTime().withTimeAtStartOfDay();
+		LocalDate today = LocalDate.now(this.clock);
 
 		// 現在日付が予約可能開始日付～予約可能終了日付の間であるかチェック
-		return new Interval(rsrvAvailableStartDate, rsrvAvailableEndDate.plusDays(1))
-				.contains(sysDateMidnight);
+		return !(today.isBefore(rsrvAvailableStartDate)
+				|| today.isAfter(rsrvAvailableEndDate));
 	}
 
 	/**

@@ -1,7 +1,10 @@
 package com.example.atrs.config;
 
-import org.terasoluna.gfw.common.date.jodatime.DefaultJodaTimeDateFactory;
-import org.terasoluna.gfw.common.date.jodatime.JodaTimeDateFactory;
+import java.time.Clock;
+import java.util.LinkedHashMap;
+
+import org.terasoluna.gfw.common.exception.ExceptionLogger;
+import org.terasoluna.gfw.common.exception.SimpleMappingExceptionCodeResolver;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,12 +17,26 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class AppConfig {
 
 	@Bean
-	public JodaTimeDateFactory dateFactory() {
-		return new DefaultJodaTimeDateFactory();
+	public Clock clock() {
+		return Clock.systemDefaultZone();
 	}
 
 	@Bean
 	public PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
+	}
+
+	@Bean
+	public ExceptionLogger exceptionLogger() {
+		SimpleMappingExceptionCodeResolver exceptionCodeResolver = new SimpleMappingExceptionCodeResolver();
+		exceptionCodeResolver.setExceptionMappings(new LinkedHashMap<String, String>() {
+			{
+				put("BusinessException", "e.ar.fw.8001");
+			}
+		});
+		exceptionCodeResolver.setDefaultExceptionCode("e.ar.fw.9999");
+		ExceptionLogger exceptionLogger = new ExceptionLogger();
+		exceptionLogger.setExceptionCodeResolver(exceptionCodeResolver);
+		return exceptionLogger;
 	}
 }

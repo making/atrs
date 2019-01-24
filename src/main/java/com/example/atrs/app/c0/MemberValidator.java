@@ -16,9 +16,8 @@
  */
 package com.example.atrs.app.c0;
 
-import org.joda.time.DateTime;
-import org.joda.time.Interval;
-import org.terasoluna.gfw.common.date.jodatime.JodaTimeDateFactory;
+import java.time.Clock;
+import java.time.LocalDate;
 
 import com.example.atrs.domain.common.util.DateTimeUtil;
 import com.example.atrs.domain.common.validate.ValidationUtil;
@@ -28,6 +27,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
+
+import static com.example.atrs.domain.common.util.DateTimeUtil.DATE_FORMATTER;
 
 /**
  * 会員情報フォームの入力チェックを行うバリデータ。
@@ -40,16 +41,16 @@ public class MemberValidator implements Validator {
 	/**
 	 * 日付、時刻取得インターフェース。
 	 */
-	private final JodaTimeDateFactory dateFactory;
+	private final Clock clock;
 
 	/**
 	 * 会員登録可能な最小生年月日。
 	 */
 	private final String dateOfBirthMinDate;
 
-	public MemberValidator(JodaTimeDateFactory dateFactory,
+	public MemberValidator(Clock clock,
 			@Value("${atrs.dateOfBirthMinDate}") String dateOfBirthMinDate) {
-		this.dateFactory = dateFactory;
+		this.clock = clock;
 		this.dateOfBirthMinDate = dateOfBirthMinDate;
 	}
 
@@ -90,18 +91,16 @@ public class MemberValidator implements Validator {
 
 		// 生年月日チェック
 		if (!errors.hasFieldErrors("dateOfBirth")) {
+			LocalDate dateOfBirthMin = LocalDate.parse(dateOfBirthMinDate,
+					DATE_FORMATTER);
+			LocalDate dateOfBirthMax = LocalDate.now(this.clock);
+			LocalDate dateOfBirth = DateTimeUtil.toLocalDate(form.getDateOfBirth());
 
-			DateTime dateOfBirthMin = DateTimeUtil.toDateTime(dateOfBirthMinDate);
-			DateTime dateOfBirthMax = dateFactory.newDateTime();
-			DateTime dateOfBirth = new DateTime(form.getDateOfBirth());
-
-			Interval interval = new Interval(dateOfBirthMin, dateOfBirthMax);
-			if (!interval.contains(dateOfBirth)) {
+			if (dateOfBirth.isBefore(dateOfBirthMin)
+					&& dateOfBirth.isAfter(dateOfBirthMax)) {
 				// 生年月日の入力許容範囲(1900年1月1日から現在まで)でなければエラー
-				errors.reject(MemberErrorCode.E_AR_C0_5003.code(),
-						new Object[] { dateOfBirthMinDate,
-								DateTimeUtil.toFormatDateString(dateOfBirthMax) },
-						"");
+				errors.reject(MemberErrorCode.E_AR_C0_5003.code(), new Object[] {
+						dateOfBirthMinDate, dateOfBirthMax.format(DATE_FORMATTER) }, "");
 			}
 		}
 

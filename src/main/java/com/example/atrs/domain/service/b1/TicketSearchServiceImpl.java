@@ -17,16 +17,15 @@
 package com.example.atrs.domain.service.b1;
 
 import java.text.DecimalFormat;
+import java.time.Clock;
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.joda.time.Days;
-import org.joda.time.LocalDate;
-import org.terasoluna.gfw.common.date.jodatime.JodaTimeDateFactory;
-import org.terasoluna.gfw.common.exception.BusinessException;
 
 import com.example.atrs.domain.common.exception.AtrsBusinessException;
 import com.example.atrs.domain.common.masterdata.BoardingClassProvider;
@@ -45,6 +44,7 @@ import com.example.atrs.domain.model.Route;
 import com.example.atrs.domain.repository.flight.FlightRepository;
 import com.example.atrs.domain.repository.flight.VacantSeatSearchCriteriaDto;
 import com.example.atrs.domain.service.b0.TicketSharedService;
+import org.terasoluna.gfw.common.exception.BusinessException;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -58,11 +58,7 @@ import org.springframework.util.Assert;
 @Service
 @Transactional
 public class TicketSearchServiceImpl implements TicketSearchService {
-
-	/**
-	 * 日付、時刻取得インターフェース。
-	 */
-	private final JodaTimeDateFactory dateFactory;
+	private final Clock clock;
 
 	/**
 	 * フライト情報リポジトリ。
@@ -94,12 +90,12 @@ public class TicketSearchServiceImpl implements TicketSearchService {
 	 */
 	private final TicketSharedService ticketSharedService;
 
-	public TicketSearchServiceImpl(JodaTimeDateFactory dateFactory,
-			FlightRepository flightRepository, RouteProvider routeProvider,
-			FareTypeProvider fareTypeProvider, FlightMasterProvider flightMasterProvider,
+	public TicketSearchServiceImpl(Clock clock, FlightRepository flightRepository,
+			RouteProvider routeProvider, FareTypeProvider fareTypeProvider,
+			FlightMasterProvider flightMasterProvider,
 			BoardingClassProvider boardingClassProvider,
 			TicketSharedService ticketSharedService) {
-		this.dateFactory = dateFactory;
+		this.clock = clock;
 		this.flightRepository = flightRepository;
 		this.routeProvider = routeProvider;
 		this.fareTypeProvider = fareTypeProvider;
@@ -140,9 +136,10 @@ public class TicketSearchServiceImpl implements TicketSearchService {
 		}
 
 		// システム日付が搭乗日から何日前かを計算
-		LocalDate sysLocalDate = dateFactory.newDateTime().toLocalDate();
-		LocalDate depLocalDate = new LocalDate(depDate);
-		int beforeDayNum = Days.daysBetween(sysLocalDate, depLocalDate).getDays();
+		LocalDateTime today = LocalDate.now(this.clock).atTime(0, 0);
+		LocalDateTime depLocalDate = DateTimeUtil.toLocalDate(depDate).atTime(0, 0);
+
+		int beforeDayNum = (int) Duration.between(today, depLocalDate).toDays();
 
 		// フライト種別に応じて運賃種別コードを空席照会条件Dtoに設定
 		List<FareTypeCd> fareTypeList = FareTypeUtil.getFareTypeCdList(flightType);
