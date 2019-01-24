@@ -22,8 +22,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.github.dozermapper.core.Mapper;
 import org.apache.commons.collections.CollectionUtils;
-import org.dozer.Mapper;
 import org.joda.time.DateTime;
 import org.joda.time.Years;
 import org.terasoluna.gfw.common.date.jodatime.JodaTimeDateFactory;

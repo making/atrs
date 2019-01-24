@@ -16,7 +16,7 @@
  */
 package com.example.atrs.app.c0;
 
-import org.dozer.Mapper;
+import com.github.dozermapper.core.Mapper;
 import org.terasoluna.gfw.common.date.jodatime.JodaTimeDateFactory;
 
 import com.example.atrs.app.c2.MemberUpdateForm;

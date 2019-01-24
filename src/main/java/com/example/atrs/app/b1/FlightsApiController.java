@@ -19,7 +19,7 @@ package com.example.atrs.app.b1;
 import java.util.List;
 import java.util.Locale;
 
-import org.dozer.Mapper;
+import com.github.dozermapper.core.Mapper;
 import org.terasoluna.gfw.common.exception.BusinessException;
 import org.terasoluna.gfw.common.message.ResultMessage;
 

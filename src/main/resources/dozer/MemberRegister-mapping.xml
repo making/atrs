@@ -1,25 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<mappings
-  xmlns="http://dozer.sourceforge.net"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://dozer.sourceforge.net
-          http://dozer.sourceforge.net/schema/beanmapping.xsd">
+<mappings xmlns="http://dozermapper.github.io/schema/bean-mapping"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://dozermapper.github.io/schema/bean-mapping https://dozermapper.github.io/schema/bean-mapping.xsd">
 
-  <mapping type="one-way">
-    <class-a>com.example.atrs.app.c1.MemberRegisterForm</class-a>
-    <class-b>com.example.atrs.domain.model.Member</class-b>
-    <field>
-      <a>dateOfBirth</a>
-      <b>birthday</b>
-    </field>
-    <field>
-      <a>creditTypeCd</a>
-      <b>creditType.creditTypeCd</b>
-    </field>
-    <field>
-      <a>password</a>
-      <b>memberLogin.password</b>
-    </field>
-  </mapping>
+    <mapping type="one-way">
+        <class-a>com.example.atrs.app.c1.MemberRegisterForm</class-a>
+        <class-b>com.example.atrs.domain.model.Member</class-b>
+        <field>
+            <a>dateOfBirth</a>
+            <b>birthday</b>
+        </field>
+        <field>
+            <a>creditTypeCd</a>
+            <b>creditType.creditTypeCd</b>
+        </field>
+        <field>
+            <a>password</a>
+            <b>memberLogin.password</b>
+        </field>
+    </mapping>
 
 </mappings>
