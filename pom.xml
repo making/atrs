@@ -8,7 +8,7 @@
         <version>2.1.2.RELEASE</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>jp.co.ntt.atrs</groupId>
+    <groupId>com.example.atrs</groupId>
     <artifactId>atrs</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>atrs</name>
