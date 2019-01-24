@@ -16,9 +16,6 @@
  */
 package com.example.atrs.app.c1;
 
-import org.terasoluna.gfw.web.token.transaction.TransactionTokenCheck;
-import org.terasoluna.gfw.web.token.transaction.TransactionTokenType;
-
 import com.example.atrs.app.c0.MemberHelper;
 import com.example.atrs.app.common.exception.BadRequestException;
 import com.example.atrs.domain.model.Member;
@@ -42,7 +39,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
  */
 @Controller
 @RequestMapping("member/register")
-@TransactionTokenCheck("member/register")
 public class MemberRegisterController {
 
 	/**
@@ -117,7 +113,6 @@ public class MemberRegisterController {
 	 * @param model 出力情報を保持するクラス
 	 * @return View論理名
 	 */
-	@TransactionTokenCheck(type = TransactionTokenType.BEGIN)
 	@RequestMapping(method = RequestMethod.POST, params = "confirm")
 	public String registerConfirm(@Validated MemberRegisterForm memberRegisterForm,
 			BindingResult result, Model model) {
@@ -160,7 +155,6 @@ public class MemberRegisterController {
 	 * @param redirectAttributes フラッシュスコープ格納用オブジェクト
 	 * @return View論理名
 	 */
-	@TransactionTokenCheck
 	@RequestMapping(method = RequestMethod.POST)
 	public String register(@Validated MemberRegisterForm memberRegisterForm,
 			BindingResult result, Model model, RedirectAttributes redirectAttributes) {

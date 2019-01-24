@@ -20,10 +20,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.terasoluna.gfw.common.exception.BusinessException;
-import org.terasoluna.gfw.web.token.transaction.TransactionTokenCheck;
-import org.terasoluna.gfw.web.token.transaction.TransactionTokenType;
-
 import com.example.atrs.app.b0.ReservationFlightForm;
 import com.example.atrs.app.b0.SelectFlightDto;
 import com.example.atrs.app.b0.SelectFlightForm;
@@ -31,6 +27,7 @@ import com.example.atrs.app.b0.TicketHelper;
 import com.example.atrs.app.common.exception.BadRequestException;
 import com.example.atrs.domain.model.Flight;
 import com.example.atrs.domain.service.a1.AtrsUserDetails;
+import org.terasoluna.gfw.common.exception.BusinessException;
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -50,7 +47,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
  */
 @Controller
 @RequestMapping("ticket/reserve")
-@TransactionTokenCheck("ticket/reserve")
 public class TicketReserveController {
 
 	/**
@@ -153,7 +149,6 @@ public class TicketReserveController {
 	 * @return View論理名
 	 * @throws BadRequestException リクエスト不正例外
 	 */
-	@TransactionTokenCheck(type = TransactionTokenType.BEGIN)
 	@RequestMapping(method = RequestMethod.POST, params = "confirm")
 	public String reserveConfirm(@Validated TicketReserveForm ticketReserveForm,
 			BindingResult result, Model model) throws BadRequestException {
@@ -213,7 +208,6 @@ public class TicketReserveController {
 	 * @return View論理名
 	 * @throws BadRequestException リクエスト不正例外
 	 */
-	@TransactionTokenCheck
 	@RequestMapping(method = RequestMethod.POST)
 	public String reserve(@Validated TicketReserveForm ticketReserveForm,
 			BindingResult result, Model model, RedirectAttributes redirectAttributes)
