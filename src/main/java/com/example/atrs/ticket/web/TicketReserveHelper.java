@@ -25,7 +25,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.example.atrs.auth.AtrsUserDetails;
+import com.example.atrs.member.MemberUserDetails;
 import com.example.atrs.auth.AuthenticationHelper;
 import com.example.atrs.common.util.DateTimeUtil;
 import com.example.atrs.common.web.exception.BadRequestException;
@@ -178,7 +178,7 @@ public class TicketReserveHelper {
 	 * @param userDetails ログイン情報を保持するオブジェクト
 	 * @return チケット予約フォーム
 	 */
-	public TicketReserveForm createTicketReserveForm(AtrsUserDetails userDetails) {
+	public TicketReserveForm createTicketReserveForm(MemberUserDetails userDetails) {
 
 		TicketReserveForm ticketReserveForm = new TicketReserveForm();
 

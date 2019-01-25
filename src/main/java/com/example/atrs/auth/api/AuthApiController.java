@@ -16,7 +16,7 @@
  */
 package com.example.atrs.auth.api;
 
-import com.example.atrs.auth.AtrsUserDetails;
+import com.example.atrs.member.MemberUserDetails;
 
 import com.example.atrs.auth.AuthenticationHelper;
 import org.springframework.http.HttpStatus;
@@ -54,7 +54,7 @@ public class AuthApiController {
 	@RequestMapping(value = "status", method = RequestMethod.GET)
 	@ResponseBody
 	public ResponseEntity<Object> getStatus(
-			@AuthenticationPrincipal AtrsUserDetails userDetails) {
+			@AuthenticationPrincipal MemberUserDetails userDetails) {
 
 		// ログイン状態を返却
 		return authenticationHelper.isAuthenticatedPrincipal(userDetails)

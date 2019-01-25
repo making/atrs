@@ -16,6 +16,7 @@
  */
 package com.example.atrs.auth;
 
+import com.example.atrs.member.MemberUserDetails;
 import org.springframework.stereotype.Component;
 
 /**
@@ -32,7 +33,7 @@ public class AuthenticationHelper {
 	 * @param principal 認証情報を保持するオブジェクト
 	 * @return 認証済みのユーザの場合は<code>true</code>を返却。
 	 */
-	public boolean isAuthenticatedPrincipal(AtrsUserDetails userDetails) {
+	public boolean isAuthenticatedPrincipal(MemberUserDetails userDetails) {
 		return (userDetails != null);
 	}
 

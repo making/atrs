@@ -14,7 +14,7 @@
  * limitations under the License.
  *
  */
-package com.example.atrs.auth;
+package com.example.atrs.member;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -31,7 +31,7 @@ import org.springframework.security.core.userdetails.UserDetails;
  * 
  * @author NTT 電電太郎
  */
-public class AtrsUserDetails implements UserDetails {
+public class MemberUserDetails implements UserDetails {
 
 	/**
 	 * デフォルト権限設定。
@@ -54,7 +54,7 @@ public class AtrsUserDetails implements UserDetails {
 	 * 
 	 * @param member カード会員情報
 	 */
-	public AtrsUserDetails(Member member) {
+	public MemberUserDetails(Member member) {
 		this.member = member;
 	}
 

@@ -18,7 +18,7 @@ package com.example.atrs.member.web;
 
 import java.security.Principal;
 
-import com.example.atrs.auth.AtrsUserDetails;
+import com.example.atrs.member.MemberUserDetails;
 import com.example.atrs.common.message.MessageKeys;
 import com.example.atrs.member.Member;
 import com.example.atrs.member.MemberUpdateService;
@@ -136,7 +136,7 @@ public class MemberUpdateController {
 
 		// 更新した会員情報をログインユーザ情報に設定
 		Authentication authentication = (Authentication) principal;
-		AtrsUserDetails userDetails = (AtrsUserDetails) authentication.getPrincipal();
+		MemberUserDetails userDetails = (MemberUserDetails) authentication.getPrincipal();
 		Member loginMember = memberUpdateService.findMemberForLogin(membershipNumber);
 		userDetails.setMember(loginMember);
 

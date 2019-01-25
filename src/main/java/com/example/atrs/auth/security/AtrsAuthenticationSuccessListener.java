@@ -16,7 +16,7 @@
  */
 package com.example.atrs.auth.security;
 
-import com.example.atrs.auth.AtrsUserDetails;
+import com.example.atrs.member.MemberUserDetails;
 import com.example.atrs.auth.AuthLoginService;
 
 import org.springframework.context.ApplicationListener;
@@ -53,7 +53,7 @@ public class AtrsAuthenticationSuccessListener
 	public void onApplicationEvent(AuthenticationSuccessEvent event) {
 		Authentication authentication = event.getAuthentication();
 
-		AtrsUserDetails userDetails = (AtrsUserDetails) authentication.getPrincipal();
+		MemberUserDetails userDetails = (MemberUserDetails) authentication.getPrincipal();
 		authLoginService.login(userDetails.getMember());
 
 	}

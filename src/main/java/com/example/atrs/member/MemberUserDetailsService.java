@@ -14,13 +14,11 @@
  * limitations under the License.
  *
  */
-package com.example.atrs.auth;
+package com.example.atrs.member;
 
 import java.util.Locale;
 
 import com.example.atrs.common.logging.LogMessages;
-import com.example.atrs.member.Member;
-import com.example.atrs.member.MemberRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,13 +37,13 @@ import org.springframework.util.Assert;
  */
 @Component
 @Transactional
-public class AtrsUserDetailsService implements UserDetailsService {
+public class MemberUserDetailsService implements UserDetailsService {
 
 	/**
 	 * ロガー。
 	 */
 	private static final Logger LOGGER = LoggerFactory
-			.getLogger(AtrsUserDetailsService.class);
+			.getLogger(MemberUserDetailsService.class);
 
 	/**
 	 * カード会員情報リポジトリ。
@@ -57,8 +55,8 @@ public class AtrsUserDetailsService implements UserDetailsService {
 	 */
 	private final MessageSource messageSource;
 
-	public AtrsUserDetailsService(MessageSource messageSource,
-			MemberRepository memberRepository) {
+	public MemberUserDetailsService(MessageSource messageSource,
+									MemberRepository memberRepository) {
 		this.messageSource = messageSource;
 		this.memberRepository = memberRepository;
 	}
@@ -80,12 +78,12 @@ public class AtrsUserDetailsService implements UserDetailsService {
 				LOGGER.info(LogMessages.I_AR_A1_L2001.getMessage(username));
 			}
 			String errorMessage = messageSource.getMessage(
-					AuthLoginErrorCode.E_AR_A1_2001.code(), null, Locale.getDefault());
+					MemberUserDetailsErrorCode.E_AR_A1_2001.code(), null, Locale.getDefault());
 			// 該当する会員情報が存在しない場合、例外をスロー
 			throw new UsernameNotFoundException(errorMessage);
 		}
 
-		return new AtrsUserDetails(member);
+		return new MemberUserDetails(member);
 	}
 
 }

@@ -21,7 +21,6 @@ import java.util.Locale;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.example.atrs.auth.AuthLoginErrorCode;
 import com.example.atrs.common.logging.LogMessages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -73,16 +72,16 @@ public class AtrsUsernamePasswordAuthenticationFilter
 
 		if (username == null || username.length() != membershipNumberLength) {
 			LOGGER.info(LogMessages.I_AR_A1_L2001.getMessage(username));
-			String errorMessage = messages.getMessage(
-					AuthLoginErrorCode.E_AR_A1_2001.code(), Locale.getDefault());
+			String errorMessage = messages.getMessage(LogMessages.I_AR_A1_L2001.getCode(),
+					new Object[] { username }, Locale.getDefault());
 			throw new UsernameNotFoundException(errorMessage);
 		}
 
 		if (password == null || password.length() < passwordMinLength
 				|| password.length() > passwordMaxLength) {
 			LOGGER.info(LogMessages.I_AR_A1_L2002.getMessage(username));
-			String errorMessage = messages.getMessage(
-					AuthLoginErrorCode.E_AR_A1_2001.code(), Locale.getDefault());
+			String errorMessage = messages.getMessage(LogMessages.I_AR_A1_L2002.getCode(),
+					new Object[] { username }, Locale.getDefault());
 			throw new BadCredentialsException(errorMessage);
 		}
 

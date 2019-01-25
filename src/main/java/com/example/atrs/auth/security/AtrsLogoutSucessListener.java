@@ -16,7 +16,7 @@
  */
 package com.example.atrs.auth.security;
 
-import com.example.atrs.auth.AtrsUserDetails;
+import com.example.atrs.member.MemberUserDetails;
 import com.example.atrs.auth.AuthLogoutService;
 
 import org.springframework.context.ApplicationListener;
@@ -52,7 +52,7 @@ public class AtrsLogoutSucessListener
 	public void onApplicationEvent(AtrsLogoutSuccessEvent event) {
 		Authentication authentication = event.getAuthentication();
 
-		AtrsUserDetails userDetails = (AtrsUserDetails) authentication.getPrincipal();
+		MemberUserDetails userDetails = (MemberUserDetails) authentication.getPrincipal();
 		authLogoutService.logout(userDetails.getMember());
 
 	}

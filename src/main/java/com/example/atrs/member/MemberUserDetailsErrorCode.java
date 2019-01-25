@@ -14,7 +14,7 @@
  * limitations under the License.
  *
  */
-package com.example.atrs.auth;
+package com.example.atrs.member;
 
 import com.example.atrs.common.exception.AtrsErrorCode;
 
@@ -23,7 +23,7 @@ import com.example.atrs.common.exception.AtrsErrorCode;
  * 
  * @author NTT 電電太郎
  */
-public enum AuthLoginErrorCode implements AtrsErrorCode {
+public enum MemberUserDetailsErrorCode implements AtrsErrorCode {
 
 	/**
 	 * 会員番号から会員情報を取得できない事を通知するためのエラーコード。
@@ -40,7 +40,7 @@ public enum AuthLoginErrorCode implements AtrsErrorCode {
 	 * 
 	 * @param code エラーコード。
 	 */
-	private AuthLoginErrorCode(String code) {
+	private MemberUserDetailsErrorCode(String code) {
 		this.code = code;
 	}
 
