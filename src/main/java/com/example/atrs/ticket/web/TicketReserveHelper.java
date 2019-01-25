@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.example.atrs.auth.AtrsUserDetails;
-import com.example.atrs.auth.api.AuthenticationHelper;
+import com.example.atrs.auth.AuthenticationHelper;
 import com.example.atrs.common.util.DateTimeUtil;
 import com.example.atrs.common.web.exception.BadRequestException;
 import com.example.atrs.member.Member;

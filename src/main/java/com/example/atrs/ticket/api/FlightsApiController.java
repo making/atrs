@@ -19,7 +19,7 @@ package com.example.atrs.ticket.api;
 import java.util.List;
 import java.util.Locale;
 
-import com.example.atrs.auth.api.ErrorResultDto;
+import com.example.atrs.common.web.error.ErrorResultDto;
 import com.example.atrs.ticket.FlightNotFoundException;
 import com.example.atrs.ticket.FlightVacantInfoDto;
 import com.example.atrs.ticket.TicketSearchCriteriaDto;

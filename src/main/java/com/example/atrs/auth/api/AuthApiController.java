@@ -18,6 +18,7 @@ package com.example.atrs.auth.api;
 
 import com.example.atrs.auth.AtrsUserDetails;
 
+import com.example.atrs.auth.AuthenticationHelper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;

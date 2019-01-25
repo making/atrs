@@ -14,7 +14,7 @@
  * limitations under the License.
  *
  */
-package com.example.atrs.common.security;
+package com.example.atrs.auth.security;
 
 import com.example.atrs.auth.AtrsUserDetails;
 import com.example.atrs.auth.AuthLogoutService;

@@ -14,7 +14,7 @@
  * limitations under the License.
  *
  */
-package com.example.atrs.auth.api;
+package com.example.atrs.common.web.error;
 
 import java.io.Serializable;
 import java.util.ArrayList;

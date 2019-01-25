@@ -15,8 +15,8 @@
  *
  */
 /**
- * アプリケーション層のセキュリティ関連パッケージ。
+ * セキュリティ関連パッケージ。
  * 
  * @author NTT 電電太郎
  */
-package com.example.atrs.common.web.security;
+package com.example.atrs.auth.security;

@@ -14,29 +14,26 @@
  * limitations under the License.
  *
  */
-package com.example.atrs.common.security;
+package com.example.atrs.auth;
 
-import org.springframework.security.authentication.event.AbstractAuthenticationEvent;
-import org.springframework.security.core.Authentication;
+import org.springframework.stereotype.Component;
 
 /**
- * ログアウト成功イベントクラス。
+ * 認証情報を扱うためのヘルパークラス。
  * 
  * @author NTT 電電太郎
  */
-public class AtrsLogoutSuccessEvent extends AbstractAuthenticationEvent {
+@Component
+public class AuthenticationHelper {
 
 	/**
-	 * serialVersionUID。
-	 */
-	private static final long serialVersionUID = 1024168737113170485L;
-
-	/**
-	 * コンストラクタ。
+	 * 認証済みのユーザか確認する。
 	 * 
-	 * @param authentication 認証情報
+	 * @param principal 認証情報を保持するオブジェクト
+	 * @return 認証済みのユーザの場合は<code>true</code>を返却。
 	 */
-	public AtrsLogoutSuccessEvent(Authentication authentication) {
-		super(authentication);
+	public boolean isAuthenticatedPrincipal(AtrsUserDetails userDetails) {
+		return (userDetails != null);
 	}
+
 }

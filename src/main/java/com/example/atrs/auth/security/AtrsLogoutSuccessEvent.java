@@ -14,9 +14,29 @@
  * limitations under the License.
  *
  */
+package com.example.atrs.auth.security;
+
+import org.springframework.security.authentication.event.AbstractAuthenticationEvent;
+import org.springframework.security.core.Authentication;
+
 /**
- * セキュリティ関連パッケージ。
+ * ログアウト成功イベントクラス。
  * 
  * @author NTT 電電太郎
  */
-package com.example.atrs.common.security;
+public class AtrsLogoutSuccessEvent extends AbstractAuthenticationEvent {
+
+	/**
+	 * serialVersionUID。
+	 */
+	private static final long serialVersionUID = 1024168737113170485L;
+
+	/**
+	 * コンストラクタ。
+	 * 
+	 * @param authentication 認証情報
+	 */
+	public AtrsLogoutSuccessEvent(Authentication authentication) {
+		super(authentication);
+	}
+}

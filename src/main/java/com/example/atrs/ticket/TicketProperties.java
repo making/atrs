@@ -1,4 +1,4 @@
-package com.example.atrs.config;
+package com.example.atrs.ticket;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
@@ -7,12 +7,10 @@ import org.springframework.stereotype.Component;
 
 @Component
 @ConfigurationProperties(prefix = "atrs")
-public class AtrsProperties {
+public class TicketProperties {
 	private int adultPassengerMinAge;
 
 	private int childFareRate;
-
-	private String dateOfBirthMinDate;
 
 	private int limitDay;
 
@@ -34,14 +32,6 @@ public class AtrsProperties {
 
 	public void setChildFareRate(int childFareRate) {
 		this.childFareRate = childFareRate;
-	}
-
-	public String getDateOfBirthMinDate() {
-		return dateOfBirthMinDate;
-	}
-
-	public void setDateOfBirthMinDate(String dateOfBirthMinDate) {
-		this.dateOfBirthMinDate = dateOfBirthMinDate;
 	}
 
 	public int getLimitDay() {

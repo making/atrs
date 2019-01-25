@@ -21,8 +21,8 @@ import java.time.LocalDate;
 
 import com.example.atrs.common.util.DateTimeUtil;
 import com.example.atrs.common.validate.ValidationUtil;
-import com.example.atrs.config.AtrsProperties;
 import com.example.atrs.member.MemberErrorCode;
+import com.example.atrs.member.MemberProperties;
 
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
@@ -48,7 +48,7 @@ public class MemberValidator implements Validator {
 	 */
 	private final String dateOfBirthMinDate;
 
-	public MemberValidator(Clock clock, AtrsProperties props) {
+	public MemberValidator(Clock clock, MemberProperties props) {
 		this.clock = clock;
 		this.dateOfBirthMinDate = props.getDateOfBirthMinDate();
 	}

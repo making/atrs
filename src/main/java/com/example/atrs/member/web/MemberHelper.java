@@ -20,8 +20,8 @@ import java.time.Clock;
 import java.time.Instant;
 import java.time.ZoneId;
 
-import com.example.atrs.config.AtrsProperties;
 import com.example.atrs.member.Member;
+import com.example.atrs.member.MemberProperties;
 import com.github.dozermapper.core.Mapper;
 
 import org.springframework.stereotype.Component;
@@ -49,7 +49,7 @@ public class MemberHelper {
 	 */
 	private final String dateOfBirthMinDate;
 
-	public MemberHelper(Mapper beanMapper, Clock clock, AtrsProperties props) {
+	public MemberHelper(Mapper beanMapper, Clock clock, MemberProperties props) {
 		this.beanMapper = beanMapper;
 		this.clock = clock;
 		this.dateOfBirthMinDate = props.getDateOfBirthMinDate();

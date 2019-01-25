@@ -22,7 +22,6 @@ import java.util.List;
 import com.example.atrs.common.exception.AtrsBusinessException;
 import com.example.atrs.common.logging.LogMessages;
 import com.example.atrs.common.util.FareUtil;
-import com.example.atrs.config.AtrsProperties;
 import com.example.atrs.member.Gender;
 import com.example.atrs.member.Member;
 import com.example.atrs.member.MemberRepository;
@@ -78,10 +77,10 @@ public class TicketReserveServiceImpl implements TicketReserveService {
 	 */
 	private final TicketSharedService ticketSharedService;
 
-	public TicketReserveServiceImpl(AtrsProperties props,
-			FlightRepository flightRepository, MemberRepository memberRepository,
-			ReservationRepository reservationRepository,
-			TicketSharedService ticketSharedService) {
+	public TicketReserveServiceImpl(TicketProperties props,
+                                    FlightRepository flightRepository, MemberRepository memberRepository,
+                                    ReservationRepository reservationRepository,
+                                    TicketSharedService ticketSharedService) {
 		this.representativeMinAge = props.getRepresentativeMinAge();
 		this.adultPassengerMinAge = props.getAdultPassengerMinAge();
 		this.childFareRate = props.getChildFareRate();

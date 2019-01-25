@@ -14,7 +14,7 @@
  * limitations under the License.
  *
  */
-package com.example.atrs.common.security;
+package com.example.atrs.auth.security;
 
 import com.example.atrs.common.logging.LogMessages;
 import org.slf4j.Logger;

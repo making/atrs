@@ -14,7 +14,7 @@
  * limitations under the License.
  *
  */
-package com.example.atrs.common.web.security;
+package com.example.atrs.auth.security;
 
 import java.io.IOException;
 
@@ -23,47 +23,41 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.example.atrs.common.security.AtrsLogoutSuccessEvent;
-
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.web.authentication.logout.SimpleUrlLogoutSuccessHandler;
+import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
 /**
- * ユーザーログアウト成功ハンドラ。
+ * ユーザーログイン成功ハンドラ。
  * 
  * @author NTT 電電太郎
  */
 @Component
-public class AtrsLogoutSuccessHandler extends SimpleUrlLogoutSuccessHandler {
-
-	/**
-	 * イベント発行Publisher。
-	 */
-	private final ApplicationEventPublisher eventPublisher;
-
-	public AtrsLogoutSuccessHandler(ApplicationEventPublisher eventPublisher) {
-		this.eventPublisher = eventPublisher;
-	}
+public class AtrsAuthenticationSuccessHandler
+		extends SavedRequestAwareAuthenticationSuccessHandler {
 
 	@PostConstruct
 	public void init() {
-		this.setDefaultTargetUrl("/");
+		this.setTargetUrlParameter("redirectTo");
+		this.setAlwaysUseDefaultTargetUrl(false);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response,
-			Authentication authentication) throws IOException, ServletException {
+	public void onAuthenticationSuccess(HttpServletRequest request,
+			HttpServletResponse response, Authentication authentication)
+			throws IOException, ServletException {
 
-		if (authentication != null) {
-			// ログアウト成功イベントを発行
-			eventPublisher.publishEvent(new AtrsLogoutSuccessEvent(authentication));
+		// for Ajax request
+		if ("XMLHttpRequest".equals(request.getHeader("X-Requested-With"))) {
+
+			clearAuthenticationAttributes(request);
+			return;
 		}
-		super.handle(request, response, authentication);
+
+		super.onAuthenticationSuccess(request, response, authentication);
 	}
 
 }

@@ -14,7 +14,7 @@
  * limitations under the License.
  *
  */
-package com.example.atrs.ticket.api;
+package com.example.atrs.ticket;
 
 import java.io.Serializable;
 import java.util.Date;

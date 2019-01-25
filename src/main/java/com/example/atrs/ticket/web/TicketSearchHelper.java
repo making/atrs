@@ -23,14 +23,14 @@ import java.util.Date;
 import java.util.List;
 
 import com.example.atrs.common.web.exception.BadRequestException;
-import com.example.atrs.config.AtrsProperties;
+import com.example.atrs.ticket.TicketProperties;
 import com.example.atrs.ticket.DefaultProperties;
 import com.example.atrs.ticket.BoardingClassCd;
 import com.example.atrs.ticket.Flight;
 import com.example.atrs.ticket.FlightType;
 import com.example.atrs.ticket.InvalidFlightException;
 import com.example.atrs.ticket.TicketSharedService;
-import com.example.atrs.ticket.api.FlightSearchOutputDto;
+import com.example.atrs.ticket.FlightSearchOutputDto;
 import org.terasoluna.gfw.common.exception.BusinessException;
 
 import org.springframework.stereotype.Component;
@@ -76,7 +76,7 @@ public class TicketSearchHelper {
 	private final TicketSharedService ticketSharedService;
 
 	public TicketSearchHelper(Clock clock, TicketSharedService ticketSharedService,
-			DefaultProperties defaultProps, AtrsProperties atrsProps) {
+							  DefaultProperties defaultProps, TicketProperties atrsProps) {
 		this.clock = clock;
 		this.ticketSharedService = ticketSharedService;
 		this.defaultFlightType = defaultProps.getFlightType();

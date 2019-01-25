@@ -14,7 +14,7 @@
  * limitations under the License.
  *
  */
-package com.example.atrs.common.web.security;
+package com.example.atrs.auth.security;
 
 import java.util.Locale;
 
