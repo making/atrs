@@ -16,12 +16,12 @@
  */
 package com.example.atrs.ticket;
 
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
-
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
+
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 
 /**
  * 空席情報検索条件を保持するクラス。
@@ -30,105 +30,106 @@ import java.util.List;
  */
 public class VacantSeatSearchCriteriaDto implements Serializable {
 
-    /**
-     * serialVersionUID。
-     */
-    private static final long serialVersionUID = -5941791348349458604L;
+	/**
+	 * serialVersionUID。
+	 */
+	private static final long serialVersionUID = -5941791348349458604L;
 
-    /**
-     * 搭乗クラス。
-     **/
-    private BoardingClassCd boardingClass;
+	/**
+	 * 搭乗日前日数。
+	 */
+	private Integer beforeDayNum;
 
-    /**
-     * 搭乗日。
-     **/
-    private Date depDate;
+	/**
+	 * 搭乗クラス。
+	 **/
+	private BoardingClassCd boardingClass;
 
-    /**
-     * 区間情報。
-     */
-    private Route route;
+	/**
+	 * 搭乗日。
+	 **/
+	private Date depDate;
 
-    /**
-     * 搭乗日前日数。
-     */
-    private Integer beforeDayNum;
+	/**
+	 * 運賃種別コードリスト。
+	 */
+	private List<FareTypeCd> fareTypeList;
 
-    /**
-     * 運賃種別コードリスト。
-     */
-    private List<FareTypeCd> fareTypeList;
+	/**
+	 * 区間情報。
+	 */
+	private Route route;
 
-    /**
-     * コンストラクタ。
-     * 
-     * @param depDate 出発日
-     * @param route 区間情報
-     * @param boardingClass 搭乗クラス
-     * @param beforeDayNum 搭乗日前日数
-     * @param fareTypeList 運賃種別コードリスト
-     */
-    public VacantSeatSearchCriteriaDto(Date depDate, Route route,
-                                       BoardingClassCd boardingClass, Integer beforeDayNum, List<FareTypeCd> fareTypeList) {
+	/**
+	 * コンストラクタ。
+	 * 
+	 * @param depDate 出発日
+	 * @param route 区間情報
+	 * @param boardingClass 搭乗クラス
+	 * @param beforeDayNum 搭乗日前日数
+	 * @param fareTypeList 運賃種別コードリスト
+	 */
+	public VacantSeatSearchCriteriaDto(Date depDate, Route route,
+			BoardingClassCd boardingClass, Integer beforeDayNum,
+			List<FareTypeCd> fareTypeList) {
 
-        this.depDate = depDate;
-        this.route = route;
-        this.boardingClass = boardingClass;
-        this.beforeDayNum = beforeDayNum;
-        this.fareTypeList = fareTypeList;
-    }
+		this.depDate = depDate;
+		this.route = route;
+		this.boardingClass = boardingClass;
+		this.beforeDayNum = beforeDayNum;
+		this.fareTypeList = fareTypeList;
+	}
 
-    /**
-     * 搭乗クラスを取得する。
-     * 
-     * @return 搭乗クラス
-     */
-    public BoardingClassCd getBoardingClass() {
-        return boardingClass;
-    }
+	/**
+	 * 搭乗日前日数を取得する。
+	 *
+	 * @return 区間情報
+	 */
+	public Integer getBeforeDayNum() {
+		return beforeDayNum;
+	}
 
-    /**
-     * 出発日を取得する。
-     * 
-     * @return 出発日
-     */
-    public Date getDepDate() {
-        return depDate;
-    }
+	/**
+	 * 搭乗クラスを取得する。
+	 *
+	 * @return 搭乗クラス
+	 */
+	public BoardingClassCd getBoardingClass() {
+		return boardingClass;
+	}
 
-    /**
-     * 区間情報を取得する。
-     * 
-     * @return 区間情報
-     */
-    public Route getRoute() {
-        return route;
-    }
+	/**
+	 * 出発日を取得する。
+	 *
+	 * @return 出発日
+	 */
+	public Date getDepDate() {
+		return depDate;
+	}
 
-    /**
-     * 搭乗日前日数を取得する。
-     * 
-     * @return 区間情報
-     */
-    public Integer getBeforeDayNum() {
-        return beforeDayNum;
-    }
+	/**
+	 * 運賃種別コードリストを取得する。
+	 *
+	 * @return 運賃種別コードリスト
+	 */
+	public List<FareTypeCd> getFareTypeList() {
+		return fareTypeList;
+	}
 
-    /**
-     * 運賃種別コードリストを取得する。
-     * 
-     * @return 運賃種別コードリスト
-     */
-    public List<FareTypeCd> getFareTypeList() {
-        return fareTypeList;
-    }
+	/**
+	 * 区間情報を取得する。
+	 *
+	 * @return 区間情報
+	 */
+	public Route getRoute() {
+		return route;
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String toString() {
-        return ToStringBuilder.reflectionToString(this, ToStringStyle.MULTI_LINE_STYLE);
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String toString() {
+		return ToStringBuilder.reflectionToString(this, ToStringStyle.MULTI_LINE_STYLE);
+	}
 }

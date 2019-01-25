@@ -16,7 +16,6 @@
  */
 package com.example.atrs.ticket;
 
-
 /**
  * フライト情報不正例外。
  * 
@@ -24,27 +23,27 @@ package com.example.atrs.ticket;
  */
 public class InvalidFlightException extends RuntimeException {
 
-    /**
-     * serialVersionUID。
-     */
-    private static final long serialVersionUID = -8290953295757837929L;
+	/**
+	 * serialVersionUID。
+	 */
+	private static final long serialVersionUID = -8290953295757837929L;
 
-    /**
-     * コンストラクタ。
-     * 
-     * @param message エラーメッセージ
-     */
-    public InvalidFlightException(String message) {
-        super(message);
-    }
+	/**
+	 * コンストラクタ。
+	 * 
+	 * @param message エラーメッセージ
+	 */
+	public InvalidFlightException(String message) {
+		super(message);
+	}
 
-    /**
-     * コンストラクタ。
-     * 
-     * @param e 例外オブジェクト
-     */
-    public InvalidFlightException(Exception e) {
-        super(e);
-    }
+	/**
+	 * コンストラクタ。
+	 * 
+	 * @param e 例外オブジェクト
+	 */
+	public InvalidFlightException(Exception e) {
+		super(e);
+	}
 
 }

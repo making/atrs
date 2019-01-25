@@ -19,10 +19,9 @@ package com.example.atrs.ticket.web;
 import java.util.List;
 import java.util.Map;
 
-import org.terasoluna.gfw.common.exception.BusinessException;
-
 import com.example.atrs.common.web.exception.BadRequestException;
 import com.example.atrs.ticket.Flight;
+import org.terasoluna.gfw.common.exception.BusinessException;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -44,6 +43,11 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class TicketSearchController {
 
 	/**
+	 * 予約フライト選択フォームのバリデータ。
+	 */
+	private final ReservationFlightValidator reservationFlightValidator;
+
+	/**
 	 * チケット予約共通Helper。
 	 */
 	private final TicketHelper ticketHelper;
@@ -58,11 +62,6 @@ public class TicketSearchController {
 	 */
 	private final TicketSearchValidator ticketSearchValidator;
 
-	/**
-	 * 予約フライト選択フォームのバリデータ。
-	 */
-	private final ReservationFlightValidator reservationFlightValidator;
-
 	public TicketSearchController(TicketHelper ticketHelper,
 			TicketSearchHelper ticketSearchHelper,
 			TicketSearchValidator ticketSearchValidator,
@@ -74,18 +73,8 @@ public class TicketSearchController {
 	}
 
 	/**
-	 * 空席照会フォームのバリデータをバインダに追加する。
-	 * 
-	 * @param binder バインダ
-	 */
-	@InitBinder("ticketSearchForm")
-	public void initBinderForTicketSearch(WebDataBinder binder) {
-		binder.addValidators(ticketSearchValidator);
-	}
-
-	/**
 	 * 予約フライト選択フォームのバリデータをバインダに追加する。
-	 * 
+	 *
 	 * @param binder バインダ
 	 */
 	@InitBinder("reservationFlightForm")
@@ -94,23 +83,40 @@ public class TicketSearchController {
 	}
 
 	/**
-	 * TOP画面を表示する。
-	 * 
+	 * 空席照会フォームのバリデータをバインダに追加する。
+	 *
+	 * @param binder バインダ
+	 */
+	@InitBinder("ticketSearchForm")
+	public void initBinderForTicketSearch(WebDataBinder binder) {
+		binder.addValidators(ticketSearchValidator);
+	}
+
+	/**
+	 * 空席照会画面を表示する。
+	 * <ul>
+	 * <li>空席照会条件はTOP画面入力値。</li>
+	 * <li>入力値エラーがある場合を除き初期空席照会を実施。</li>
+	 * </ul>
+	 *
+	 * @param ticketSearchForm 空席照会フォーム
+	 * @param result チェック結果
 	 * @param model 出力情報を保持するオブジェクト
 	 * @return View論理名
 	 */
-	@RequestMapping(method = RequestMethod.GET, params = "topForm")
-	public String searchTopForm(Model model) {
+	@RequestMapping(method = RequestMethod.GET, params = "flightForm")
+	public String searchFlightForm(@Validated TicketSearchForm ticketSearchForm,
+			BindingResult result, Model model) {
 
-		// 空席照会フォームにデフォルト値を設定
-		model.addAttribute(ticketSearchHelper.createDefaultTicketSearchForm());
+		if (result.hasErrors()) {
+			// 検証エラーがある場合初期空席照会を実施しない
+			model.addAttribute("isInitialSearchUnnecessary", true);
+		}
 
 		// 空席照会画面(TOP画面)表示情報設定
 		model.addAttribute(ticketSearchHelper.createFlightSearchOutputDto());
 
-		// ※本来はユースケース外の画面へ直接遷移することはしないが、
-		// TOP画面は空席照会条件入力部品を含むため、例外的に直接遷移する
-		return "A0/top";
+		return "B1/flightSearch";
 	}
 
 	/**
@@ -139,35 +145,8 @@ public class TicketSearchController {
 	}
 
 	/**
-	 * 空席照会画面を表示する。
-	 * <ul>
-	 * <li>空席照会条件はTOP画面入力値。</li>
-	 * <li>入力値エラーがある場合を除き初期空席照会を実施。</li>
-	 * </ul>
-	 * 
-	 * @param ticketSearchForm 空席照会フォーム
-	 * @param result チェック結果
-	 * @param model 出力情報を保持するオブジェクト
-	 * @return View論理名
-	 */
-	@RequestMapping(method = RequestMethod.GET, params = "flightForm")
-	public String searchFlightForm(@Validated TicketSearchForm ticketSearchForm,
-			BindingResult result, Model model) {
-
-		if (result.hasErrors()) {
-			// 検証エラーがある場合初期空席照会を実施しない
-			model.addAttribute("isInitialSearchUnnecessary", true);
-		}
-
-		// 空席照会画面(TOP画面)表示情報設定
-		model.addAttribute(ticketSearchHelper.createFlightSearchOutputDto());
-
-		return "B1/flightSearch";
-	}
-
-	/**
 	 * 空席照会画面を再表示する。
-	 * 
+	 *
 	 * @param ticketSearchForm 空席照会フォーム
 	 * @param reservationFlightForm 予約フライト選択フォーム
 	 * @param model 出力情報を保持するオブジェクト
@@ -189,7 +168,7 @@ public class TicketSearchController {
 	 * <li>チェックエラーがある場合、空席照会画面を再表示する。</li>
 	 * <li>チェックOKの場合、お客様情報入力画面をリダイレクトで表示する。</li>
 	 * </ul>
-	 * 
+	 *
 	 * @param ticketSearchForm 空席照会フォーム
 	 * @param reservationFlightForm 予約フライト選択フォーム
 	 * @param result チェック結果
@@ -238,6 +217,26 @@ public class TicketSearchController {
 
 		// お客様情報入力画面にリダイレクト
 		return "redirect:/ticket/reserve?form";
+	}
+
+	/**
+	 * TOP画面を表示する。
+	 *
+	 * @param model 出力情報を保持するオブジェクト
+	 * @return View論理名
+	 */
+	@RequestMapping(method = RequestMethod.GET, params = "topForm")
+	public String searchTopForm(Model model) {
+
+		// 空席照会フォームにデフォルト値を設定
+		model.addAttribute(ticketSearchHelper.createDefaultTicketSearchForm());
+
+		// 空席照会画面(TOP画面)表示情報設定
+		model.addAttribute(ticketSearchHelper.createFlightSearchOutputDto());
+
+		// ※本来はユースケース外の画面へ直接遷移することはしないが、
+		// TOP画面は空席照会条件入力部品を含むため、例外的に直接遷移する
+		return "A0/top";
 	}
 
 }

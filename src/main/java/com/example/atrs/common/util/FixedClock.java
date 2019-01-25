@@ -29,16 +29,6 @@ import java.time.ZoneId;
 public class FixedClock {
 
 	/**
-	 * 年。
-	 */
-	private int year;
-
-	/**
-	 * 月。
-	 */
-	private int month = 1;
-
-	/**
 	 * 日。
 	 */
 	private int dayOfMonth = 1;
@@ -54,6 +44,16 @@ public class FixedClock {
 	private int minute;
 
 	/**
+	 * 月。
+	 */
+	private int month = 1;
+
+	/**
+	 * 年。
+	 */
+	private int year;
+
+	/**
 	 * {@inheritDoc}
 	 */
 	public Clock asClock() {
@@ -63,26 +63,8 @@ public class FixedClock {
 	}
 
 	/**
-	 * 年を設定する。
-	 * 
-	 * @param year 年
-	 */
-	public void setYear(int year) {
-		this.year = year;
-	}
-
-	/**
-	 * 月を設定する。
-	 * 
-	 * @param month 月
-	 */
-	public void setMonth(int month) {
-		this.month = month;
-	}
-
-	/**
 	 * 日を設定する。
-	 * 
+	 *
 	 * @param dayOfMonth 日
 	 */
 	public void setDayOfMonth(int dayOfMonth) {
@@ -91,7 +73,7 @@ public class FixedClock {
 
 	/**
 	 * 時を設定する。
-	 * 
+	 *
 	 * @param hour 時
 	 */
 	public void setHour(int hour) {
@@ -100,11 +82,29 @@ public class FixedClock {
 
 	/**
 	 * 分を設定する。
-	 * 
+	 *
 	 * @param minute 分
 	 */
 	public void setMinute(int minute) {
 		this.minute = minute;
+	}
+
+	/**
+	 * 月を設定する。
+	 *
+	 * @param month 月
+	 */
+	public void setMonth(int month) {
+		this.month = month;
+	}
+
+	/**
+	 * 年を設定する。
+	 *
+	 * @param year 年
+	 */
+	public void setYear(int year) {
+		this.year = year;
 	}
 
 }

@@ -23,23 +23,23 @@ package com.example.atrs.ticket;
  */
 public enum FlightType {
 
-    /**
-     * 往復のフライト種別。
-     */
-    RT,
+	/**
+	 * 往復のフライト種別。
+	 */
+	RT,
 
-    /**
-     * 片道のフライト種別。
-     */
-    OW;
+	/**
+	 * 片道のフライト種別。
+	 */
+	OW;
 
-    /**
-     * フライト種別を取得する。
-     * 
-     * @return フライト種別
-     */
-    public String getCode() {
-        return this.name();
-    }
+	/**
+	 * フライト種別を取得する。
+	 * 
+	 * @return フライト種別
+	 */
+	public String getCode() {
+		return this.name();
+	}
 
 }

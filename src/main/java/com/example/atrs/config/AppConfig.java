@@ -22,11 +22,6 @@ public class AppConfig {
 	}
 
 	@Bean
-	public PasswordEncoder passwordEncoder() {
-		return new BCryptPasswordEncoder();
-	}
-
-	@Bean
 	public ExceptionLogger exceptionLogger() {
 		SimpleMappingExceptionCodeResolver exceptionCodeResolver = new SimpleMappingExceptionCodeResolver();
 		exceptionCodeResolver.setExceptionMappings(new LinkedHashMap<String, String>() {
@@ -38,5 +33,10 @@ public class AppConfig {
 		ExceptionLogger exceptionLogger = new ExceptionLogger();
 		exceptionLogger.setExceptionCodeResolver(exceptionCodeResolver);
 		return exceptionLogger;
+	}
+
+	@Bean
+	public PasswordEncoder passwordEncoder() {
+		return new BCryptPasswordEncoder();
 	}
 }

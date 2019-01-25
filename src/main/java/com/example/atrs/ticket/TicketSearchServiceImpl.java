@@ -30,7 +30,6 @@ import java.util.Map;
 import com.example.atrs.common.exception.AtrsBusinessException;
 import com.example.atrs.common.util.DateTimeUtil;
 import com.example.atrs.common.util.FareTypeUtil;
-
 import org.terasoluna.gfw.common.exception.BusinessException;
 
 import org.springframework.stereotype.Service;
@@ -45,17 +44,12 @@ import org.springframework.util.Assert;
 @Service
 @Transactional
 public class TicketSearchServiceImpl implements TicketSearchService {
+	/**
+	 * 搭乗クラス情報提供クラス。
+	 */
+	private final BoardingClassProvider boardingClassProvider;
+
 	private final Clock clock;
-
-	/**
-	 * フライト情報リポジトリ。
-	 */
-	private final FlightRepository flightRepository;
-
-	/**
-	 * 区間情報提供クラス。
-	 */
-	private final RouteProvider routeProvider;
 
 	/**
 	 * 運賃種別情報提供クラス。
@@ -68,9 +62,14 @@ public class TicketSearchServiceImpl implements TicketSearchService {
 	private final FlightMasterProvider flightMasterProvider;
 
 	/**
-	 * 搭乗クラス情報提供クラス。
+	 * フライト情報リポジトリ。
 	 */
-	private final BoardingClassProvider boardingClassProvider;
+	private final FlightRepository flightRepository;
+
+	/**
+	 * 区間情報提供クラス。
+	 */
+	private final RouteProvider routeProvider;
 
 	/**
 	 * チケット予約共通サービス。
@@ -165,8 +164,33 @@ public class TicketSearchServiceImpl implements TicketSearchService {
 	}
 
 	/**
+	 * 空席状況情報を作成する。
+	 *
+	 * @param flight フライト情報
+	 * @return 空席照会結果
+	 */
+	private FlightVacantInfoDto createFlightVacantInfo(Flight flight) {
+
+		FlightVacantInfoDto vacantInfo = new FlightVacantInfoDto();
+
+		FlightMaster flightMaster = flight.getFlightMaster();
+		vacantInfo.setFlightName(flightMaster.getFlightName());
+		Route route = flightMaster.getRoute();
+		vacantInfo.setDepAirportName(route.getDepartureAirport().getName());
+		vacantInfo.setArrAirportName(route.getArrivalAirport().getName());
+		String depTime = DateTimeUtil.toFormatTimeString(flightMaster.getDepartureTime());
+		vacantInfo.setDepTime(depTime);
+		String arrTime = DateTimeUtil.toFormatTimeString(flightMaster.getArrivalTime());
+		vacantInfo.setArrTime(arrTime);
+		vacantInfo.setDepDate(DateTimeUtil.toFormatDateString(flight.getDepartureDate()));
+		vacantInfo.setBoardingClassCd(flight.getBoardingClass().getBoardingClassCd());
+
+		return vacantInfo;
+	}
+
+	/**
 	 * フライトリストから空席状況一覧リストを作成する。
-	 * 
+	 *
 	 * @param flightList フライトリスト
 	 * @param basicFare 基本運賃
 	 * @return 空席状況一覧リスト
@@ -203,31 +227,6 @@ public class TicketSearchServiceImpl implements TicketSearchService {
 
 		// リストに変換して返却
 		return new ArrayList<>(vacantInfoMap.values());
-	}
-
-	/**
-	 * 空席状況情報を作成する。
-	 * 
-	 * @param flight フライト情報
-	 * @return 空席照会結果
-	 */
-	private FlightVacantInfoDto createFlightVacantInfo(Flight flight) {
-
-		FlightVacantInfoDto vacantInfo = new FlightVacantInfoDto();
-
-		FlightMaster flightMaster = flight.getFlightMaster();
-		vacantInfo.setFlightName(flightMaster.getFlightName());
-		Route route = flightMaster.getRoute();
-		vacantInfo.setDepAirportName(route.getDepartureAirport().getName());
-		vacantInfo.setArrAirportName(route.getArrivalAirport().getName());
-		String depTime = DateTimeUtil.toFormatTimeString(flightMaster.getDepartureTime());
-		vacantInfo.setDepTime(depTime);
-		String arrTime = DateTimeUtil.toFormatTimeString(flightMaster.getArrivalTime());
-		vacantInfo.setArrTime(arrTime);
-		vacantInfo.setDepDate(DateTimeUtil.toFormatDateString(flight.getDepartureDate()));
-		vacantInfo.setBoardingClassCd(flight.getBoardingClass().getBoardingClassCd());
-
-		return vacantInfo;
 	}
 
 }

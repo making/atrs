@@ -8,28 +8,17 @@ import org.springframework.stereotype.Component;
 @Component
 @ConfigurationProperties(prefix = "atrs")
 public class AtrsProperties {
-	private String dateOfBirthMinDate;
-	private int representativeMinAge;
 	private int adultPassengerMinAge;
+
 	private int childFareRate;
-	private int reserveIntervalTime;
+
+	private String dateOfBirthMinDate;
+
 	private int limitDay;
 
-	public String getDateOfBirthMinDate() {
-		return dateOfBirthMinDate;
-	}
+	private int representativeMinAge;
 
-	public void setDateOfBirthMinDate(String dateOfBirthMinDate) {
-		this.dateOfBirthMinDate = dateOfBirthMinDate;
-	}
-
-	public int getRepresentativeMinAge() {
-		return representativeMinAge;
-	}
-
-	public void setRepresentativeMinAge(int representativeMinAge) {
-		this.representativeMinAge = representativeMinAge;
-	}
+	private int reserveIntervalTime;
 
 	public int getAdultPassengerMinAge() {
 		return adultPassengerMinAge;
@@ -47,12 +36,12 @@ public class AtrsProperties {
 		this.childFareRate = childFareRate;
 	}
 
-	public int getReserveIntervalTime() {
-		return reserveIntervalTime;
+	public String getDateOfBirthMinDate() {
+		return dateOfBirthMinDate;
 	}
 
-	public void setReserveIntervalTime(int reserveIntervalTime) {
-		this.reserveIntervalTime = reserveIntervalTime;
+	public void setDateOfBirthMinDate(String dateOfBirthMinDate) {
+		this.dateOfBirthMinDate = dateOfBirthMinDate;
 	}
 
 	public int getLimitDay() {
@@ -61,6 +50,22 @@ public class AtrsProperties {
 
 	public void setLimitDay(int limitDay) {
 		this.limitDay = limitDay;
+	}
+
+	public int getRepresentativeMinAge() {
+		return representativeMinAge;
+	}
+
+	public void setRepresentativeMinAge(int representativeMinAge) {
+		this.representativeMinAge = representativeMinAge;
+	}
+
+	public int getReserveIntervalTime() {
+		return reserveIntervalTime;
+	}
+
+	public void setReserveIntervalTime(int reserveIntervalTime) {
+		this.reserveIntervalTime = reserveIntervalTime;
 	}
 
 	@Override

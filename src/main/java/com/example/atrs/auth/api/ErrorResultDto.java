@@ -30,40 +30,40 @@ import org.apache.commons.lang3.builder.ToStringStyle;
  */
 public class ErrorResultDto implements Serializable {
 
-    /**
-     * serialVersionUID。
-     */
-    private static final long serialVersionUID = 5765200265354207181L;
+	/**
+	 * serialVersionUID。
+	 */
+	private static final long serialVersionUID = 5765200265354207181L;
 
-    /**
-     * メッセージリスト。
-     */
-    private List<String> messages = new ArrayList<>();
+	/**
+	 * メッセージリスト。
+	 */
+	private List<String> messages = new ArrayList<>();
 
-    /**
-     * メッセージリストを取得する。
-     * 
-     * @return 処理結果
-     */
-    public List<String> getMessages() {
-        return messages;
-    }
+	/**
+	 * メッセージを追加する。
+	 *
+	 * @param message メッセージ
+	 */
+	public void add(String message) {
+		this.messages.add(message);
+	}
 
-    /**
-     * メッセージを追加する。
-     * 
-     * @param message メッセージ
-     */
-    public void add(String message) {
-        this.messages.add(message);
-    }
+	/**
+	 * メッセージリストを取得する。
+	 *
+	 * @return 処理結果
+	 */
+	public List<String> getMessages() {
+		return messages;
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String toString() {
-        return ToStringBuilder.reflectionToString(this, ToStringStyle.MULTI_LINE_STYLE);
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String toString() {
+		return ToStringBuilder.reflectionToString(this, ToStringStyle.MULTI_LINE_STYLE);
+	}
 
 }

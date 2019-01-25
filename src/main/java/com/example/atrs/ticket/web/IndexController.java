@@ -28,14 +28,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/")
 public class IndexController {
 
-    /**
-     * トップ画面を表示する。
-     * 
-     * @return View論理名
-     */
-    @RequestMapping
-    public String homePage() {
-        return "redirect:/ticket/search?topForm";
-    }
+	/**
+	 * トップ画面を表示する。
+	 * 
+	 * @return View論理名
+	 */
+	@RequestMapping
+	public String homePage() {
+		return "redirect:/ticket/search?topForm";
+	}
 
 }

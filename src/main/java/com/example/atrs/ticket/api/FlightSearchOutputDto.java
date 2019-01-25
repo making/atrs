@@ -29,86 +29,86 @@ import org.apache.commons.lang3.builder.ToStringStyle;
  */
 public class FlightSearchOutputDto implements Serializable {
 
-    /**
-     * serialVersionUID。
-     */
-    private static final long serialVersionUID = 1456659917361826165L;
+	/**
+	 * serialVersionUID。
+	 */
+	private static final long serialVersionUID = 1456659917361826165L;
 
-    /**
-     * 空席照会可能時期(始)。
-     */
-    private Date beginningPeriod;
+	/**
+	 * 空席照会可能時期(始)。
+	 */
+	private Date beginningPeriod;
 
-    /**
-     * 空席照会可能時期(終)。
-     */
-    private Date endingPeriod;
+	/**
+	 * 空席照会可能時期(終)。
+	 */
+	private Date endingPeriod;
 
-    /**
-     * 復路予約可能時間間隔(分)。
-     */
-    private Integer reserveIntervalTime;
+	/**
+	 * 復路予約可能時間間隔(分)。
+	 */
+	private Integer reserveIntervalTime;
 
-    /**
-     * 空席照会可能時期(始)を取得する。
-     * 
-     * @return 空席照会可能時期(始)
-     */
-    public Date getBeginningPeriod() {
-        return beginningPeriod;
-    }
+	/**
+	 * 空席照会可能時期(始)を取得する。
+	 * 
+	 * @return 空席照会可能時期(始)
+	 */
+	public Date getBeginningPeriod() {
+		return beginningPeriod;
+	}
 
-    /**
-     * 空席照会可能時期(始)を設定する。
-     * 
-     * @param beginningPeriod 空席照会可能時期(始)
-     */
-    public void setBeginningPeriod(Date beginningPeriod) {
-        this.beginningPeriod = beginningPeriod;
-    }
+	/**
+	 * 空席照会可能時期(始)を設定する。
+	 * 
+	 * @param beginningPeriod 空席照会可能時期(始)
+	 */
+	public void setBeginningPeriod(Date beginningPeriod) {
+		this.beginningPeriod = beginningPeriod;
+	}
 
-    /**
-     * 空席照会可能時期(終)を取得する。
-     * 
-     * @return 空席照会可能時期(終)
-     */
-    public Date getEndingPeriod() {
-        return endingPeriod;
-    }
+	/**
+	 * 空席照会可能時期(終)を取得する。
+	 * 
+	 * @return 空席照会可能時期(終)
+	 */
+	public Date getEndingPeriod() {
+		return endingPeriod;
+	}
 
-    /**
-     * 空席照会可能時期(終)を設定する。
-     * 
-     * @param endingPeriod 空席照会可能時期(終)
-     */
-    public void setEndingPeriod(Date endingPeriod) {
-        this.endingPeriod = endingPeriod;
-    }
+	/**
+	 * 空席照会可能時期(終)を設定する。
+	 * 
+	 * @param endingPeriod 空席照会可能時期(終)
+	 */
+	public void setEndingPeriod(Date endingPeriod) {
+		this.endingPeriod = endingPeriod;
+	}
 
-    /**
-     * 復路予約可能時間間隔(分)。
-     *
-     * @return 復路予約可能時間間隔(分)
-     */
-    public Integer getReserveIntervalTime() {
-        return reserveIntervalTime;
-    }
+	/**
+	 * 復路予約可能時間間隔(分)。
+	 *
+	 * @return 復路予約可能時間間隔(分)
+	 */
+	public Integer getReserveIntervalTime() {
+		return reserveIntervalTime;
+	}
 
-    /**
-     * 復路予約可能時間間隔(分)。
-     * 
-     * @param reserveIntervalTime 復路予約可能時間間隔(分)
-     */
-    public void setReserveIntervalTime(Integer reserveIntervalTime) {
-        this.reserveIntervalTime = reserveIntervalTime;
-    }
+	/**
+	 * 復路予約可能時間間隔(分)。
+	 * 
+	 * @param reserveIntervalTime 復路予約可能時間間隔(分)
+	 */
+	public void setReserveIntervalTime(Integer reserveIntervalTime) {
+		this.reserveIntervalTime = reserveIntervalTime;
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String toString() {
-        return ToStringBuilder.reflectionToString(this, ToStringStyle.MULTI_LINE_STYLE);
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String toString() {
+		return ToStringBuilder.reflectionToString(this, ToStringStyle.MULTI_LINE_STYLE);
+	}
 
 }

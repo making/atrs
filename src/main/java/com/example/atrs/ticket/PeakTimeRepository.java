@@ -16,9 +16,9 @@
  */
 package com.example.atrs.ticket;
 
-import org.apache.ibatis.annotations.Mapper;
-
 import java.util.List;
+
+import org.apache.ibatis.annotations.Mapper;
 
 /**
  * ピーク時期テーブルにアクセスするリポジトリインターフェース。
@@ -28,10 +28,10 @@ import java.util.List;
 @Mapper
 public interface PeakTimeRepository {
 
-    /**
-     * 全てのピーク時期を取得する。
-     * 
-     * @return ピーク時期リスト
-     */
-    List<PeakTime> findAll();
+	/**
+	 * 全てのピーク時期を取得する。
+	 * 
+	 * @return ピーク時期リスト
+	 */
+	List<PeakTime> findAll();
 }

@@ -25,16 +25,16 @@ import com.example.atrs.common.exception.AtrsBusinessException;
  */
 public class FlightNotFoundException extends AtrsBusinessException {
 
-    /**
-     * serialVersionUID。
-     */
-    private static final long serialVersionUID = -7145777012040116550L;
+	/**
+	 * serialVersionUID。
+	 */
+	private static final long serialVersionUID = -7145777012040116550L;
 
-    /**
-     * コンストラクタ。
-     */
-    public FlightNotFoundException() {
-        super(TicketSearchErrorCode.E_AR_B1_2003);
-    }
+	/**
+	 * コンストラクタ。
+	 */
+	public FlightNotFoundException() {
+		super(TicketSearchErrorCode.E_AR_B1_2003);
+	}
 
 }

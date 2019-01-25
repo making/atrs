@@ -23,23 +23,23 @@ package com.example.atrs.ticket;
  */
 public enum BoardingClassCd {
 
-    /**
-     * 一般席の搭乗クラスコード。
-     */
-    N,
+	/**
+	 * 一般席の搭乗クラスコード。
+	 */
+	N,
 
-    /**
-     * 特別席の搭乗クラスコード。
-     */
-    S;
+	/**
+	 * 特別席の搭乗クラスコード。
+	 */
+	S;
 
-    /**
-     * 搭乗クラスコードを取得する。
-     *
-     * @return 搭乗クラスコード
-     */
-    public String getCode() {
-        return this.name();
-    }
+	/**
+	 * 搭乗クラスコードを取得する。
+	 *
+	 * @return 搭乗クラスコード
+	 */
+	public String getCode() {
+		return this.name();
+	}
 
 }

@@ -16,11 +16,11 @@
  */
 package com.example.atrs.ticket;
 
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
-
 import java.io.Serializable;
 import java.util.Date;
+
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 
 /**
  * 空席照会の検索条件を保持するクラス。
@@ -29,132 +29,132 @@ import java.util.Date;
  */
 public class TicketSearchCriteriaDto implements Serializable {
 
-    /**
-     * serialVersionUID。
-     */
-    private static final long serialVersionUID = 5851367537869763864L;
+	/**
+	 * serialVersionUID。
+	 */
+	private static final long serialVersionUID = 5851367537869763864L;
 
-    /**
-     * フライト種別。
-     */
-    private FlightType flightType;
+	/**
+	 * 到着空港コード。
+	 */
+	private String arrivalAirportCd;
 
-    /**
-     * 出発空港コード。
-     */
-    private String departureAirportCd;
+	/**
+	 * 搭乗クラスコード。
+	 */
+	private BoardingClassCd boardingClassCd;
 
-    /**
-     * 到着空港コード。
-     */
-    private String arrivalAirportCd;
+	/**
+	 * 搭乗日。
+	 */
+	private Date depDate;
 
-    /**
-     * 搭乗日。
-     */
-    private Date depDate;
+	/**
+	 * 出発空港コード。
+	 */
+	private String departureAirportCd;
 
-    /**
-     * 搭乗クラスコード。
-     */
-    private BoardingClassCd boardingClassCd;
+	/**
+	 * フライト種別。
+	 */
+	private FlightType flightType;
 
-    /**
-     * フライト種別を取得する。
-     * 
-     * @return フライト種別
-     */
-    public FlightType getFlightType() {
-        return flightType;
-    }
+	/**
+	 * 到着空港コードを取得する。
+	 *
+	 * @return 到着空港
+	 */
+	public String getArrivalAirportCd() {
+		return arrivalAirportCd;
+	}
 
-    /**
-     * フライト種別を設定する。
-     * 
-     * @param flightType フライト種別
-     */
-    public void setFlightType(FlightType flightType) {
-        this.flightType = flightType;
-    }
+	/**
+	 * 到着空港コードを設定する。
+	 *
+	 * @param arrivalAirportCd 到着空港コード
+	 */
+	public void setArrivalAirportCd(String arrivalAirportCd) {
+		this.arrivalAirportCd = arrivalAirportCd;
+	}
 
-    /**
-     * 出発空港コードを取得する。
-     * 
-     * @return 出発空港
-     */
-    public String getDepartureAirportCd() {
-        return departureAirportCd;
-    }
+	/**
+	 * 搭乗クラスコードを取得する。
+	 *
+	 * @return 搭乗クラスコード
+	 */
+	public BoardingClassCd getBoardingClassCd() {
+		return boardingClassCd;
+	}
 
-    /**
-     * 出発空港コードを設定する。
-     * 
-     * @param departureAirportCd 出発空港コード
-     */
-    public void setDepartureAirportCd(String departureAirportCd) {
-        this.departureAirportCd = departureAirportCd;
-    }
+	/**
+	 * 搭乗クラスコードを設定する。
+	 *
+	 * @param boardingClassCd 搭乗クラスコード
+	 */
+	public void setBoardingClassCd(BoardingClassCd boardingClassCd) {
+		this.boardingClassCd = boardingClassCd;
+	}
 
-    /**
-     * 到着空港コードを取得する。
-     * 
-     * @return 到着空港
-     */
-    public String getArrivalAirportCd() {
-        return arrivalAirportCd;
-    }
+	/**
+	 * 搭乗日を取得する。
+	 *
+	 * @return 搭乗日
+	 */
+	public Date getDepDate() {
+		return depDate;
+	}
 
-    /**
-     * 到着空港コードを設定する。
-     * 
-     * @param arrivalAirportCd 到着空港コード
-     */
-    public void setArrivalAirportCd(String arrivalAirportCd) {
-        this.arrivalAirportCd = arrivalAirportCd;
-    }
+	/**
+	 * 搭乗日を設定する。
+	 *
+	 * @param depDate 搭乗日
+	 */
+	public void setDepDate(Date depDate) {
+		this.depDate = depDate;
+	}
 
-    /**
-     * 搭乗日を取得する。
-     * 
-     * @return 搭乗日
-     */
-    public Date getDepDate() {
-        return depDate;
-    }
+	/**
+	 * 出発空港コードを取得する。
+	 *
+	 * @return 出発空港
+	 */
+	public String getDepartureAirportCd() {
+		return departureAirportCd;
+	}
 
-    /**
-     * 搭乗日を設定する。
-     * 
-     * @param depDate 搭乗日
-     */
-    public void setDepDate(Date depDate) {
-        this.depDate = depDate;
-    }
+	/**
+	 * 出発空港コードを設定する。
+	 *
+	 * @param departureAirportCd 出発空港コード
+	 */
+	public void setDepartureAirportCd(String departureAirportCd) {
+		this.departureAirportCd = departureAirportCd;
+	}
 
-    /**
-     * 搭乗クラスコードを取得する。
-     * 
-     * @return 搭乗クラスコード
-     */
-    public BoardingClassCd getBoardingClassCd() {
-        return boardingClassCd;
-    }
+	/**
+	 * フライト種別を取得する。
+	 *
+	 * @return フライト種別
+	 */
+	public FlightType getFlightType() {
+		return flightType;
+	}
 
-    /**
-     * 搭乗クラスコードを設定する。
-     * 
-     * @param boardingClassCd 搭乗クラスコード
-     */
-    public void setBoardingClassCd(BoardingClassCd boardingClassCd) {
-        this.boardingClassCd = boardingClassCd;
-    }
+	/**
+	 * フライト種別を設定する。
+	 *
+	 * @param flightType フライト種別
+	 */
+	public void setFlightType(FlightType flightType) {
+		this.flightType = flightType;
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String toString() {
-        return ToStringBuilder.reflectionToString(this, ToStringStyle.MULTI_LINE_STYLE);
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String toString() {
+		return ToStringBuilder.reflectionToString(this, ToStringStyle.MULTI_LINE_STYLE);
+	}
 
 }

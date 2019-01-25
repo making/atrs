@@ -16,9 +16,9 @@
  */
 package com.example.atrs.auth.api;
 
-import org.springframework.stereotype.Component;
-
 import com.example.atrs.auth.AtrsUserDetails;
+
+import org.springframework.stereotype.Component;
 
 /**
  * 認証情報を扱うためのヘルパークラス。
@@ -28,14 +28,14 @@ import com.example.atrs.auth.AtrsUserDetails;
 @Component
 public class AuthenticationHelper {
 
-    /**
-     * 認証済みのユーザか確認する。
-     * 
-     * @param principal 認証情報を保持するオブジェクト
-     * @return 認証済みのユーザの場合は<code>true</code>を返却。
-     */
-    public boolean isAuthenticatedPrincipal(AtrsUserDetails userDetails) {
-        return (userDetails != null) ;
-    }
+	/**
+	 * 認証済みのユーザか確認する。
+	 * 
+	 * @param principal 認証情報を保持するオブジェクト
+	 * @return 認証済みのユーザの場合は<code>true</code>を返却。
+	 */
+	public boolean isAuthenticatedPrincipal(AtrsUserDetails userDetails) {
+		return (userDetails != null);
+	}
 
 }

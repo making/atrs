@@ -16,13 +16,12 @@
  */
 package com.example.atrs.ticket;
 
+import java.io.Serializable;
 
 import com.example.atrs.member.Gender;
 import com.example.atrs.member.Member;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
-
-import java.io.Serializable;
 
 /**
  * 搭乗者情報。
@@ -31,177 +30,177 @@ import java.io.Serializable;
  */
 public class Passenger implements Serializable {
 
-    /**
-     * serialVersionUID。
-     */
-    private static final long serialVersionUID = -7641636452098370026L;
+	/**
+	 * serialVersionUID。
+	 */
+	private static final long serialVersionUID = -7641636452098370026L;
 
-    /**
-     * 搭乗者番号。
-     */
-    private Integer passengerNo;
+	/**
+	 * 年齢。
+	 */
+	private Integer age;
 
-    /**
-     * 予約フライト番号。
-     */
-    private Integer reserveFlightNo;
+	/**
+	 * 姓。
+	 */
+	private String familyName;
 
-    /**
-     * 姓。
-     */
-    private String familyName;
+	/**
+	 * 性別。
+	 */
+	private Gender gender;
 
-    /**
-     * 名。
-     */
-    private String givenName;
+	/**
+	 * 名。
+	 */
+	private String givenName;
 
-    /**
-     * 年齢。
-     */
-    private Integer age;
+	/**
+	 * カード会員情報。
+	 */
+	private Member member;
 
-    /**
-     * 性別。
-     */
-    private Gender gender;
+	/**
+	 * 搭乗者番号。
+	 */
+	private Integer passengerNo;
 
-    /**
-     * カード会員情報。
-     */
-    private Member member;
+	/**
+	 * 予約フライト番号。
+	 */
+	private Integer reserveFlightNo;
 
-    /**
-     * 搭乗者番号を取得する。
-     * 
-     * @return 搭乗者番号
-     */
-    public Integer getPassengerNo() {
-        return passengerNo;
-    }
+	/**
+	 * 年齢を取得する。
+	 *
+	 * @return 年齢
+	 */
+	public Integer getAge() {
+		return age;
+	}
 
-    /**
-     * 搭乗者番号を設定する。
-     * 
-     * @param passengerNo 搭乗者番号
-     */
-    public void setPassengerNo(Integer passengerNo) {
-        this.passengerNo = passengerNo;
-    }
+	/**
+	 * 年齢を設定する。
+	 *
+	 * @param age 年齢
+	 */
+	public void setAge(Integer age) {
+		this.age = age;
+	}
 
-    /**
-     * 予約フライト番号を取得する。
-     * 
-     * @return 予約フライト番号
-     */
-    public Integer getReserveFlightNo() {
-        return reserveFlightNo;
-    }
+	/**
+	 * 姓を取得する。
+	 *
+	 * @return 姓
+	 */
+	public String getFamilyName() {
+		return familyName;
+	}
 
-    /**
-     * 予約フライト番号を設定する。
-     * 
-     * @param reserveFlightNo 予約フライト番号
-     */
-    public void setReserveFlightNo(Integer reserveFlightNo) {
-        this.reserveFlightNo = reserveFlightNo;
-    }
+	/**
+	 * 姓を設定する。
+	 *
+	 * @param familyName 姓
+	 */
+	public void setFamilyName(String familyName) {
+		this.familyName = familyName;
+	}
 
-    /**
-     * 姓を取得する。
-     * 
-     * @return 姓
-     */
-    public String getFamilyName() {
-        return familyName;
-    }
+	/**
+	 * 性別を取得する。
+	 *
+	 * @return 性別
+	 */
+	public Gender getGender() {
+		return gender;
+	}
 
-    /**
-     * 姓を設定する。
-     * 
-     * @param familyName 姓
-     */
-    public void setFamilyName(String familyName) {
-        this.familyName = familyName;
-    }
+	/**
+	 * 性別を設定する。
+	 *
+	 * @param gender 性別
+	 */
+	public void setGender(Gender gender) {
+		this.gender = gender;
+	}
 
-    /**
-     * 名を取得する。
-     * 
-     * @return 名
-     */
-    public String getGivenName() {
-        return givenName;
-    }
+	/**
+	 * 名を取得する。
+	 * 
+	 * @return 名
+	 */
+	public String getGivenName() {
+		return givenName;
+	}
 
-    /**
-     * 名を設定する。
-     * 
-     * @param givenName 名
-     */
-    public void setGivenName(String givenName) {
-        this.givenName = givenName;
-    }
+	/**
+	 * 名を設定する。
+	 * 
+	 * @param givenName 名
+	 */
+	public void setGivenName(String givenName) {
+		this.givenName = givenName;
+	}
 
-    /**
-     * 年齢を取得する。
-     * 
-     * @return 年齢
-     */
-    public Integer getAge() {
-        return age;
-    }
+	/**
+	 * カード会員情報を取得する。
+	 *
+	 * @return カード会員情報
+	 */
+	public Member getMember() {
+		return member;
+	}
 
-    /**
-     * 年齢を設定する。
-     * 
-     * @param age 年齢
-     */
-    public void setAge(Integer age) {
-        this.age = age;
-    }
+	/**
+	 * カード会員情報を設定する。
+	 *
+	 * @param member カード会員情報
+	 */
+	public void setMember(Member member) {
+		this.member = member;
+	}
 
-    /**
-     * 性別を取得する。
-     * 
-     * @return 性別
-     */
-    public Gender getGender() {
-        return gender;
-    }
+	/**
+	 * 搭乗者番号を取得する。
+	 *
+	 * @return 搭乗者番号
+	 */
+	public Integer getPassengerNo() {
+		return passengerNo;
+	}
 
-    /**
-     * 性別を設定する。
-     * 
-     * @param gender 性別
-     */
-    public void setGender(Gender gender) {
-        this.gender = gender;
-    }
+	/**
+	 * 搭乗者番号を設定する。
+	 *
+	 * @param passengerNo 搭乗者番号
+	 */
+	public void setPassengerNo(Integer passengerNo) {
+		this.passengerNo = passengerNo;
+	}
 
-    /**
-     * カード会員情報を取得する。
-     * 
-     * @return カード会員情報
-     */
-    public Member getMember() {
-        return member;
-    }
+	/**
+	 * 予約フライト番号を取得する。
+	 *
+	 * @return 予約フライト番号
+	 */
+	public Integer getReserveFlightNo() {
+		return reserveFlightNo;
+	}
 
-    /**
-     * カード会員情報を設定する。
-     * 
-     * @param member カード会員情報
-     */
-    public void setMember(Member member) {
-        this.member = member;
-    }
+	/**
+	 * 予約フライト番号を設定する。
+	 *
+	 * @param reserveFlightNo 予約フライト番号
+	 */
+	public void setReserveFlightNo(Integer reserveFlightNo) {
+		this.reserveFlightNo = reserveFlightNo;
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String toString() {
-        return ToStringBuilder.reflectionToString(this, ToStringStyle.MULTI_LINE_STYLE);
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String toString() {
+		return ToStringBuilder.reflectionToString(this, ToStringStyle.MULTI_LINE_STYLE);
+	}
 }

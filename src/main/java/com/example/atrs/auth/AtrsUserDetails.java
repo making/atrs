@@ -16,15 +16,15 @@
  */
 package com.example.atrs.auth;
 
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-
-import com.example.atrs.member.Member;
-
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+
+import com.example.atrs.member.Member;
+
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 /**
  * ログインユーザ情報クラス。
@@ -33,103 +33,103 @@ import java.util.List;
  */
 public class AtrsUserDetails implements UserDetails {
 
-    /**
-     * serialVersionUID。
-     */
-    private static final long serialVersionUID = 8105510259984180618L;
+	/**
+	 * デフォルト権限設定。
+	 */
+	private static final List<? extends GrantedAuthority> DEFAULT_AUTHORITIES = Collections
+			.singletonList(new SimpleGrantedAuthority("ROLE_MEMBER"));
 
-    /**
-     * デフォルト権限設定。
-     */
-    private static final List<? extends GrantedAuthority> DEFAULT_AUTHORITIES =
-            Collections.singletonList(new SimpleGrantedAuthority("ROLE_MEMBER"));
+	/**
+	 * serialVersionUID。
+	 */
+	private static final long serialVersionUID = 8105510259984180618L;
 
-    /**
-     * カード会員情報。
-     */
-    private Member member;
+	/**
+	 * カード会員情報。
+	 */
+	private Member member;
 
-    /**
-     * コンストラクタ。
-     * 
-     * @param member カード会員情報
-     */
-    public AtrsUserDetails(Member member) {
-        this.member = member;
-    }
+	/**
+	 * コンストラクタ。
+	 * 
+	 * @param member カード会員情報
+	 */
+	public AtrsUserDetails(Member member) {
+		this.member = member;
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return DEFAULT_AUTHORITIES;
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		return DEFAULT_AUTHORITIES;
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String getPassword() {
-        return member.getMemberLogin().getPassword();
-    }
+	/**
+	 * カード会員情報を取得する。
+	 *
+	 * @return カード会員情報
+	 */
+	public Member getMember() {
+		return member;
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String getUsername() {
-        return member.getMembershipNumber();
-    }
+	/**
+	 * カード会員情報を設定する。
+	 *
+	 * @param member カード会員情報
+	 */
+	public void setMember(Member member) {
+		this.member = member;
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String getPassword() {
+		return member.getMemberLogin().getPassword();
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String getUsername() {
+		return member.getMembershipNumber();
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean isAccountNonExpired() {
+		return true;
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public boolean isEnabled() {
-        return true;
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean isAccountNonLocked() {
+		return true;
+	}
 
-    /**
-     * カード会員情報を取得する。
-     * 
-     * @return カード会員情報
-     */
-    public Member getMember() {
-        return member;
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean isCredentialsNonExpired() {
+		return true;
+	}
 
-    /**
-     * カード会員情報を設定する。
-     * 
-     * @param member カード会員情報
-     */
-    public void setMember(Member member) {
-        this.member = member;
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean isEnabled() {
+		return true;
+	}
 
 }

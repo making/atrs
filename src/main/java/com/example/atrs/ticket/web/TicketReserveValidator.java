@@ -18,14 +18,14 @@ package com.example.atrs.ticket.web;
 
 import java.util.List;
 
+import com.example.atrs.common.validate.ValidationUtil;
+import com.example.atrs.ticket.TicketReserveErrorCode;
+
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
-
-import com.example.atrs.common.validate.ValidationUtil;
-import com.example.atrs.ticket.TicketReserveErrorCode;
 
 /**
  * チケット予約フォームのバリデータ。

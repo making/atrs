@@ -42,10 +42,6 @@ public class DateTimeUtil {
 	public static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter
 			.ofPattern("HHmm");
 
-	public static LocalDate toLocalDate(Date date) {
-		return date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-	}
-
 	/**
 	 * DateTimeへ変換する。
 	 *
@@ -72,7 +68,7 @@ public class DateTimeUtil {
 
 	/**
 	 * 整形時刻文字列(HH:mm)へ変換する。
-	 * 
+	 *
 	 * @param timeString 時刻文字列(HHmm)
 	 * @return 時刻文字列(HH:mm)
 	 */
@@ -83,6 +79,10 @@ public class DateTimeUtil {
 					timeString.substring(2));
 		}
 		return result;
+	}
+
+	public static LocalDate toLocalDate(Date date) {
+		return date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 	}
 
 }

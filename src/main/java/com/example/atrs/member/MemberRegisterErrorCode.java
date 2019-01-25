@@ -25,31 +25,31 @@ import com.example.atrs.common.exception.AtrsErrorCode;
  */
 public enum MemberRegisterErrorCode implements AtrsErrorCode {
 
-    /**
-     * パスワードと再入力したパスワードが一致しない事を通知するためのエラーコード。
-     */
-    E_AR_C1_5001("e.ar.c1.5001");
+	/**
+	 * パスワードと再入力したパスワードが一致しない事を通知するためのエラーコード。
+	 */
+	E_AR_C1_5001("e.ar.c1.5001");
 
-    /**
-     * エラーコード。
-     */
-    private final String code;
+	/**
+	 * エラーコード。
+	 */
+	private final String code;
 
-    /**
-     * コンストラクタ。
-     *
-     * @param code エラーコード。
-     */
-    private MemberRegisterErrorCode(String code) {
-        this.code = code;
-    }
+	/**
+	 * コンストラクタ。
+	 *
+	 * @param code エラーコード。
+	 */
+	private MemberRegisterErrorCode(String code) {
+		this.code = code;
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String code() {
-        return code;
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String code() {
+		return code;
+	}
 
 }

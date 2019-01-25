@@ -15,7 +15,7 @@
  *
  */
 package com.example.atrs.common.web.error;
-  
+
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -26,65 +26,65 @@ import org.springframework.web.bind.annotation.RequestMapping;
  */
 @Controller
 @RequestMapping("common/error")
-public class ErrorPageController { 
+public class ErrorPageController {
 
-    /**
-     * badRequestエラー画面を表示する。
-     * 
-     * @return View論理名
-     */
-    @RequestMapping("badRequest-error")
-    public String badRequestError() {
-        return "common/error/badRequest-error";
-    }
+	/**
+	 * accessForbiddenエラー画面を表示する。
+	 *
+	 * @return View論理名
+	 */
+	@RequestMapping("accessForbidden-error")
+	public String accessForbiddenError() {
+		return "common/error/accessForbidden-error";
+	}
 
-    /**
-     * accessForbiddenエラー画面を表示する。
-     * 
-     * @return View論理名
-     */
-    @RequestMapping("accessForbidden-error")
-    public String accessForbiddenError() {
-        return "common/error/accessForbidden-error";
-    }
+	/**
+	 * badRequestエラー画面を表示する。
+	 *
+	 * @return View論理名
+	 */
+	@RequestMapping("badRequest-error")
+	public String badRequestError() {
+		return "common/error/badRequest-error";
+	}
 
-    /**
-     * notFoundエラー画面を表示する。
-     * 
-     * @return View論理名
-     */
-    @RequestMapping("notFound-error")
-    public String notFoundError() {
-        return "common/error/notFound-error";
-    }
+	/**
+	 * csrfエラー画面を表示する。
+	 *
+	 * @return View論理名
+	 */
+	@RequestMapping("csrf-error")
+	public String csrfError() {
+		return "common/error/csrf-error";
+	}
 
-    /**
-     * systemエラー画面を表示する。
-     * 
-     * @return View論理名
-     */
-    @RequestMapping("system-error")
-    public String systemError() {
-        return "common/error/system-error";
-    }
+	/**
+	 * notFoundエラー画面を表示する。
+	 *
+	 * @return View論理名
+	 */
+	@RequestMapping("notFound-error")
+	public String notFoundError() {
+		return "common/error/notFound-error";
+	}
 
-    /**
-     * csrfエラー画面を表示する。
-     * 
-     * @return View論理名
-     */
-    @RequestMapping("csrf-error")
-    public String csrfError() {
-        return "common/error/csrf-error";
-    }
+	/**
+	 * systemエラー画面を表示する。
+	 *
+	 * @return View論理名
+	 */
+	@RequestMapping("system-error")
+	public String systemError() {
+		return "common/error/system-error";
+	}
 
-    /**
-     * tokenエラー画面を表示する。
-     * 
-     * @return View論理名
-     */
-    @RequestMapping("token-error")
-    public String tokenError() {
-        return "common/error/token-error";
-    }
-} 
+	/**
+	 * tokenエラー画面を表示する。
+	 * 
+	 * @return View論理名
+	 */
+	@RequestMapping("token-error")
+	public String tokenError() {
+		return "common/error/token-error";
+	}
+}

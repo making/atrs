@@ -25,9 +25,6 @@ import javax.annotation.PostConstruct;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
-import com.example.atrs.ticket.Route;
-import com.example.atrs.ticket.RouteRepository;
-
 /**
  * 区間情報を提供するクラス。
  * 
@@ -37,17 +34,33 @@ import com.example.atrs.ticket.RouteRepository;
 public class RouteProvider {
 
 	/**
-	 * 区間情報リポジトリ。
-	 */
-	private final RouteRepository routeRepository;
-
-	/**
 	 * 区間情報マップ。
 	 */
 	private final Map<String, Route> routeMap = new HashMap<>();
 
+	/**
+	 * 区間情報リポジトリ。
+	 */
+	private final RouteRepository routeRepository;
+
 	public RouteProvider(RouteRepository routeRepository) {
 		this.routeRepository = routeRepository;
+	}
+
+	/**
+	 * 出発空港コード、到着空港コードに該当する区間情報を取得する。
+	 *
+	 * @param departureAirportCd 出発空港コード
+	 * @param arrivalAirportCd 到着空港コード
+	 * @return 区間情報。該当する区間情報が見つからない場合はnull。
+	 */
+	public Route getRouteByAirportCd(String departureAirportCd, String arrivalAirportCd) {
+
+		Assert.hasText(departureAirportCd);
+		Assert.hasText(arrivalAirportCd);
+
+		String searchKey = makeCacheKey(departureAirportCd, arrivalAirportCd);
+		return routeMap.get(searchKey);
 	}
 
 	/**
@@ -61,22 +74,6 @@ public class RouteProvider {
 					route.getArrivalAirport().getCode());
 			routeMap.put(cacheKey, route);
 		}
-	}
-
-	/**
-	 * 出発空港コード、到着空港コードに該当する区間情報を取得する。
-	 * 
-	 * @param departureAirportCd 出発空港コード
-	 * @param arrivalAirportCd 到着空港コード
-	 * @return 区間情報。該当する区間情報が見つからない場合はnull。
-	 */
-	public Route getRouteByAirportCd(String departureAirportCd, String arrivalAirportCd) {
-
-		Assert.hasText(departureAirportCd);
-		Assert.hasText(arrivalAirportCd);
-
-		String searchKey = makeCacheKey(departureAirportCd, arrivalAirportCd);
-		return routeMap.get(searchKey);
 	}
 
 	/**

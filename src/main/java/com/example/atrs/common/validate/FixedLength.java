@@ -16,14 +16,15 @@
  */
 package com.example.atrs.common.validate;
 
+import java.lang.annotation.Documented;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
+
 import javax.validation.Constraint;
 import javax.validation.OverridesAttribute;
 import javax.validation.Payload;
 import javax.validation.ReportAsSingleViolation;
 import javax.validation.constraints.Size;
-import java.lang.annotation.Documented;
-import java.lang.annotation.Retention;
-import java.lang.annotation.Target;
 
 import static java.lang.annotation.ElementType.ANNOTATION_TYPE;
 import static java.lang.annotation.ElementType.CONSTRUCTOR;
@@ -46,26 +47,24 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @ReportAsSingleViolation
 public @interface FixedLength {
 
-    String message() default "{com.example.atrs.domain.common.validate.FixedLength.message}";
+	Class<?>[] groups() default {};
 
-    Class<?>[] groups() default {};
+	String message() default "{com.example.atrs.domain.common.validate.FixedLength.message}";
 
-    Class<? extends Payload>[] payload() default {};
+	Class<? extends Payload>[] payload() default {};
 
-    @OverridesAttribute.List({
-            @OverridesAttribute(constraint = Size.class, name = "min"),
-            @OverridesAttribute(constraint = Size.class, name = "max")
-    })
-    int value();
+	@OverridesAttribute.List({ @OverridesAttribute(constraint = Size.class, name = "min"),
+			@OverridesAttribute(constraint = Size.class, name = "max") })
+	int value();
 
-    /**
-     * 複数設定用リスト
-     */
-    @Target({ METHOD, FIELD, ANNOTATION_TYPE, CONSTRUCTOR, PARAMETER })
-    @Retention(RUNTIME)
-    @Documented
-    @interface List {
-        FixedLength[] value();
-    }
+	/**
+	 * 複数設定用リスト
+	 */
+	@Target({ METHOD, FIELD, ANNOTATION_TYPE, CONSTRUCTOR, PARAMETER })
+	@Retention(RUNTIME)
+	@Documented
+	@interface List {
+		FixedLength[] value();
+	}
 
 }

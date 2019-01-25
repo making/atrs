@@ -36,34 +36,35 @@ import org.springframework.stereotype.Component;
  * @author NTT 電電太郎
  */
 @Component
-public class AtrsAuthenticationFailureHandler extends SimpleUrlAuthenticationFailureHandler {
+public class AtrsAuthenticationFailureHandler
+		extends SimpleUrlAuthenticationFailureHandler {
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void onAuthenticationFailure(HttpServletRequest request,
-                                        HttpServletResponse response, AuthenticationException exception)
-        throws IOException, ServletException {
+	@PostConstruct
+	public void init() {
+		this.setDefaultFailureUrl("/auth/login?error");
+		this.setUseForward(false);
+	}
 
-        // AuthenticationServiceExceptionの場合はシステム例外とする
-        if (exception instanceof AuthenticationServiceException) {
-            throw new SystemException("authentication service error.", exception);
-        }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void onAuthenticationFailure(HttpServletRequest request,
+			HttpServletResponse response, AuthenticationException exception)
+			throws IOException, ServletException {
 
-        // for Ajax request
-        if ("XMLHttpRequest".equals(request.getHeader("X-Requested-With"))) {
+		// AuthenticationServiceExceptionの場合はシステム例外とする
+		if (exception instanceof AuthenticationServiceException) {
+			throw new SystemException("authentication service error.", exception);
+		}
 
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
-            return;
-        }
+		// for Ajax request
+		if ("XMLHttpRequest".equals(request.getHeader("X-Requested-With"))) {
 
-        super.onAuthenticationFailure(request, response, exception);
-    }
+			response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+			return;
+		}
 
-    @PostConstruct
-    public void init() {
-        this.setDefaultFailureUrl("/auth/login?error");
-        this.setUseForward(false);
-    }
+		super.onAuthenticationFailure(request, response, exception);
+	}
 }

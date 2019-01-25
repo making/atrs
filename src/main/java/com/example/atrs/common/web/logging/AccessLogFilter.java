@@ -38,65 +38,65 @@ import org.springframework.web.filter.OncePerRequestFilter;
 @Component
 public class AccessLogFilter extends OncePerRequestFilter {
 
-    /**
-     * ロガー。
-     */
-    private static final Logger LOGGER =
-        LoggerFactory.getLogger(AccessLogFilter.class);
+	/**
+	 * ロガー。
+	 */
+	private static final Logger LOGGER = LoggerFactory.getLogger(AccessLogFilter.class);
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected void doFilterInternal(HttpServletRequest request,
-                                    HttpServletResponse response, FilterChain filterChain)
-        throws ServletException, IOException {
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	protected void doFilterInternal(HttpServletRequest request,
+			HttpServletResponse response, FilterChain filterChain)
+			throws ServletException, IOException {
 
-        String logMessage = getLogMessage(request);
-        LOGGER.info("ACCESS START {}", logMessage);
-        filterChain.doFilter(request, response);
-        LOGGER.info("ACCESS FINISH {}", logMessage);
-    }
+		String logMessage = getLogMessage(request);
+		LOGGER.info("ACCESS START {}", logMessage);
+		filterChain.doFilter(request, response);
+		LOGGER.info("ACCESS FINISH {}", logMessage);
+	}
 
-    /**
-     * ログメッセージを取得する。
-     * 
-     * @param request リクエスト
-     * @return ログメッセージ
-     */
-    private String getLogMessage(HttpServletRequest request) {
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	protected boolean shouldNotFilter(HttpServletRequest request)
+			throws ServletException {
 
-        StringBuilder sb = new StringBuilder();
+		String uri = request.getRequestURI();
+		if (uri.startsWith(request.getContextPath() + "/resources/")) {
+			return true;
+		}
 
-        sb.append("[RequestURL:").append(request.getRequestURL().toString());
-        String queryString = request.getQueryString();
-        if (queryString != null) {
-            sb.append("?").append(queryString);
-        }
-        sb.append("], ");
+		return false;
+	}
 
-        HttpSession session = request.getSession(false);
-        if (session != null) {
-            sb.append("[SessionID:").append(session.getId()).append("], ");
-        }
+	/**
+	 * ログメッセージを取得する。
+	 *
+	 * @param request リクエスト
+	 * @return ログメッセージ
+	 */
+	private String getLogMessage(HttpServletRequest request) {
 
-        sb.append("[RemoteAddress:").append(request.getRemoteAddr()).append("], ");
-        sb.append("[RemoteHost:").append(request.getRemoteHost()).append("] ");
+		StringBuilder sb = new StringBuilder();
 
-        return sb.toString();
-    }
+		sb.append("[RequestURL:").append(request.getRequestURL().toString());
+		String queryString = request.getQueryString();
+		if (queryString != null) {
+			sb.append("?").append(queryString);
+		}
+		sb.append("], ");
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+		HttpSession session = request.getSession(false);
+		if (session != null) {
+			sb.append("[SessionID:").append(session.getId()).append("], ");
+		}
 
-        String uri = request.getRequestURI();
-        if (uri.startsWith(request.getContextPath() + "/resources/")) {
-            return true;
-        }
+		sb.append("[RemoteAddress:").append(request.getRemoteAddr()).append("], ");
+		sb.append("[RemoteHost:").append(request.getRemoteHost()).append("] ");
 
-        return false;
-    }
+		return sb.toString();
+	}
 }

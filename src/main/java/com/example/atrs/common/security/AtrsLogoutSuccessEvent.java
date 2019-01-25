@@ -26,17 +26,17 @@ import org.springframework.security.core.Authentication;
  */
 public class AtrsLogoutSuccessEvent extends AbstractAuthenticationEvent {
 
-    /**
-     * serialVersionUID。
-     */
-    private static final long serialVersionUID = 1024168737113170485L;
+	/**
+	 * serialVersionUID。
+	 */
+	private static final long serialVersionUID = 1024168737113170485L;
 
-    /**
-     * コンストラクタ。
-     * 
-     * @param authentication 認証情報
-     */
-    public AtrsLogoutSuccessEvent(Authentication authentication) {
-        super(authentication);
-    }
+	/**
+	 * コンストラクタ。
+	 * 
+	 * @param authentication 認証情報
+	 */
+	public AtrsLogoutSuccessEvent(Authentication authentication) {
+		super(authentication);
+	}
 }

@@ -36,6 +36,12 @@ import org.springframework.stereotype.Component;
 public class AtrsAuthenticationSuccessHandler
 		extends SavedRequestAwareAuthenticationSuccessHandler {
 
+	@PostConstruct
+	public void init() {
+		this.setTargetUrlParameter("redirectTo");
+		this.setAlwaysUseDefaultTargetUrl(false);
+	}
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -52,12 +58,6 @@ public class AtrsAuthenticationSuccessHandler
 		}
 
 		super.onAuthenticationSuccess(request, response, authentication);
-	}
-
-	@PostConstruct
-	public void init() {
-		this.setTargetUrlParameter("redirectTo");
-		this.setAlwaysUseDefaultTargetUrl(false);
 	}
 
 }

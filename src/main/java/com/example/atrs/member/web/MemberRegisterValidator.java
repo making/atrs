@@ -16,12 +16,12 @@
  */
 package com.example.atrs.member.web;
 
+import com.example.atrs.member.MemberRegisterErrorCode;
+
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
-
-import com.example.atrs.member.MemberRegisterErrorCode;
 
 /**
  * 会員情報登録フォームのバリデータ。

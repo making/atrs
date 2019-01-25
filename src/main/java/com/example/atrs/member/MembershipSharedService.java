@@ -23,12 +23,12 @@ package com.example.atrs.member;
  */
 public interface MembershipSharedService {
 
-    /**
-     * 会員であるか判定する。
-     * 
-     * @param membershipNumber 会員番号
-     * @return 会員の場合true
-     */
-    boolean isMember(String membershipNumber);
+	/**
+	 * 会員であるか判定する。
+	 * 
+	 * @param membershipNumber 会員番号
+	 * @return 会員の場合true
+	 */
+	boolean isMember(String membershipNumber);
 
 }

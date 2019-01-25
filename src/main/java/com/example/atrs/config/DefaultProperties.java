@@ -1,36 +1,22 @@
 package com.example.atrs.config;
 
+import com.example.atrs.ticket.BoardingClassCd;
+import com.example.atrs.ticket.FlightType;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
-import com.example.atrs.ticket.BoardingClassCd;
-import com.example.atrs.ticket.FlightType;
-
 @Component
 @ConfigurationProperties(prefix = "default")
 public class DefaultProperties {
-	private FlightType flightType;
-	private String depAirportCd;
 	private String arrAirportCd;
+
 	private BoardingClassCd boardingClassCd;
 
-	public FlightType getFlightType() {
-		return flightType;
-	}
+	private String depAirportCd;
 
-	public void setFlightType(FlightType flightType) {
-		this.flightType = flightType;
-	}
-
-	public String getDepAirportCd() {
-		return depAirportCd;
-	}
-
-	public void setDepAirportCd(String depAirportCd) {
-		this.depAirportCd = depAirportCd;
-	}
+	private FlightType flightType;
 
 	public String getArrAirportCd() {
 		return arrAirportCd;
@@ -46,6 +32,22 @@ public class DefaultProperties {
 
 	public void setBoardingClassCd(BoardingClassCd boardingClassCd) {
 		this.boardingClassCd = boardingClassCd;
+	}
+
+	public String getDepAirportCd() {
+		return depAirportCd;
+	}
+
+	public void setDepAirportCd(String depAirportCd) {
+		this.depAirportCd = depAirportCd;
+	}
+
+	public FlightType getFlightType() {
+		return flightType;
+	}
+
+	public void setFlightType(FlightType flightType) {
+		this.flightType = flightType;
 	}
 
 	@Override

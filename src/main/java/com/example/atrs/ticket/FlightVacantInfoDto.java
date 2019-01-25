@@ -16,12 +16,12 @@
  */
 package com.example.atrs.ticket;
 
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
-
 import java.io.Serializable;
 import java.util.LinkedHashMap;
 import java.util.Map;
+
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 
 /**
  * 便ごとの空席状況を格納するDTO。
@@ -30,213 +30,213 @@ import java.util.Map;
  */
 public class FlightVacantInfoDto implements Serializable {
 
-    /**
-     * serialVersionUID。
-     */
-    private static final long serialVersionUID = 6319431230898145620L;
+	/**
+	 * serialVersionUID。
+	 */
+	private static final long serialVersionUID = 6319431230898145620L;
 
-    /**
-     * 便名。
-     */
-    private String flightName;
+	/**
+	 * 到着空港。
+	 */
+	private String arrAirportName;
 
-    /**
-     * 出発空港。
-     */
-    private String depAirportName;
+	/**
+	 * 到着時刻。
+	 */
+	private String arrTime;
 
-    /**
-     * 到着空港。
-     */
-    private String arrAirportName;
+	/**
+	 * 搭乗クラスコード。
+	 */
+	private BoardingClassCd boardingClassCd;
 
-    /**
-     * 出発時刻。
-     */
-    private String depTime;
+	/**
+	 * 出発空港。
+	 */
+	private String depAirportName;
 
-    /**
-     * 到着時刻。
-     */
-    private String arrTime;
+	/**
+	 * 搭乗日。
+	 */
+	private String depDate;
 
-    /**
-     * 搭乗日。
-     */
-    private String depDate;
+	/**
+	 * 出発時刻。
+	 */
+	private String depTime;
 
-    /**
-     * 搭乗クラスコード。
-     */
-    private BoardingClassCd boardingClassCd;
+	/**
+	 * 運賃種別群。
+	 */
+	private Map<String, FareTypeVacantInfoDto> fareTypes = new LinkedHashMap<>();
 
-    /**
-     * 運賃種別群。
-     */
-    private Map<String, FareTypeVacantInfoDto> fareTypes = new LinkedHashMap<>();
+	/**
+	 * 便名。
+	 */
+	private String flightName;
 
-    /**
-     * 便名を取得する。
-     * 
-     * @return 搭乗日
-     */
-    public String getFlightName() {
-        return flightName;
-    }
+	/**
+	 * 運賃種別群に運賃種別を追加する。
+	 *
+	 * @param fareTypeCd 運賃種別コード
+	 * @param fareTypeVacantInfo 運賃種別に対応する空席照会結果DTO
+	 */
+	public void addFareTypeVacantInfo(FareTypeCd fareTypeCd,
+			FareTypeVacantInfoDto fareTypeVacantInfo) {
 
-    /**
-     * 便名を設定する。
-     * 
-     * @param flightName 便名
-     */
-    public void setFlightName(String flightName) {
-        this.flightName = flightName;
-    }
+		fareTypes.put(fareTypeCd.getCode(), fareTypeVacantInfo);
+	}
 
-    /**
-     * 出発空港を取得する。
-     * 
-     * @return 出発空港
-     */
-    public String getDepAirportName() {
-        return depAirportName;
-    }
+	/**
+	 * 到着空港を取得する。
+	 *
+	 * @return 到着空港
+	 */
+	public String getArrAirportName() {
+		return arrAirportName;
+	}
 
-    /**
-     * 出発空港を設定する。
-     * 
-     * @param depAirportName 出発空港
-     */
-    public void setDepAirportName(String depAirportName) {
-        this.depAirportName = depAirportName;
-    }
+	/**
+	 * 到着空港を設定する。
+	 *
+	 * @param arrAirportName 到着空港
+	 */
+	public void setArrAirportName(String arrAirportName) {
+		this.arrAirportName = arrAirportName;
+	}
 
-    /**
-     * 到着空港を取得する。
-     * 
-     * @return 到着空港
-     */
-    public String getArrAirportName() {
-        return arrAirportName;
-    }
+	/**
+	 * 到着時刻を取得する。
+	 *
+	 * @return 到着時刻
+	 */
+	public String getArrTime() {
+		return arrTime;
+	}
 
-    /**
-     * 到着空港を設定する。
-     * 
-     * @param arrAirportName 到着空港
-     */
-    public void setArrAirportName(String arrAirportName) {
-        this.arrAirportName = arrAirportName;
-    }
+	/**
+	 * 到着時刻を設定する。
+	 *
+	 * @param arrTime 到着時刻
+	 */
+	public void setArrTime(String arrTime) {
+		this.arrTime = arrTime;
+	}
 
-    /**
-     * 出発時刻を取得する。
-     * 
-     * @return 出発時刻
-     */
-    public String getDepTime() {
-        return depTime;
-    }
+	/**
+	 * 搭乗クラスコードを取得する。
+	 *
+	 * @return 搭乗クラスコード
+	 */
+	public BoardingClassCd getBoardingClassCd() {
+		return boardingClassCd;
+	}
 
-    /**
-     * 出発時刻を設定する。
-     * 
-     * @param depTime 出発時刻
-     */
-    public void setDepTime(String depTime) {
-        this.depTime = depTime;
-    }
+	/**
+	 * 搭乗クラスコードを設定する。
+	 *
+	 * @param boardingClassCd 搭乗クラスコード
+	 */
+	public void setBoardingClassCd(BoardingClassCd boardingClassCd) {
+		this.boardingClassCd = boardingClassCd;
+	}
 
-    /**
-     * 到着時刻を取得する。
-     * 
-     * @return 到着時刻
-     */
-    public String getArrTime() {
-        return arrTime;
-    }
+	/**
+	 * 出発空港を取得する。
+	 *
+	 * @return 出発空港
+	 */
+	public String getDepAirportName() {
+		return depAirportName;
+	}
 
-    /**
-     * 到着時刻を設定する。
-     * 
-     * @param arrTime 到着時刻
-     */
-    public void setArrTime(String arrTime) {
-        this.arrTime = arrTime;
-    }
+	/**
+	 * 出発空港を設定する。
+	 *
+	 * @param depAirportName 出発空港
+	 */
+	public void setDepAirportName(String depAirportName) {
+		this.depAirportName = depAirportName;
+	}
 
-    /**
-     * 搭乗日を取得する。
-     * 
-     * @return 搭乗日
-     */
-    public String getDepDate() {
-        return depDate;
-    }
+	/**
+	 * 搭乗日を取得する。
+	 *
+	 * @return 搭乗日
+	 */
+	public String getDepDate() {
+		return depDate;
+	}
 
-    /**
-     * 搭乗日を設定する。
-     * 
-     * @param depDate 搭乗日
-     */
-    public void setDepDate(String depDate) {
-        this.depDate = depDate;
-    }
+	/**
+	 * 搭乗日を設定する。
+	 *
+	 * @param depDate 搭乗日
+	 */
+	public void setDepDate(String depDate) {
+		this.depDate = depDate;
+	}
 
-    /**
-     * 搭乗クラスコードを取得する。
-     * 
-     * @return 搭乗クラスコード
-     */
-    public BoardingClassCd getBoardingClassCd() {
-        return boardingClassCd;
-    }
+	/**
+	 * 出発時刻を取得する。
+	 *
+	 * @return 出発時刻
+	 */
+	public String getDepTime() {
+		return depTime;
+	}
 
-    /**
-     * 搭乗クラスコードを設定する。
-     * 
-     * @param boardingClassCd 搭乗クラスコード
-     */
-    public void setBoardingClassCd(BoardingClassCd boardingClassCd) {
-        this.boardingClassCd = boardingClassCd;
-    }
+	/**
+	 * 出発時刻を設定する。
+	 *
+	 * @param depTime 出発時刻
+	 */
+	public void setDepTime(String depTime) {
+		this.depTime = depTime;
+	}
 
-    /**
-     * 運賃種別群を取得する。
-     * 
-     * @return 運賃種別群
-     */
-    public Map<String, FareTypeVacantInfoDto> getFareTypes() {
-        return fareTypes;
-    }
+	/**
+	 * 運賃種別群を取得する。
+	 *
+	 * @return 運賃種別群
+	 */
+	public Map<String, FareTypeVacantInfoDto> getFareTypes() {
+		return fareTypes;
+	}
 
-    /**
-     * 運賃種別群を設定する。
-     * 
-     * @param fareTypes 運賃種別群
-     */
-    public void setFareTypes(Map<String, FareTypeVacantInfoDto> fareTypes) {
-        this.fareTypes = fareTypes;
-    }
+	/**
+	 * 運賃種別群を設定する。
+	 *
+	 * @param fareTypes 運賃種別群
+	 */
+	public void setFareTypes(Map<String, FareTypeVacantInfoDto> fareTypes) {
+		this.fareTypes = fareTypes;
+	}
 
-    /**
-     * 運賃種別群に運賃種別を追加する。
-     * 
-     * @param fareTypeCd 運賃種別コード
-     * @param fareTypeVacantInfo 運賃種別に対応する空席照会結果DTO
-     */
-    public void addFareTypeVacantInfo(FareTypeCd fareTypeCd,
-                                      FareTypeVacantInfoDto fareTypeVacantInfo) {
+	/**
+	 * 便名を取得する。
+	 *
+	 * @return 搭乗日
+	 */
+	public String getFlightName() {
+		return flightName;
+	}
 
-        fareTypes.put(fareTypeCd.getCode(), fareTypeVacantInfo);
-    }
+	/**
+	 * 便名を設定する。
+	 *
+	 * @param flightName 便名
+	 */
+	public void setFlightName(String flightName) {
+		this.flightName = flightName;
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String toString() {
-        return ToStringBuilder.reflectionToString(this, ToStringStyle.MULTI_LINE_STYLE);
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String toString() {
+		return ToStringBuilder.reflectionToString(this, ToStringStyle.MULTI_LINE_STYLE);
+	}
 
 }

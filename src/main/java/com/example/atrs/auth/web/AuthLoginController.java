@@ -28,14 +28,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("auth/login")
 public class AuthLoginController {
 
-    /**
-     * ログイン画面を表示する。
-     * 
-     * @return View論理名
-     */
-    @RequestMapping
-    public String loginForm() {
-        return "A1/loginForm";
-    }
+	/**
+	 * ログイン画面を表示する。
+	 * 
+	 * @return View論理名
+	 */
+	@RequestMapping
+	public String loginForm() {
+		return "A1/loginForm";
+	}
 
 }

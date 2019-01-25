@@ -16,10 +16,9 @@
  */
 package com.example.atrs.member;
 
-import org.terasoluna.gfw.common.exception.SystemException;
-
 import com.example.atrs.common.exception.AtrsBusinessException;
 import com.example.atrs.common.logging.LogMessages;
+import org.terasoluna.gfw.common.exception.SystemException;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -53,7 +52,28 @@ public class MemberUpdateServiceImpl implements MemberUpdateService {
 	}
 
 	/**
-	 * 
+	 *
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void checkMemberPassword(String password, String membershipNumber) {
+
+		// パスワードの変更がある場合のみパスワードを比較
+		if (StringUtils.hasLength(password)) {
+
+			// 登録パスワードを取得
+			Member member = memberRepository.findOne(membershipNumber);
+			String currentPassword = member.getMemberLogin().getPassword();
+
+			// パスワード不一致の場合、業務例外をスロー
+			if (!passwordEncoder.matches(password, currentPassword)) {
+				throw new AtrsBusinessException(MemberUpdateErrorCode.E_AR_C2_2001);
+			}
+		}
+	}
+
+	/**
+	 *
 	 * {@inheritDoc}
 	 */
 	@Override
@@ -65,7 +85,18 @@ public class MemberUpdateServiceImpl implements MemberUpdateService {
 	}
 
 	/**
-	 * 
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Member findMemberForLogin(String membershipNumber) {
+
+		Assert.hasText(membershipNumber);
+
+		return memberRepository.findOneForLogin(membershipNumber);
+	}
+
+	/**
+	 *
 	 * {@inheritDoc}
 	 */
 	@Override
@@ -96,38 +127,6 @@ public class MemberUpdateServiceImpl implements MemberUpdateService {
 						LogMessages.E_AR_A0_L9002.getMessage(updateMemberLoginCount, 1));
 			}
 		}
-	}
-
-	/**
-	 * 
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void checkMemberPassword(String password, String membershipNumber) {
-
-		// パスワードの変更がある場合のみパスワードを比較
-		if (StringUtils.hasLength(password)) {
-
-			// 登録パスワードを取得
-			Member member = memberRepository.findOne(membershipNumber);
-			String currentPassword = member.getMemberLogin().getPassword();
-
-			// パスワード不一致の場合、業務例外をスロー
-			if (!passwordEncoder.matches(password, currentPassword)) {
-				throw new AtrsBusinessException(MemberUpdateErrorCode.E_AR_C2_2001);
-			}
-		}
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public Member findMemberForLogin(String membershipNumber) {
-
-		Assert.hasText(membershipNumber);
-
-		return memberRepository.findOneForLogin(membershipNumber);
 	}
 
 }

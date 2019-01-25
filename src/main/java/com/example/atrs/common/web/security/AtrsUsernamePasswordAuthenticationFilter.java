@@ -21,6 +21,8 @@ import java.util.Locale;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.example.atrs.auth.AuthLoginErrorCode;
+import com.example.atrs.common.logging.LogMessages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,9 +31,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-
-import com.example.atrs.common.logging.LogMessages;
-import com.example.atrs.auth.AuthLoginErrorCode;
 
 /**
  * ユーザーログイン入力チェックフィルタ。
@@ -53,50 +52,14 @@ public class AtrsUsernamePasswordAuthenticationFilter
 	private int membershipNumberLength = 10;
 
 	/**
-	 * パスワードの最小桁数。
-	 */
-	private int passwordMinLength = 8;
-
-	/**
 	 * パスワードの最大桁数。
 	 */
 	private int passwordMaxLength = 20;
 
 	/**
-	 * 会員番号文字数を設定する。
-	 * <p>
-	 * デフォルトは10。
-	 * </p>
-	 * 
-	 * @param membershipNumberLength 会員番号文字数
+	 * パスワードの最小桁数。
 	 */
-	public void setMembershipNumberLength(int membershipNumberLength) {
-		this.membershipNumberLength = membershipNumberLength;
-	}
-
-	/**
-	 * パスワードの最小桁数を設定する。
-	 * <p>
-	 * デフォルトは8。
-	 * </p>
-	 * 
-	 * @param passwordMinLength パスワードの最小桁数
-	 */
-	public void setPasswordMinLength(int passwordMinLength) {
-		this.passwordMinLength = passwordMinLength;
-	}
-
-	/**
-	 * パスワードの最大桁数を設定する。
-	 * <p>
-	 * デフォルトは20。
-	 * </p>
-	 * 
-	 * @param passwordMaxLength パスワードの最大桁数
-	 */
-	public void setPasswordMaxLength(int passwordMaxLength) {
-		this.passwordMaxLength = passwordMaxLength;
-	}
+	private int passwordMinLength = 8;
 
 	/**
 	 * {@inheritDoc}
@@ -124,5 +87,41 @@ public class AtrsUsernamePasswordAuthenticationFilter
 		}
 
 		return super.attemptAuthentication(request, response);
+	}
+
+	/**
+	 * 会員番号文字数を設定する。
+	 * <p>
+	 * デフォルトは10。
+	 * </p>
+	 *
+	 * @param membershipNumberLength 会員番号文字数
+	 */
+	public void setMembershipNumberLength(int membershipNumberLength) {
+		this.membershipNumberLength = membershipNumberLength;
+	}
+
+	/**
+	 * パスワードの最大桁数を設定する。
+	 * <p>
+	 * デフォルトは20。
+	 * </p>
+	 * 
+	 * @param passwordMaxLength パスワードの最大桁数
+	 */
+	public void setPasswordMaxLength(int passwordMaxLength) {
+		this.passwordMaxLength = passwordMaxLength;
+	}
+
+	/**
+	 * パスワードの最小桁数を設定する。
+	 * <p>
+	 * デフォルトは8。
+	 * </p>
+	 *
+	 * @param passwordMinLength パスワードの最小桁数
+	 */
+	public void setPasswordMinLength(int passwordMinLength) {
+		this.passwordMinLength = passwordMinLength;
 	}
 }

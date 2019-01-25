@@ -37,30 +37,22 @@ import org.springframework.util.Assert;
 public class PeakTimeProvider {
 
 	/**
-	 * ピーク時期情報リポジトリ。
-	 */
-	private final PeakTimeRepository peakTimeRepository;
-
-	/**
 	 * ピーク時期リストのリスト。
 	 */
 	private final List<PeakTime> peakTimeList = new ArrayList<>();
+
+	/**
+	 * ピーク時期情報リポジトリ。
+	 */
+	private final PeakTimeRepository peakTimeRepository;
 
 	public PeakTimeProvider(PeakTimeRepository peakTimeRepository) {
 		this.peakTimeRepository = peakTimeRepository;
 	}
 
 	/**
-	 * ピーク時期情報をロードし、キャッシュする。
-	 */
-	@PostConstruct
-	public void load() {
-		peakTimeList.addAll(peakTimeRepository.findAll());
-	}
-
-	/**
 	 * 指定搭乗日に該当するピーク時期情報を取得する。
-	 * 
+	 *
 	 * @param depDate 搭乗日
 	 * @return ピーク時期情報。該当するピーク時期情報が存在しない場合null。
 	 */
@@ -77,6 +69,14 @@ public class PeakTimeProvider {
 			}
 		}
 		return null;
+	}
+
+	/**
+	 * ピーク時期情報をロードし、キャッシュする。
+	 */
+	@PostConstruct
+	public void load() {
+		peakTimeList.addAll(peakTimeRepository.findAll());
 	}
 
 }

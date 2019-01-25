@@ -16,9 +16,9 @@
  */
 package com.example.atrs.ticket;
 
-import org.apache.ibatis.annotations.Mapper;
-
 import java.util.List;
+
+import org.apache.ibatis.annotations.Mapper;
 
 /**
  * 区間テーブルにアクセスするリポジトリインターフェース。
@@ -28,10 +28,10 @@ import java.util.List;
 @Mapper
 public interface RouteRepository {
 
-    /**
-     * 全ての区間情報を取得する。
-     * 
-     * @return 区間情報リスト
-     */
-    List<Route> findAll();
+	/**
+	 * 全ての区間情報を取得する。
+	 * 
+	 * @return 区間情報リスト
+	 */
+	List<Route> findAll();
 }

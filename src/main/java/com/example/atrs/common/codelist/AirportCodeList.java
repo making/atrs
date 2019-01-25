@@ -16,194 +16,198 @@
  */
 package com.example.atrs.common.codelist;
 
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.util.Assert;
-import org.terasoluna.gfw.common.codelist.AbstractReloadableCodeList;
-
-import javax.sql.DataSource;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.sql.DataSource;
+
+import org.terasoluna.gfw.common.codelist.AbstractReloadableCodeList;
+
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.util.Assert;
+
 /**
  * 空港コードリストクラス。
- * <p>キー：空港コード, 値：空港名。</p>
+ * <p>
+ * キー：空港コード, 値：空港名。
+ * </p>
  * 
  * @author NTT 電電太郎
  */
 public class AirportCodeList extends AbstractReloadableCodeList {
 
-    /**
-     * 空港名の区切り行の表示順。
-     */
-    private int airportNopInsertOrder;
+	/**
+	 * 空港名の区切り行の表示順。
+	 */
+	private int airportNopInsertOrder;
 
-    /**
-     * 空港名の区切り行の値
-     */
-    private String airportNopValue = "NOP";
+	/**
+	 * 空港名の区切り行の表示名
+	 */
+	private String airportNopName = "-----------";
 
-    /**
-     * 空港名の区切り行の表示名
-     */
-    private String airportNopName = "-----------";
+	/**
+	 * 空港名の区切り行の値
+	 */
+	private String airportNopValue = "NOP";
 
-    /**
-     * DB接続部品。
-     */
-    private JdbcTemplate jdbcTemplate;
+	/**
+	 * DB接続部品。
+	 */
+	private JdbcTemplate jdbcTemplate;
 
-    /**
-     * 検索用SQL文。
-     */
-    private String querySql;
+	/**
+	 * 表示ラベルのカラム名。
+	 */
+	private String labelColumn;
 
-    /**
-     * 値のカラム名。
-     */
-    private String valueColumn;
+	/**
+	 * 表示順のカラム名。
+	 */
+	private String orderColumn;
 
-    /**
-     * 表示ラベルのカラム名。
-     */
-    private String labelColumn;
+	/**
+	 * 検索用SQL文。
+	 */
+	private String querySql;
 
-    /**
-     * 表示順のカラム名。
-     */
-    private String orderColumn;
+	/**
+	 * 値のカラム名。
+	 */
+	private String valueColumn;
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected Map<String, String> retrieveMap() {
-        List<Map<String, Object>> rows = jdbcTemplate.queryForList(querySql);
-        Map<String, String> result = new LinkedHashMap<>();
-        boolean nopInserted = false;
-        for (Map<String, Object> row : rows) {
-            Object key = row.get(valueColumn);
-            Object value = row.get(labelColumn);
-            Object order = row.get(orderColumn);
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void afterPropertiesSet() {
+		Assert.hasLength(querySql, "querySql is empty");
+		Assert.hasLength(valueColumn, "valueColumn is empty");
+		Assert.hasLength(labelColumn, "labelColumn is empty");
+		Assert.hasLength(orderColumn, "orderColumn is empty");
+		Assert.notNull(jdbcTemplate, "jdbcTemplate (or dataSource) is empty");
+		Assert.notNull(airportNopValue, "airportNopValue is null");
+		Assert.hasLength(airportNopName, "airportNopName is empty");
+		super.afterPropertiesSet();
+	}
 
-            if (key == null || value == null || order == null) {
-                continue;
-            }
+	/**
+	 * 空港名の区切り行の表示順を設定する。
+	 *
+	 * @param airportNopInsertOrder 空港名の区切り行の表示順
+	 */
+	public void setAirportNopInsertOrder(int airportNopInsertOrder) {
+		this.airportNopInsertOrder = airportNopInsertOrder;
+	}
 
-            if (!nopInserted) {
-                int displayOrder = ((Integer) order).intValue();
-                if (airportNopInsertOrder <= displayOrder) {
-                    // 区切り行を挿入
-                    result.put(airportNopValue, airportNopName);
-                    nopInserted = true;
-                }
-            }
+	/**
+	 * 空港名の区切り行の表示名を設定する。
+	 * <p>
+	 * デフォルト値は「"-----------"」。
+	 * </p>
+	 *
+	 * @param airportNopName 空港名の区切り行の表示名
+	 */
+	public void setAirportNopName(String airportNopName) {
+		this.airportNopName = airportNopName;
+	}
 
-            result.put(key.toString(), value.toString());
-        }
-        return result;
-    }
+	/**
+	 * 空港名の区切り行の値を設定する。
+	 * <p>
+	 * デフォルト値は「""」(ブランク)。
+	 * </p>
+	 * 
+	 * @param airportNopValue 空港名の区切り行の値
+	 */
+	public void setAirportNopValue(String airportNopValue) {
+		this.airportNopValue = airportNopValue;
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void afterPropertiesSet() {
-        Assert.hasLength(querySql, "querySql is empty");
-        Assert.hasLength(valueColumn, "valueColumn is empty");
-        Assert.hasLength(labelColumn, "labelColumn is empty");
-        Assert.hasLength(orderColumn, "orderColumn is empty");
-        Assert.notNull(jdbcTemplate, "jdbcTemplate (or dataSource) is empty");
-        Assert.notNull(airportNopValue, "airportNopValue is null");
-        Assert.hasLength(airportNopName, "airportNopName is empty");
-        super.afterPropertiesSet();
-    }
+	/**
+	 * データソースを設定する。
+	 *
+	 * @param dataSource データソース
+	 */
+	public void setDataSource(DataSource dataSource) {
+		this.jdbcTemplate = new JdbcTemplate(dataSource);
+	}
 
-    /**
-     * 空港名の区切り行の表示順を設定する。
-     * 
-     * @param airportNopInsertOrder 空港名の区切り行の表示順
-     */
-    public void setAirportNopInsertOrder(int airportNopInsertOrder) {
-        this.airportNopInsertOrder = airportNopInsertOrder;
-    }
+	/**
+	 * JdbcTemplateを設定する。
+	 *
+	 * @param jdbcTemplate JdbcTemplateオブジェクト
+	 */
+	public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
+		this.jdbcTemplate = jdbcTemplate;
+	}
 
-    /**
-     * 空港名の区切り行の値を設定する。
-     * <p>
-     * デフォルト値は「""」(ブランク)。
-     * </p>
-     * 
-     * @param airportNopValue 空港名の区切り行の値
-     */
-    public void setAirportNopValue(String airportNopValue) {
-        this.airportNopValue = airportNopValue;
-    }
+	/**
+	 * ラベル表示カラム名を設定する。
+	 *
+	 * @param labelColumn ラベル表示カラム名
+	 */
+	public void setLabelColumn(String labelColumn) {
+		this.labelColumn = labelColumn;
+	}
 
-    /**
-     * 空港名の区切り行の表示名を設定する。
-     * <p>
-     * デフォルト値は「"-----------"」。
-     * </p>
-     * 
-     * @param airportNopName 空港名の区切り行の表示名
-     */
-    public void setAirportNopName(String airportNopName) {
-        this.airportNopName = airportNopName;
-    }
+	/**
+	 * 表示順カラム名を設定する
+	 *
+	 * @param orderColumn 表示順カラム名
+	 */
+	public void setOrderColumn(String orderColumn) {
+		this.orderColumn = orderColumn;
+	}
 
-    /**
-     * データソースを設定する。
-     * 
-     * @param dataSource データソース
-     */
-    public void setDataSource(DataSource dataSource) {
-        this.jdbcTemplate = new JdbcTemplate(dataSource);
-    }
+	/**
+	 * 検索SQL文を設定する。
+	 *
+	 * @param querySql 検索SQL
+	 */
+	public void setQuerySql(String querySql) {
+		this.querySql = querySql;
+	}
 
-    /**
-     * JdbcTemplateを設定する。
-     * 
-     * @param jdbcTemplate JdbcTemplateオブジェクト
-     */
-    public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-    }
+	/**
+	 * 値カラム名を設定する。
+	 *
+	 * @param valueColumn 値カラム名
+	 */
+	public void setValueColumn(String valueColumn) {
+		this.valueColumn = valueColumn;
+	}
 
-    /**
-     * ラベル表示カラム名を設定する。
-     * 
-     * @param labelColumn ラベル表示カラム名
-     */
-    public void setLabelColumn(String labelColumn) {
-        this.labelColumn = labelColumn;
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	protected Map<String, String> retrieveMap() {
+		List<Map<String, Object>> rows = jdbcTemplate.queryForList(querySql);
+		Map<String, String> result = new LinkedHashMap<>();
+		boolean nopInserted = false;
+		for (Map<String, Object> row : rows) {
+			Object key = row.get(valueColumn);
+			Object value = row.get(labelColumn);
+			Object order = row.get(orderColumn);
 
-    /**
-     * 値カラム名を設定する。
-     * 
-     * @param valueColumn 値カラム名
-     */
-    public void setValueColumn(String valueColumn) {
-        this.valueColumn = valueColumn;
-    }
+			if (key == null || value == null || order == null) {
+				continue;
+			}
 
-    /**
-     * 表示順カラム名を設定する
-     * 
-     * @param orderColumn 表示順カラム名
-     */
-    public void setOrderColumn(String orderColumn) {
-        this.orderColumn = orderColumn;
-    }
+			if (!nopInserted) {
+				int displayOrder = ((Integer) order).intValue();
+				if (airportNopInsertOrder <= displayOrder) {
+					// 区切り行を挿入
+					result.put(airportNopValue, airportNopName);
+					nopInserted = true;
+				}
+			}
 
-    /**
-     * 検索SQL文を設定する。
-     * 
-     * @param querySql 検索SQL
-     */
-    public void setQuerySql(String querySql) {
-        this.querySql = querySql;
-    }
+			result.put(key.toString(), value.toString());
+		}
+		return result;
+	}
 
 }

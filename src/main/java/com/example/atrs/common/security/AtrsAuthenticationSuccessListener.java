@@ -16,13 +16,13 @@
  */
 package com.example.atrs.common.security;
 
+import com.example.atrs.auth.AtrsUserDetails;
+import com.example.atrs.auth.AuthLoginService;
+
 import org.springframework.context.ApplicationListener;
 import org.springframework.security.authentication.event.AuthenticationSuccessEvent;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
-
-import com.example.atrs.auth.AtrsUserDetails;
-import com.example.atrs.auth.AuthLoginService;
 
 /**
  * ログイン成功イベントハンドリングクラス。

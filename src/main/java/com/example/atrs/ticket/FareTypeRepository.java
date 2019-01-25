@@ -16,9 +16,9 @@
  */
 package com.example.atrs.ticket;
 
-import org.apache.ibatis.annotations.Mapper;
-
 import java.util.List;
+
+import org.apache.ibatis.annotations.Mapper;
 
 /**
  * 運賃種別テーブルにアクセスするリポジトリインターフェース。
@@ -27,11 +27,11 @@ import java.util.List;
  */
 @Mapper
 public interface FareTypeRepository {
-    /**
-     * 全ての運賃種別を取得する。
-     * 
-     * @return 運賃種別リスト
-     */
-    List<FareType> findAll();
+	/**
+	 * 全ての運賃種別を取得する。
+	 * 
+	 * @return 運賃種別リスト
+	 */
+	List<FareType> findAll();
 
 }

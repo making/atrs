@@ -21,12 +21,11 @@ import java.util.Date;
 
 import javax.validation.constraints.NotNull;
 
+import com.example.atrs.ticket.BoardingClassCd;
+import com.example.atrs.ticket.FlightType;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.terasoluna.gfw.common.codelist.ExistInCodeList;
-
-import com.example.atrs.ticket.BoardingClassCd;
-import com.example.atrs.ticket.FlightType;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -37,164 +36,164 @@ import org.springframework.format.annotation.DateTimeFormat;
  */
 public class TicketSearchForm implements Serializable {
 
-    /**
-     * serialVersionUID。
-     */
-    private static final long serialVersionUID = 2340727779297558393L;
+	/**
+	 * serialVersionUID。
+	 */
+	private static final long serialVersionUID = 2340727779297558393L;
 
-    /**
-     * フライト種別。
-     */
-    @NotNull
-    private FlightType flightType;
+	/**
+	 * 到着空港コード。
+	 */
+	@NotNull
+	@ExistInCodeList(codeListId = "CL_AIRPORT")
+	private String arrAirportCd;
 
-    /**
-     * 出発空港コード。
-     */
-    @NotNull
-    @ExistInCodeList(codeListId = "CL_AIRPORT")
-    private String depAirportCd;
+	/**
+	 * 搭乗クラスコード。
+	 */
+	@NotNull
+	private BoardingClassCd boardingClassCd;
 
-    /**
-     * 到着空港コード。
-     */
-    @NotNull
-    @ExistInCodeList(codeListId = "CL_AIRPORT")
-    private String arrAirportCd;
+	/**
+	 * 出発空港コード。
+	 */
+	@NotNull
+	@ExistInCodeList(codeListId = "CL_AIRPORT")
+	private String depAirportCd;
 
-    /**
-     * 往路搭乗日。
-     */
-    @NotNull
-    @DateTimeFormat(pattern = "yyyy/MM/dd")
-    private Date outwardDate;
+	/**
+	 * フライト種別。
+	 */
+	@NotNull
+	private FlightType flightType;
 
-    /**
-     * 復路搭乗日。
-     */
-    @DateTimeFormat(pattern = "yyyy/MM/dd")
-    private Date homewardDate;
+	/**
+	 * 復路搭乗日。
+	 */
+	@DateTimeFormat(pattern = "yyyy/MM/dd")
+	private Date homewardDate;
 
-    /**
-     * 搭乗クラスコード。
-     */
-    @NotNull
-    private BoardingClassCd boardingClassCd;
+	/**
+	 * 往路搭乗日。
+	 */
+	@NotNull
+	@DateTimeFormat(pattern = "yyyy/MM/dd")
+	private Date outwardDate;
 
-    /**
-     * フライト種別を取得する。
-     * 
-     * @return フライト種別
-     */
-    public FlightType getFlightType() {
-        return flightType;
-    }
+	/**
+	 * 到着空港コードを取得する。
+	 *
+	 * @return 到着空港コード
+	 */
+	public String getArrAirportCd() {
+		return arrAirportCd;
+	}
 
-    /**
-     * フライト種別を設定する。
-     * 
-     * @param flightType フライト種別
-     */
-    public void setFlightType(FlightType flightType) {
-        this.flightType = flightType;
-    }
+	/**
+	 * 到着空港コードを設定する。
+	 *
+	 * @param arrAirportCd 到着空港コード
+	 */
+	public void setArrAirportCd(String arrAirportCd) {
+		this.arrAirportCd = arrAirportCd;
+	}
 
-    /**
-     * 出発空港コードを取得する。
-     * 
-     * @return 出発空港コード
-     */
-    public String getDepAirportCd() {
-        return depAirportCd;
-    }
+	/**
+	 * 搭乗クラスコードを取得する。
+	 *
+	 * @return 搭乗クラスコード
+	 */
+	public BoardingClassCd getBoardingClassCd() {
+		return boardingClassCd;
+	}
 
-    /**
-     * 出発空港コードを設定する。
-     * 
-     * @param depAirportCd 出発空港コード
-     */
-    public void setDepAirportCd(String depAirportCd) {
-        this.depAirportCd = depAirportCd;
-    }
+	/**
+	 * 搭乗クラスコードを設定する。
+	 *
+	 * @param boardingClassCd 搭乗クラスコード
+	 */
+	public void setBoardingClassCd(BoardingClassCd boardingClassCd) {
+		this.boardingClassCd = boardingClassCd;
+	}
 
-    /**
-     * 到着空港コードを取得する。
-     * 
-     * @return 到着空港コード
-     */
-    public String getArrAirportCd() {
-        return arrAirportCd;
-    }
+	/**
+	 * 出発空港コードを取得する。
+	 *
+	 * @return 出発空港コード
+	 */
+	public String getDepAirportCd() {
+		return depAirportCd;
+	}
 
-    /**
-     * 到着空港コードを設定する。
-     * 
-     * @param arrAirportCd 到着空港コード
-     */
-    public void setArrAirportCd(String arrAirportCd) {
-        this.arrAirportCd = arrAirportCd;
-    }
+	/**
+	 * 出発空港コードを設定する。
+	 *
+	 * @param depAirportCd 出発空港コード
+	 */
+	public void setDepAirportCd(String depAirportCd) {
+		this.depAirportCd = depAirportCd;
+	}
 
-    /**
-     * 往路搭乗日を取得する。
-     * 
-     * @return 往路搭乗日
-     */
-    public Date getOutwardDate() {
-        return outwardDate;
-    }
+	/**
+	 * フライト種別を取得する。
+	 *
+	 * @return フライト種別
+	 */
+	public FlightType getFlightType() {
+		return flightType;
+	}
 
-    /**
-     * 往路搭乗日を設定する。
-     * 
-     * @param outwardDate 往路搭乗日
-     */
-    public void setOutwardDate(Date outwardDate) {
-        this.outwardDate = outwardDate;
-    }
+	/**
+	 * フライト種別を設定する。
+	 *
+	 * @param flightType フライト種別
+	 */
+	public void setFlightType(FlightType flightType) {
+		this.flightType = flightType;
+	}
 
-    /**
-     * 復路搭乗日を取得する。
-     * 
-     * @return 復路搭乗日
-     */
-    public Date getHomewardDate() {
-        return homewardDate;
-    }
+	/**
+	 * 復路搭乗日を取得する。
+	 * 
+	 * @return 復路搭乗日
+	 */
+	public Date getHomewardDate() {
+		return homewardDate;
+	}
 
-    /**
-     * 復路搭乗日を設定する。
-     * 
-     * @param homewardDate 復路搭乗日
-     */
-    public void setHomewardDate(Date homewardDate) {
-        this.homewardDate = homewardDate;
-    }
+	/**
+	 * 復路搭乗日を設定する。
+	 * 
+	 * @param homewardDate 復路搭乗日
+	 */
+	public void setHomewardDate(Date homewardDate) {
+		this.homewardDate = homewardDate;
+	}
 
-    /**
-     * 搭乗クラスコードを取得する。
-     * 
-     * @return 搭乗クラスコード
-     */
-    public BoardingClassCd getBoardingClassCd() {
-        return boardingClassCd;
-    }
+	/**
+	 * 往路搭乗日を取得する。
+	 *
+	 * @return 往路搭乗日
+	 */
+	public Date getOutwardDate() {
+		return outwardDate;
+	}
 
-    /**
-     * 搭乗クラスコードを設定する。
-     * 
-     * @param boardingClassCd 搭乗クラスコード
-     */
-    public void setBoardingClassCd(BoardingClassCd boardingClassCd) {
-        this.boardingClassCd = boardingClassCd;
-    }
+	/**
+	 * 往路搭乗日を設定する。
+	 *
+	 * @param outwardDate 往路搭乗日
+	 */
+	public void setOutwardDate(Date outwardDate) {
+		this.outwardDate = outwardDate;
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String toString() {
-        return ToStringBuilder.reflectionToString(this, ToStringStyle.MULTI_LINE_STYLE);
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String toString() {
+		return ToStringBuilder.reflectionToString(this, ToStringStyle.MULTI_LINE_STYLE);
+	}
 
 }

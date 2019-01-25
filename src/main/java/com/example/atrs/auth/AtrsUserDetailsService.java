@@ -18,6 +18,9 @@ package com.example.atrs.auth;
 
 import java.util.Locale;
 
+import com.example.atrs.common.logging.LogMessages;
+import com.example.atrs.member.Member;
+import com.example.atrs.member.MemberRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,10 +31,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
-
-import com.example.atrs.common.logging.LogMessages;
-import com.example.atrs.member.Member;
-import com.example.atrs.member.MemberRepository;
 
 /**
  * ログインユーザ情報サービス。
@@ -49,14 +48,14 @@ public class AtrsUserDetailsService implements UserDetailsService {
 			.getLogger(AtrsUserDetailsService.class);
 
 	/**
-	 * メッセージプロパティ設定。
-	 */
-	private final MessageSource messageSource;
-
-	/**
 	 * カード会員情報リポジトリ。
 	 */
 	private final MemberRepository memberRepository;
+
+	/**
+	 * メッセージプロパティ設定。
+	 */
+	private final MessageSource messageSource;
 
 	public AtrsUserDetailsService(MessageSource messageSource,
 			MemberRepository memberRepository) {

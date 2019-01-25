@@ -23,12 +23,12 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.example.atrs.common.security.AtrsLogoutSuccessEvent;
+
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.logout.SimpleUrlLogoutSuccessHandler;
 import org.springframework.stereotype.Component;
-
-import com.example.atrs.common.security.AtrsLogoutSuccessEvent;
 
 /**
  * ユーザーログアウト成功ハンドラ。
@@ -47,6 +47,11 @@ public class AtrsLogoutSuccessHandler extends SimpleUrlLogoutSuccessHandler {
 		this.eventPublisher = eventPublisher;
 	}
 
+	@PostConstruct
+	public void init() {
+		this.setDefaultTargetUrl("/");
+	}
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -59,11 +64,6 @@ public class AtrsLogoutSuccessHandler extends SimpleUrlLogoutSuccessHandler {
 			eventPublisher.publishEvent(new AtrsLogoutSuccessEvent(authentication));
 		}
 		super.handle(request, response, authentication);
-	}
-
-	@PostConstruct
-	public void init() {
-		this.setDefaultTargetUrl("/");
 	}
 
 }

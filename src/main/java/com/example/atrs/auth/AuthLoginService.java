@@ -25,11 +25,11 @@ import com.example.atrs.member.Member;
  */
 public interface AuthLoginService {
 
-    /**
-     * ログイン時に必要な業務処理を行う。
-     * 
-     * @param member 会員情報
-     */
-    void login(Member member);
+	/**
+	 * ログイン時に必要な業務処理を行う。
+	 * 
+	 * @param member 会員情報
+	 */
+	void login(Member member);
 
 }

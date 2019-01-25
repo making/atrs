@@ -56,8 +56,27 @@ public class MemberHelper {
 	}
 
 	/**
+	 * 会員登録可能な最大生年月日を取得する。
+	 *
+	 * @return 会員登録可能な最大生年月日
+	 */
+	public String getDateOfBirthMaxDate() {
+		return Instant.now(this.clock).atZone(ZoneId.systemDefault())
+				.format(DATE_FORMATTER);
+	}
+
+	/**
+	 * 会員登録可能な最小生年月日を取得する。
+	 *
+	 * @return 会員登録可能な最小生年月日
+	 */
+	public String getDateOfBirthMinDate() {
+		return dateOfBirthMinDate;
+	}
+
+	/**
 	 * 会員情報フォームをカード会員情報に変換する。
-	 * 
+	 *
 	 * @param memberForm 会員情報フォーム
 	 * @return カード会員情報
 	 */
@@ -86,7 +105,7 @@ public class MemberHelper {
 
 	/**
 	 * カード会員情報を会員情報フォームに変換する。
-	 * 
+	 *
 	 * @param member カード会員情報
 	 * @return 会員情報フォーム
 	 */
@@ -118,25 +137,6 @@ public class MemberHelper {
 		}
 
 		return memberUpdateForm;
-	}
-
-	/**
-	 * 会員登録可能な最小生年月日を取得する。
-	 * 
-	 * @return 会員登録可能な最小生年月日
-	 */
-	public String getDateOfBirthMinDate() {
-		return dateOfBirthMinDate;
-	}
-
-	/**
-	 * 会員登録可能な最大生年月日を取得する。
-	 * 
-	 * @return 会員登録可能な最大生年月日
-	 */
-	public String getDateOfBirthMaxDate() {
-		return Instant.now(this.clock).atZone(ZoneId.systemDefault())
-				.format(DATE_FORMATTER);
 	}
 
 }

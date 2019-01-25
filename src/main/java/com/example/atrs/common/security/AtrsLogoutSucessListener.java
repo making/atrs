@@ -16,12 +16,12 @@
  */
 package com.example.atrs.common.security;
 
+import com.example.atrs.auth.AtrsUserDetails;
+import com.example.atrs.auth.AuthLogoutService;
+
 import org.springframework.context.ApplicationListener;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
-
-import com.example.atrs.auth.AtrsUserDetails;
-import com.example.atrs.auth.AuthLogoutService;
 
 /**
  * ログアウト成功イベントハンドリングクラス。

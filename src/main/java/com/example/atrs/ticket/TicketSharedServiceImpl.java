@@ -22,12 +22,11 @@ import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
-import com.example.atrs.config.AtrsProperties;
 import com.example.atrs.common.exception.AtrsBusinessException;
 import com.example.atrs.common.util.DateTimeUtil;
 import com.example.atrs.common.util.FareTypeUtil;
 import com.example.atrs.common.util.FareUtil;
-
+import com.example.atrs.config.AtrsProperties;
 import org.terasoluna.gfw.common.exception.BusinessException;
 
 import org.springframework.stereotype.Service;
@@ -47,21 +46,21 @@ public class TicketSharedServiceImpl implements TicketSharedService {
 	private static final int MULTIPLICATION_RATIO_IN_NORMAL_TIME = 100;
 
 	/**
-	 * 往路の到着時刻に対し、復路で予約可能となる出発時刻までの時間間隔(分)。
+	 * 搭乗クラス情報提供クラス。
 	 */
-	private final int reserveIntervalTime;
+	private final BoardingClassProvider boardingClassProvider;
+
+	private final Clock clock;
+
+	/**
+	 * フライト情報リポジトリ。
+	 */
+	private final FlightRepository flightRepository;
 
 	/**
 	 * 予約可能限界日数。
 	 */
 	private final int limitDay;
-
-	private final Clock clock;
-
-	/**
-	 * 搭乗クラス情報提供クラス。
-	 */
-	private final BoardingClassProvider boardingClassProvider;
 
 	/**
 	 * ピーク時期情報提供クラス。
@@ -69,9 +68,9 @@ public class TicketSharedServiceImpl implements TicketSharedService {
 	private final PeakTimeProvider peakTimeProvider;
 
 	/**
-	 * フライト情報リポジトリ。
+	 * 往路の到着時刻に対し、復路で予約可能となる出発時刻までの時間間隔(分)。
 	 */
-	private final FlightRepository flightRepository;
+	private final int reserveIntervalTime;
 
 	public TicketSharedServiceImpl(AtrsProperties props, Clock clock,
 			BoardingClassProvider boardingClassProvider,
@@ -85,6 +84,61 @@ public class TicketSharedServiceImpl implements TicketSharedService {
 	}
 
 	/**
+	 *
+	 * {@inheritDoc}
+	 */
+	@Override
+	public int calculateBasicFare(int basicFareOfRoute, BoardingClassCd boardingClassCd,
+			Date depDate) {
+		Assert.isTrue(basicFareOfRoute >= 0);
+		Assert.notNull(boardingClassCd);
+		Assert.notNull(depDate);
+
+		// 搭乗クラスの加算料金の取得
+		BoardingClass boardingClass = boardingClassProvider
+				.getBoardingClass(boardingClassCd);
+		int boardingClassFare = boardingClass.getExtraCharge();
+
+		// 搭乗日の料金積算比率の取得
+		int multiplicationRatio = getMultiplicationRatio(depDate);
+
+		// 基本運賃の計算
+		int basicFare = (int) ((basicFareOfRoute + boardingClassFare)
+				* (multiplicationRatio * 0.01));
+
+		return basicFare;
+	}
+
+	/**
+	 *
+	 * {@inheritDoc}
+	 */
+	@Override
+	public int calculateFare(int basicFare, int discountRate) {
+		Assert.isTrue(basicFare >= 0);
+		Assert.isTrue(discountRate >= 0);
+		Assert.isTrue(discountRate <= 100);
+
+		// 運賃の計算
+		int fare = (int) (basicFare * (1 - (discountRate * 0.01)));
+
+		// 運賃の100円未満を切上げて返却
+		return FareUtil.ceilFare(fare);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean existsFlight(Flight flight) {
+		Assert.notNull(flight);
+		Assert.notNull(flight.getFlightMaster());
+		return flightRepository.exists(flight.getDepartureDate(),
+				flight.getFlightMaster().getFlightName(), flight.getBoardingClass(),
+				flight.getFareType());
+	}
+
+	/**
 	 * {@inheritDoc}
 	 */
 	@Override
@@ -93,6 +147,49 @@ public class TicketSharedServiceImpl implements TicketSharedService {
 		LocalDate today = LocalDate.now(this.clock);
 		LocalDate limitDate = today.plusDays(limitDay);
 		return limitDate;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean isAvailableFareType(FareType fareType, Date depDate) {
+		Assert.notNull(fareType);
+		Assert.notNull(depDate);
+
+		LocalDate departureDate = DateTimeUtil.toLocalDate(depDate);
+
+		// 予約開始日付
+		LocalDate rsrvAvailableStartDate = departureDate
+				.minusDays(fareType.getRsrvAvailableStartDayNum());
+
+		// 予約終了日付
+		LocalDate rsrvAvailableEndDate = departureDate
+				.minusDays(fareType.getRsrvAvailableEndDayNum());
+
+		// 現在日付
+		LocalDate today = LocalDate.now(this.clock);
+
+		// 現在日付が予約可能開始日付～予約可能終了日付の間であるかチェック
+		return !(today.isBefore(rsrvAvailableStartDate)
+				|| today.isAfter(rsrvAvailableEndDate));
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void validateDepatureDate(Date departureDate) throws BusinessException {
+		Assert.notNull(departureDate);
+
+		LocalDate today = LocalDate.now(this.clock);
+		LocalDate limitDate = getSearchLimitDate();
+
+		// 指定された搭乗日が本日から照会可能限界日迄の間にあるかチェック
+		LocalDate depDate = DateTimeUtil.toLocalDate(departureDate);
+		if (depDate.isBefore(today) || depDate.isAfter(limitDate)) {
+			throw new AtrsBusinessException(TicketSearchErrorCode.E_AR_B1_2001);
+		}
 	}
 
 	/**
@@ -143,8 +240,28 @@ public class TicketSharedServiceImpl implements TicketSharedService {
 	}
 
 	/**
+	 * 搭乗日の料金積算比率を取得する。
+	 *
+	 * @param departureDate 搭乗日
+	 * @return 搭乗日の料金積算比率
+	 */
+	private int getMultiplicationRatio(Date departureDate) {
+
+		// 該当するピーク時期情報を取得
+		PeakTime peakTime = peakTimeProvider.getPeakTime(departureDate);
+
+		// 該当するピーク時期が存在する場合、積算比率を返却
+		if (peakTime != null) {
+			return peakTime.getMultiplicationRatio();
+		}
+
+		// 該当するピーク時期が存在しない場合は、通常時の積算比率を返却
+		return MULTIPLICATION_RATIO_IN_NORMAL_TIME;
+	}
+
+	/**
 	 * 往路、復路フライトの搭乗日、時刻に関するチェック。
-	 * 
+	 *
 	 * @param outwardFlight 往路フライト情報
 	 * @param homewardFlight 復路フライト情報
 	 * @throws BusinessException 業務例外
@@ -172,32 +289,8 @@ public class TicketSharedServiceImpl implements TicketSharedService {
 	}
 
 	/**
-	 * 往路、復路フライトの区間に関するチェック。
-	 * 
-	 * @param outwardFlight 往路フライト情報
-	 * @param homewardFlight 復路フライト情報
-	 * @throws BusinessException 業務例外
-	 */
-	private void validateFlightRouteForRoundTripFlight(Flight outwardFlight,
-			Flight homewardFlight) throws BusinessException {
-
-		// 復路が往路の逆区間であることを確認
-		Route outwardRoute = outwardFlight.getFlightMaster().getRoute();
-		Route homewardRoute = homewardFlight.getFlightMaster().getRoute();
-		if (!outwardRoute.getDepartureAirport().getCode()
-				.equals(homewardRoute.getArrivalAirport().getCode())
-				|| !outwardRoute.getArrivalAirport().getCode()
-						.equals(homewardRoute.getDepartureAirport().getCode())) {
-
-			// 復路が往路の逆区間でない場合、フライト不正例外をスロー
-			throw new InvalidFlightException(
-					"homeward route is not outward route reverse");
-		}
-	}
-
-	/**
 	 * フライトの運賃種別に関するチェック。
-	 * 
+	 *
 	 * @param flightList フライト情報リスト
 	 * @throws BusinessException 業務例外
 	 */
@@ -243,120 +336,26 @@ public class TicketSharedServiceImpl implements TicketSharedService {
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * 往路、復路フライトの区間に関するチェック。
+	 *
+	 * @param outwardFlight 往路フライト情報
+	 * @param homewardFlight 復路フライト情報
+	 * @throws BusinessException 業務例外
 	 */
-	@Override
-	public void validateDepatureDate(Date departureDate) throws BusinessException {
-		Assert.notNull(departureDate);
+	private void validateFlightRouteForRoundTripFlight(Flight outwardFlight,
+			Flight homewardFlight) throws BusinessException {
 
-		LocalDate today = LocalDate.now(this.clock);
-		LocalDate limitDate = getSearchLimitDate();
+		// 復路が往路の逆区間であることを確認
+		Route outwardRoute = outwardFlight.getFlightMaster().getRoute();
+		Route homewardRoute = homewardFlight.getFlightMaster().getRoute();
+		if (!outwardRoute.getDepartureAirport().getCode()
+				.equals(homewardRoute.getArrivalAirport().getCode())
+				|| !outwardRoute.getArrivalAirport().getCode()
+						.equals(homewardRoute.getDepartureAirport().getCode())) {
 
-		// 指定された搭乗日が本日から照会可能限界日迄の間にあるかチェック
-		LocalDate depDate = DateTimeUtil.toLocalDate(departureDate);
-		if (depDate.isBefore(today) || depDate.isAfter(limitDate)) {
-			throw new AtrsBusinessException(TicketSearchErrorCode.E_AR_B1_2001);
+			// 復路が往路の逆区間でない場合、フライト不正例外をスロー
+			throw new InvalidFlightException(
+					"homeward route is not outward route reverse");
 		}
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public boolean isAvailableFareType(FareType fareType, Date depDate) {
-		Assert.notNull(fareType);
-		Assert.notNull(depDate);
-
-		LocalDate departureDate = DateTimeUtil.toLocalDate(depDate);
-
-		// 予約開始日付
-		LocalDate rsrvAvailableStartDate = departureDate
-				.minusDays(fareType.getRsrvAvailableStartDayNum());
-
-		// 予約終了日付
-		LocalDate rsrvAvailableEndDate = departureDate
-				.minusDays(fareType.getRsrvAvailableEndDayNum());
-
-		// 現在日付
-		LocalDate today = LocalDate.now(this.clock);
-
-		// 現在日付が予約可能開始日付～予約可能終了日付の間であるかチェック
-		return !(today.isBefore(rsrvAvailableStartDate)
-				|| today.isAfter(rsrvAvailableEndDate));
-	}
-
-	/**
-	 * 
-	 * {@inheritDoc}
-	 */
-	@Override
-	public int calculateBasicFare(int basicFareOfRoute, BoardingClassCd boardingClassCd,
-			Date depDate) {
-		Assert.isTrue(basicFareOfRoute >= 0);
-		Assert.notNull(boardingClassCd);
-		Assert.notNull(depDate);
-
-		// 搭乗クラスの加算料金の取得
-		BoardingClass boardingClass = boardingClassProvider
-				.getBoardingClass(boardingClassCd);
-		int boardingClassFare = boardingClass.getExtraCharge();
-
-		// 搭乗日の料金積算比率の取得
-		int multiplicationRatio = getMultiplicationRatio(depDate);
-
-		// 基本運賃の計算
-		int basicFare = (int) ((basicFareOfRoute + boardingClassFare)
-				* (multiplicationRatio * 0.01));
-
-		return basicFare;
-	}
-
-	/**
-	 * 搭乗日の料金積算比率を取得する。
-	 * 
-	 * @param departureDate 搭乗日
-	 * @return 搭乗日の料金積算比率
-	 */
-	private int getMultiplicationRatio(Date departureDate) {
-
-		// 該当するピーク時期情報を取得
-		PeakTime peakTime = peakTimeProvider.getPeakTime(departureDate);
-
-		// 該当するピーク時期が存在する場合、積算比率を返却
-		if (peakTime != null) {
-			return peakTime.getMultiplicationRatio();
-		}
-
-		// 該当するピーク時期が存在しない場合は、通常時の積算比率を返却
-		return MULTIPLICATION_RATIO_IN_NORMAL_TIME;
-	}
-
-	/**
-	 * 
-	 * {@inheritDoc}
-	 */
-	@Override
-	public int calculateFare(int basicFare, int discountRate) {
-		Assert.isTrue(basicFare >= 0);
-		Assert.isTrue(discountRate >= 0);
-		Assert.isTrue(discountRate <= 100);
-
-		// 運賃の計算
-		int fare = (int) (basicFare * (1 - (discountRate * 0.01)));
-
-		// 運賃の100円未満を切上げて返却
-		return FareUtil.ceilFare(fare);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public boolean existsFlight(Flight flight) {
-		Assert.notNull(flight);
-		Assert.notNull(flight.getFlightMaster());
-		return flightRepository.exists(flight.getDepartureDate(),
-				flight.getFlightMaster().getFlightName(), flight.getBoardingClass(),
-				flight.getFareType());
 	}
 }

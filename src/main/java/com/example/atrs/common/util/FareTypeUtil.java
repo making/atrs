@@ -31,76 +31,79 @@ import com.example.atrs.ticket.FlightType;
  */
 public class FareTypeUtil {
 
-    /**
-     * 往復予約の運賃種別。
-     */
-    private static final Set<FareTypeCd> ROUND_TRIP_FARETYPES;
-    static {
-        ROUND_TRIP_FARETYPES = new LinkedHashSet<FareTypeCd>();
-        ROUND_TRIP_FARETYPES.add(FareTypeCd.RT);
-        ROUND_TRIP_FARETYPES.add(FareTypeCd.SRT);
-    }
+	/**
+	 * 片道予約の運賃種別。
+	 */
+	private static final Set<FareTypeCd> ONE_WAY_FARETYPES;
 
-    /**
-     * 片道予約の運賃種別。
-     */
-    private static final Set<FareTypeCd> ONE_WAY_FARETYPES;
-    static {
-        ONE_WAY_FARETYPES = new LinkedHashSet<FareTypeCd>();
-        ONE_WAY_FARETYPES.add(FareTypeCd.OW);
-        ONE_WAY_FARETYPES.add(FareTypeCd.RD1);
-        ONE_WAY_FARETYPES.add(FareTypeCd.RD7);
-        ONE_WAY_FARETYPES.add(FareTypeCd.ED);
-        ONE_WAY_FARETYPES.add(FareTypeCd.LD);
-        ONE_WAY_FARETYPES.add(FareTypeCd.GD);
-        ONE_WAY_FARETYPES.add(FareTypeCd.SOW);
-        ONE_WAY_FARETYPES.add(FareTypeCd.SRD);
-    }
+	/**
+	 * 往復予約の運賃種別。
+	 */
+	private static final Set<FareTypeCd> ROUND_TRIP_FARETYPES;
 
-    /**
-     * コンストラクタ。
-     */
-    private FareTypeUtil() {
-        // 処理なし
-    }
+	static {
+		ROUND_TRIP_FARETYPES = new LinkedHashSet<FareTypeCd>();
+		ROUND_TRIP_FARETYPES.add(FareTypeCd.RT);
+		ROUND_TRIP_FARETYPES.add(FareTypeCd.SRT);
+	}
 
-    /**
-     * 運賃種別が往復の運賃種別かを判定する。
-     * 
-     * @param fareTypeCd 運賃種別
-     * @return 往復の運賃種別の場合true
-     */
-    public static boolean isRoundTrip(FareTypeCd fareTypeCd) {
-        return ROUND_TRIP_FARETYPES.contains(fareTypeCd);
-    }
+	static {
+		ONE_WAY_FARETYPES = new LinkedHashSet<FareTypeCd>();
+		ONE_WAY_FARETYPES.add(FareTypeCd.OW);
+		ONE_WAY_FARETYPES.add(FareTypeCd.RD1);
+		ONE_WAY_FARETYPES.add(FareTypeCd.RD7);
+		ONE_WAY_FARETYPES.add(FareTypeCd.ED);
+		ONE_WAY_FARETYPES.add(FareTypeCd.LD);
+		ONE_WAY_FARETYPES.add(FareTypeCd.GD);
+		ONE_WAY_FARETYPES.add(FareTypeCd.SOW);
+		ONE_WAY_FARETYPES.add(FareTypeCd.SRD);
+	}
 
-    /**
-     * 運賃種別が片道の運賃種別かを判定する。
-     * 
-     * @param fareTypeCd 運賃種別
-     * @return 片道の運賃種別の場合true
-     */
-    public static boolean isOneWay(FareTypeCd fareTypeCd) {
-        return ONE_WAY_FARETYPES.contains(fareTypeCd);
-    }
+	/**
+	 * コンストラクタ。
+	 */
+	private FareTypeUtil() {
+		// 処理なし
+	}
 
-    /**
-     * フライト種別に応じた運賃種別リストを取得する。
-     * 
-     * @param flightType フライト種別
-     * @return 運賃種別リスト
-     */
-    public static List<FareTypeCd> getFareTypeCdList(FlightType flightType) {
+	/**
+	 * フライト種別に応じた運賃種別リストを取得する。
+	 *
+	 * @param flightType フライト種別
+	 * @return 運賃種別リスト
+	 */
+	public static List<FareTypeCd> getFareTypeCdList(FlightType flightType) {
 
-        List<FareTypeCd> fareTypeList = new ArrayList<>();
+		List<FareTypeCd> fareTypeList = new ArrayList<>();
 
-        if (FlightType.OW.equals(flightType)) {
-            fareTypeList.addAll(ONE_WAY_FARETYPES);
-        } else {
-            fareTypeList.addAll(ROUND_TRIP_FARETYPES);
-        }
+		if (FlightType.OW.equals(flightType)) {
+			fareTypeList.addAll(ONE_WAY_FARETYPES);
+		}
+		else {
+			fareTypeList.addAll(ROUND_TRIP_FARETYPES);
+		}
 
-        return fareTypeList;
-    }
+		return fareTypeList;
+	}
+
+	/**
+	 * 運賃種別が片道の運賃種別かを判定する。
+	 * 
+	 * @param fareTypeCd 運賃種別
+	 * @return 片道の運賃種別の場合true
+	 */
+	public static boolean isOneWay(FareTypeCd fareTypeCd) {
+		return ONE_WAY_FARETYPES.contains(fareTypeCd);
+	}
+
+	/**
+	 * 運賃種別が往復の運賃種別かを判定する。
+	 *
+	 * @param fareTypeCd 運賃種別
+	 * @return 往復の運賃種別の場合true
+	 */
+	public static boolean isRoundTrip(FareTypeCd fareTypeCd) {
+		return ROUND_TRIP_FARETYPES.contains(fareTypeCd);
+	}
 
 }

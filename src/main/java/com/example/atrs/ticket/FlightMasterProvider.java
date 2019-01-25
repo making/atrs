@@ -25,9 +25,6 @@ import javax.annotation.PostConstruct;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
-import com.example.atrs.ticket.FlightMaster;
-import com.example.atrs.ticket.FlightRepository;
-
 /**
  * フライト基本情報を提供するクラス。
  * 
@@ -37,17 +34,28 @@ import com.example.atrs.ticket.FlightRepository;
 public class FlightMasterProvider {
 
 	/**
-	 * フライト基本情報リポジトリ。
-	 */
-	private final FlightRepository flightRepository;
-
-	/**
 	 * 便名とフライト基本情報の関係を保持するキャッシュ。
 	 */
 	private final Map<String, FlightMaster> flightMasterMap = new HashMap<>();
 
+	/**
+	 * フライト基本情報リポジトリ。
+	 */
+	private final FlightRepository flightRepository;
+
 	public FlightMasterProvider(FlightRepository flightRepository) {
 		this.flightRepository = flightRepository;
+	}
+
+	/**
+	 * 指定便名に該当するフライト基本情報を取得する。
+	 *
+	 * @param flightName 便名
+	 * @return フライト基本情報。該当するフライト基本情報がない場合はnull。
+	 */
+	public FlightMaster getFlightMaster(String flightName) {
+		Assert.hasText(flightName);
+		return this.flightMasterMap.get(flightName);
 	}
 
 	/**
@@ -59,16 +67,5 @@ public class FlightMasterProvider {
 		for (FlightMaster flightMaster : flightMasterList) {
 			flightMasterMap.put(flightMaster.getFlightName(), flightMaster);
 		}
-	}
-
-	/**
-	 * 指定便名に該当するフライト基本情報を取得する。
-	 * 
-	 * @param flightName 便名
-	 * @return フライト基本情報。該当するフライト基本情報がない場合はnull。
-	 */
-	public FlightMaster getFlightMaster(String flightName) {
-		Assert.hasText(flightName);
-		return this.flightMasterMap.get(flightName);
 	}
 }

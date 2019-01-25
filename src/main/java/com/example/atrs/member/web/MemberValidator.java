@@ -19,9 +19,9 @@ package com.example.atrs.member.web;
 import java.time.Clock;
 import java.time.LocalDate;
 
-import com.example.atrs.config.AtrsProperties;
 import com.example.atrs.common.util.DateTimeUtil;
 import com.example.atrs.common.validate.ValidationUtil;
+import com.example.atrs.config.AtrsProperties;
 import com.example.atrs.member.MemberErrorCode;
 
 import org.springframework.stereotype.Component;

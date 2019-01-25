@@ -27,19 +27,20 @@ import org.terasoluna.gfw.common.message.ResultMessages;
  */
 public class AtrsBusinessException extends BusinessException {
 
-    /**
-     * serialVersionUID。
-     */
-    private static final long serialVersionUID = -2040908618794475089L;
+	/**
+	 * serialVersionUID。
+	 */
+	private static final long serialVersionUID = -2040908618794475089L;
 
-    /**
-     * コンストラクタ。
-     * 
-     * @param errorCode エラーコード
-     * @param args 置き換え文字列
-     */
-    public AtrsBusinessException(AtrsErrorCode errorCode, Object... args) {
-        super(ResultMessages.danger().add(ResultMessage.fromCode(errorCode.code(), args)));
-    }
+	/**
+	 * コンストラクタ。
+	 * 
+	 * @param errorCode エラーコード
+	 * @param args 置き換え文字列
+	 */
+	public AtrsBusinessException(AtrsErrorCode errorCode, Object... args) {
+		super(ResultMessages.danger()
+				.add(ResultMessage.fromCode(errorCode.code(), args)));
+	}
 
 }

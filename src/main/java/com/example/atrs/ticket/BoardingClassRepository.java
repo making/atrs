@@ -16,9 +16,9 @@
  */
 package com.example.atrs.ticket;
 
-import org.apache.ibatis.annotations.Mapper;
-
 import java.util.List;
+
+import org.apache.ibatis.annotations.Mapper;
 
 /**
  * 搭乗クラステーブルにアクセスするリポジトリインターフェース。
@@ -27,10 +27,10 @@ import java.util.List;
  */
 @Mapper
 public interface BoardingClassRepository {
-    /**
-     * 全ての搭乗クラスを取得する。
-     * 
-     * @return 搭乗クラスリスト
-     */
-    List<BoardingClass> findAll();
+	/**
+	 * 全ての搭乗クラスを取得する。
+	 * 
+	 * @return 搭乗クラスリスト
+	 */
+	List<BoardingClass> findAll();
 }

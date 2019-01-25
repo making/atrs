@@ -34,17 +34,28 @@ import org.springframework.util.Assert;
 public class FareTypeProvider {
 
 	/**
-	 * 運賃種別情報リポジトリ。
-	 */
-	private final FareTypeRepository fareTypeRepository;
-
-	/**
 	 * 運賃種別コードと運賃種別情報の関係を保持するマップ。
 	 */
 	private final Map<FareTypeCd, FareType> fareTypeMap = new HashMap<>();
 
+	/**
+	 * 運賃種別情報リポジトリ。
+	 */
+	private final FareTypeRepository fareTypeRepository;
+
 	public FareTypeProvider(FareTypeRepository fareTypeRepository) {
 		this.fareTypeRepository = fareTypeRepository;
+	}
+
+	/**
+	 * 指定運賃種別コードに該当する運賃種別情報を取得。
+	 *
+	 * @param fareTypeCd 運賃種別コード
+	 * @return 運賃種別情報。該当する運賃種別情報がない場合null。
+	 */
+	public FareType getFareType(FareTypeCd fareTypeCd) {
+		Assert.notNull(fareTypeCd);
+		return fareTypeMap.get(fareTypeCd);
 	}
 
 	/**
@@ -56,17 +67,6 @@ public class FareTypeProvider {
 		for (FareType fareType : fareTypeList) {
 			fareTypeMap.put(fareType.getFareTypeCd(), fareType);
 		}
-	}
-
-	/**
-	 * 指定運賃種別コードに該当する運賃種別情報を取得。
-	 * 
-	 * @param fareTypeCd 運賃種別コード
-	 * @return 運賃種別情報。該当する運賃種別情報がない場合null。
-	 */
-	public FareType getFareType(FareTypeCd fareTypeCd) {
-		Assert.notNull(fareTypeCd);
-		return fareTypeMap.get(fareTypeCd);
 	}
 
 }

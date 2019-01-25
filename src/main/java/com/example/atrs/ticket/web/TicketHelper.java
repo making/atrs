@@ -21,18 +21,18 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.example.atrs.common.util.DateTimeUtil;
+import com.example.atrs.common.web.exception.BadRequestException;
+import com.example.atrs.ticket.BoardingClassCd;
+import com.example.atrs.ticket.BoardingClassProvider;
+import com.example.atrs.ticket.FareTypeCd;
+import com.example.atrs.ticket.FareTypeProvider;
+import com.example.atrs.ticket.Flight;
+import com.example.atrs.ticket.FlightMasterProvider;
+import com.example.atrs.ticket.FlightType;
+
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
-
-import com.example.atrs.common.web.exception.BadRequestException;
-import com.example.atrs.ticket.BoardingClassProvider;
-import com.example.atrs.ticket.FareTypeProvider;
-import com.example.atrs.ticket.FlightMasterProvider;
-import com.example.atrs.common.util.DateTimeUtil;
-import com.example.atrs.ticket.BoardingClassCd;
-import com.example.atrs.ticket.FareTypeCd;
-import com.example.atrs.ticket.Flight;
-import com.example.atrs.ticket.FlightType;
 
 /**
  * チケット予約共通Helper。
@@ -48,14 +48,14 @@ public class TicketHelper {
 	private final BoardingClassProvider boardingClassProvider;
 
 	/**
-	 * フライト基本情報提供クラス。
-	 */
-	private final FlightMasterProvider flightMasterProvider;
-
-	/**
 	 * 運賃種別情報提供クラス。
 	 */
 	private final FareTypeProvider fareTypeProvider;
+
+	/**
+	 * フライト基本情報提供クラス。
+	 */
+	private final FlightMasterProvider flightMasterProvider;
 
 	public TicketHelper(BoardingClassProvider boardingClassProvider,
 			FlightMasterProvider flightMasterProvider,
@@ -63,33 +63,6 @@ public class TicketHelper {
 		this.boardingClassProvider = boardingClassProvider;
 		this.flightMasterProvider = flightMasterProvider;
 		this.fareTypeProvider = fareTypeProvider;
-	}
-
-	/**
-	 * 選択フライト情報フォームをフライト情報に変換する。
-	 * 
-	 * @param selectFlightFormList 選択フライト情報フォームのリスト
-	 * @return フライト情報のリスト
-	 */
-	public List<Flight> toFlightList(List<SelectFlightForm> selectFlightFormList) {
-
-		List<Flight> flightList = new ArrayList<>();
-
-		for (SelectFlightForm selectFlightForm : selectFlightFormList) {
-			Flight flight = new Flight();
-			flight.setDepartureDate(selectFlightForm.getDepDate());
-			String flightName = selectFlightForm.getFlightName();
-			flight.setFlightMaster(flightMasterProvider.getFlightMaster(flightName));
-			FareTypeCd fareTypeCd = selectFlightForm.getFareTypeCd();
-			flight.setFareType(fareTypeProvider.getFareType(fareTypeCd));
-			BoardingClassCd boardingClassCd = selectFlightForm.getBoardingClassCd();
-			flight.setBoardingClass(
-					boardingClassProvider.getBoardingClass(boardingClassCd));
-
-			flightList.add(flight);
-		}
-
-		return flightList;
 	}
 
 	/**
@@ -130,6 +103,33 @@ public class TicketHelper {
 		}
 
 		return params;
+	}
+
+	/**
+	 * 選択フライト情報フォームをフライト情報に変換する。
+	 *
+	 * @param selectFlightFormList 選択フライト情報フォームのリスト
+	 * @return フライト情報のリスト
+	 */
+	public List<Flight> toFlightList(List<SelectFlightForm> selectFlightFormList) {
+
+		List<Flight> flightList = new ArrayList<>();
+
+		for (SelectFlightForm selectFlightForm : selectFlightFormList) {
+			Flight flight = new Flight();
+			flight.setDepartureDate(selectFlightForm.getDepDate());
+			String flightName = selectFlightForm.getFlightName();
+			flight.setFlightMaster(flightMasterProvider.getFlightMaster(flightName));
+			FareTypeCd fareTypeCd = selectFlightForm.getFareTypeCd();
+			flight.setFareType(fareTypeProvider.getFareType(fareTypeCd));
+			BoardingClassCd boardingClassCd = selectFlightForm.getBoardingClassCd();
+			flight.setBoardingClass(
+					boardingClassProvider.getBoardingClass(boardingClassCd));
+
+			flightList.add(flight);
+		}
+
+		return flightList;
 	}
 
 }

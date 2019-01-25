@@ -26,29 +26,31 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface ReservationRepository {
 
-    /**
-     * 予約情報を登録する。
-     * <p>登録時に発出された予約番号が引数の予約情報に格納される。</p>
-     * 
-     * @param reservation 予約情報
-     * @return 登録件数
-     */
-    int insert(Reservation reservation);
+	/**
+	 * 予約情報を登録する。
+	 * <p>
+	 * 登録時に発出された予約番号が引数の予約情報に格納される。
+	 * </p>
+	 * 
+	 * @param reservation 予約情報
+	 * @return 登録件数
+	 */
+	int insert(Reservation reservation);
 
-    /**
-     * 予約フライト情報を登録する。
-     * 
-     * @param reserveFlight 予約フライト情報
-     * @return 登録件数
-     */
-    int insertReserveFlight(ReserveFlight reserveFlight);
+	/**
+	 * 搭乗者情報を登録する。
+	 *
+	 * @param passenger 搭乗者情報
+	 * @return 登録件数
+	 */
+	int insertPassenger(Passenger passenger);
 
-    /**
-     * 搭乗者情報を登録する。
-     * 
-     * @param passenger 搭乗者情報
-     * @return 登録件数
-     */
-    int insertPassenger(Passenger passenger);
+	/**
+	 * 予約フライト情報を登録する。
+	 *
+	 * @param reserveFlight 予約フライト情報
+	 * @return 登録件数
+	 */
+	int insertReserveFlight(ReserveFlight reserveFlight);
 
 }

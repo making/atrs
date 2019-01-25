@@ -34,17 +34,28 @@ import org.springframework.util.Assert;
 public class BoardingClassProvider {
 
 	/**
-	 * 搭乗クラス情報リポジトリ。
-	 */
-	private final BoardingClassRepository boardingClassRepository;
-
-	/**
 	 * 搭乗クラスコードと搭乗クラスの関係を保持するマップ。
 	 */
 	private final Map<BoardingClassCd, BoardingClass> boardingClassCodeMap = new HashMap<>();
 
+	/**
+	 * 搭乗クラス情報リポジトリ。
+	 */
+	private final BoardingClassRepository boardingClassRepository;
+
 	public BoardingClassProvider(BoardingClassRepository boardingClassRepository) {
 		this.boardingClassRepository = boardingClassRepository;
+	}
+
+	/**
+	 * 搭乗クラスコードに該当する搭乗クラス情報を取得する。
+	 *
+	 * @param boardingClassCd 搭乗クラスコード
+	 * @return 搭乗クラス情報。該当する搭乗クラス情報がない場合はnull。
+	 */
+	public BoardingClass getBoardingClass(BoardingClassCd boardingClassCd) {
+		Assert.notNull(boardingClassCd);
+		return boardingClassCodeMap.get(boardingClassCd);
 	}
 
 	/**
@@ -56,17 +67,6 @@ public class BoardingClassProvider {
 		for (BoardingClass boardingClass : boardingClassList) {
 			boardingClassCodeMap.put(boardingClass.getBoardingClassCd(), boardingClass);
 		}
-	}
-
-	/**
-	 * 搭乗クラスコードに該当する搭乗クラス情報を取得する。
-	 * 
-	 * @param boardingClassCd 搭乗クラスコード
-	 * @return 搭乗クラス情報。該当する搭乗クラス情報がない場合はnull。
-	 */
-	public BoardingClass getBoardingClass(BoardingClassCd boardingClassCd) {
-		Assert.notNull(boardingClassCd);
-		return boardingClassCodeMap.get(boardingClassCd);
 	}
 
 }

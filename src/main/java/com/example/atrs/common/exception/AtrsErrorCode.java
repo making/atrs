@@ -23,11 +23,11 @@ package com.example.atrs.common.exception;
  */
 public interface AtrsErrorCode {
 
-    /**
-     * エラーコードのコード値を取得する。
-     * 
-     * @return エラーコードのコード値
-     */
-    String code();
+	/**
+	 * エラーコードのコード値を取得する。
+	 * 
+	 * @return エラーコードのコード値
+	 */
+	String code();
 
 }

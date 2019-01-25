@@ -19,15 +19,14 @@ package com.example.atrs.ticket.api;
 import java.util.List;
 import java.util.Locale;
 
-import com.github.dozermapper.core.Mapper;
-import org.terasoluna.gfw.common.exception.BusinessException;
-import org.terasoluna.gfw.common.message.ResultMessage;
-
 import com.example.atrs.auth.api.ErrorResultDto;
 import com.example.atrs.ticket.FlightNotFoundException;
 import com.example.atrs.ticket.FlightVacantInfoDto;
 import com.example.atrs.ticket.TicketSearchCriteriaDto;
 import com.example.atrs.ticket.TicketSearchService;
+import com.github.dozermapper.core.Mapper;
+import org.terasoluna.gfw.common.exception.BusinessException;
+import org.terasoluna.gfw.common.message.ResultMessage;
 
 import org.springframework.context.MessageSource;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
@@ -55,24 +54,24 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 public class FlightsApiController {
 
 	/**
-	 * メッセージソース。
-	 */
-	private final MessageSource messageSource;
-
-	/**
 	 * Beanマッパー。
 	 */
 	private final Mapper beanMapper;
 
 	/**
-	 * 空席照会サービス。
-	 */
-	private final TicketSearchService ticketSearchService;
-
-	/**
 	 * 空席照会条件フォームのバリデータ。
 	 */
 	private final FlightSearchCriteriaValidator flightSearchCriteriaValidator;
+
+	/**
+	 * メッセージソース。
+	 */
+	private final MessageSource messageSource;
+
+	/**
+	 * 空席照会サービス。
+	 */
+	private final TicketSearchService ticketSearchService;
 
 	public FlightsApiController(MessageSource messageSource, Mapper beanMapper,
 			TicketSearchService ticketSearchService,
@@ -81,16 +80,6 @@ public class FlightsApiController {
 		this.beanMapper = beanMapper;
 		this.ticketSearchService = ticketSearchService;
 		this.flightSearchCriteriaValidator = flightSearchCriteriaValidator;
-	}
-
-	/**
-	 * 空席照会条件フォームのバリデータをバインダに追加する。
-	 * 
-	 * @param binder バインダ
-	 */
-	@InitBinder("flightSearchCriteriaForm")
-	public void initBinderForFlightSearchCriteria(WebDataBinder binder) {
-		binder.addValidators(flightSearchCriteriaValidator);
 	}
 
 	/**
@@ -106,7 +95,7 @@ public class FlightsApiController {
 	 * <li>該当するフライトが存在しない:404</li>
 	 * <li>システムエラー:500</li>
 	 * </ul>
-	 * 
+	 *
 	 * @param flightSearchCriteriaForm 空席照会条件フォーム
 	 * @return 空席状況一覧リスト
 	 */
@@ -203,6 +192,16 @@ public class FlightsApiController {
 		}
 
 		return result;
+	}
+
+	/**
+	 * 空席照会条件フォームのバリデータをバインダに追加する。
+	 *
+	 * @param binder バインダ
+	 */
+	@InitBinder("flightSearchCriteriaForm")
+	public void initBinderForFlightSearchCriteria(WebDataBinder binder) {
+		binder.addValidators(flightSearchCriteriaValidator);
 	}
 
 }

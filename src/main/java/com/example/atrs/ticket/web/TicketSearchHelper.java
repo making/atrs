@@ -22,7 +22,6 @@ import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
 
-import com.example.atrs.ticket.api.FlightSearchOutputDto;
 import com.example.atrs.common.web.exception.BadRequestException;
 import com.example.atrs.config.AtrsProperties;
 import com.example.atrs.config.DefaultProperties;
@@ -31,6 +30,7 @@ import com.example.atrs.ticket.Flight;
 import com.example.atrs.ticket.FlightType;
 import com.example.atrs.ticket.InvalidFlightException;
 import com.example.atrs.ticket.TicketSharedService;
+import com.example.atrs.ticket.api.FlightSearchOutputDto;
 import org.terasoluna.gfw.common.exception.BusinessException;
 
 import org.springframework.stereotype.Component;
@@ -46,21 +46,6 @@ public class TicketSearchHelper {
 	private final Clock clock;
 
 	/**
-	 * チケット予約共通サービス。
-	 */
-	private final TicketSharedService ticketSharedService;
-
-	/**
-	 * デフォルトフライト種別。
-	 */
-	private final FlightType defaultFlightType;
-
-	/**
-	 * デフォルト出発空港コード。
-	 */
-	private final String defaultDepAirportCd;
-
-	/**
 	 * デフォルト到着空港コード。
 	 */
 	private final String defaultArrAirportCd;
@@ -71,9 +56,24 @@ public class TicketSearchHelper {
 	private final BoardingClassCd defaultBoardingClassCd;
 
 	/**
+	 * デフォルト出発空港コード。
+	 */
+	private final String defaultDepAirportCd;
+
+	/**
+	 * デフォルトフライト種別。
+	 */
+	private final FlightType defaultFlightType;
+
+	/**
 	 * 往路の到着時刻に対し、復路で予約可能となる出発時刻までの時間間隔(分)。
 	 */
 	private final int reserveIntervalTime;
+
+	/**
+	 * チケット予約共通サービス。
+	 */
+	private final TicketSharedService ticketSharedService;
 
 	public TicketSearchHelper(Clock clock, TicketSharedService ticketSharedService,
 			DefaultProperties defaultProps, AtrsProperties atrsProps) {

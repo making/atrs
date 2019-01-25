@@ -19,8 +19,7 @@ package com.example.atrs.member.web;
 import java.util.Date;
 
 /**
- * 会員情報フォームインタフェース。
- * 共通入力値チェック、共通Bean変換処理で使用するメソッドを定義する。
+ * 会員情報フォームインタフェース。 共通入力値チェック、共通Bean変換処理で使用するメソッドを定義する。
  * 
  * @author NTT 電電花子
  * @see MemberValidator#validate(Object, org.springframework.validation.Errors)
@@ -28,74 +27,74 @@ import java.util.Date;
  */
 public interface IMemberForm {
 
-    /**
-     * 生年月日を取得する。
-     * 
-     * @return 生年月日
-     */
-    Date getDateOfBirth();
+	/**
+	 * クレジットカード有効期限（月）を取得する。
+	 *
+	 * @return クレジットカード有効期限（月）
+	 */
+	String getCreditMonth();
 
-    /**
-     * 電話番号1を取得する。
-     * 
-     * @return 電話番号1
-     */
-    String getTel1();
+	/**
+	 * クレジットカード有効期限（年）を取得する。
+	 *
+	 * @return クレジットカード有効期限（年）
+	 */
+	String getCreditYear();
 
-    /**
-     * 電話番号2を取得する。
-     * 
-     * @return 電話番号2
-     */
-    String getTel2();
+	/**
+	 * 生年月日を取得する。
+	 *
+	 * @return 生年月日
+	 */
+	Date getDateOfBirth();
 
-    /**
-     * 電話番号3を取得する。
-     * 
-     * @return 電話番号3
-     */
-    String getTel3();
+	/**
+	 * Eメールを取得する。
+	 *
+	 * @return Eメール
+	 */
+	String getMail();
 
-    /**
-     * 郵便番号1を取得する。
-     * 
-     * @return 郵便番号1
-     */
-    String getZipCode1();
+	/**
+	 * Eメール再入力を取得する。
+	 *
+	 * @return Eメール再入力
+	 */
+	String getReEnterMail();
 
-    /**
-     * 郵便番号2を取得する。
-     * 
-     * @return 郵便番号2
-     */
-    String getZipCode2();
+	/**
+	 * 電話番号1を取得する。
+	 *
+	 * @return 電話番号1
+	 */
+	String getTel1();
 
-    /**
-     * Eメールを取得する。
-     * 
-     * @return Eメール
-     */
-    String getMail();
+	/**
+	 * 電話番号2を取得する。
+	 *
+	 * @return 電話番号2
+	 */
+	String getTel2();
 
-    /**
-     * Eメール再入力を取得する。
-     * 
-     * @return Eメール再入力
-     */
-    String getReEnterMail();
+	/**
+	 * 電話番号3を取得する。
+	 *
+	 * @return 電話番号3
+	 */
+	String getTel3();
 
-    /**
-     * クレジットカード有効期限（月）を取得する。
-     * 
-     * @return クレジットカード有効期限（月）
-     */
-    String getCreditMonth();
+	/**
+	 * 郵便番号1を取得する。
+	 *
+	 * @return 郵便番号1
+	 */
+	String getZipCode1();
 
-    /**
-     * クレジットカード有効期限（年）を取得する。
-     * 
-     * @return クレジットカード有効期限（年）
-     */
-    String getCreditYear();
+	/**
+	 * 郵便番号2を取得する。
+	 *
+	 * @return 郵便番号2
+	 */
+	String getZipCode2();
 
 }

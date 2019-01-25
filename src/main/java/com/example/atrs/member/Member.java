@@ -16,11 +16,11 @@
  */
 package com.example.atrs.member;
 
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
-
 import java.io.Serializable;
 import java.util.Date;
+
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 
 /**
  * カード会員情報。
@@ -29,362 +29,362 @@ import java.util.Date;
  */
 public class Member implements Serializable {
 
-    /**
-     * serialVersionUID。
-     */
-    private static final long serialVersionUID = 2571142253564057448L;
+	/**
+	 * serialVersionUID。
+	 */
+	private static final long serialVersionUID = 2571142253564057448L;
 
-    /**
-     * 会員番号。
-     */
-    private String membershipNumber;
+	/**
+	 * 住所。
+	 */
+	private String address;
 
-    /**
-     * 漢字姓。
-     */
-    private String kanjiFamilyName;
+	/**
+	 * 生年月日。
+	 */
+	private Date birthday;
 
-    /**
-     * 漢字名。
-     */
-    private String kanjiGivenName;
+	/**
+	 * クレジットカード番号。
+	 */
+	private String creditNo;
 
-    /**
-     * カナ姓。
-     */
-    private String kanaFamilyName;
+	/**
+	 * クレジットカード有効期限。
+	 */
+	private String creditTerm;
 
-    /**
-     * カナ名。
-     */
-    private String kanaGivenName;
+	/**
+	 * クレジットカード種別。
+	 */
+	private CreditType creditType;
 
-    /**
-     * 生年月日。
-     */
-    private Date birthday;
+	/**
+	 * 性別。
+	 */
+	private Gender gender;
 
-    /**
-     * 性別。
-     */
-    private Gender gender;
+	/**
+	 * カナ姓。
+	 */
+	private String kanaFamilyName;
 
-    /**
-     * 電話番号。
-     */
-    private String tel;
+	/**
+	 * カナ名。
+	 */
+	private String kanaGivenName;
 
-    /**
-     * 郵便番号。
-     */
-    private String zipCode;
+	/**
+	 * 漢字姓。
+	 */
+	private String kanjiFamilyName;
 
-    /**
-     * 住所。
-     */
-    private String address;
+	/**
+	 * 漢字名。
+	 */
+	private String kanjiGivenName;
 
-    /**
-     * メールアドレス。
-     */
-    private String mail;
+	/**
+	 * メールアドレス。
+	 */
+	private String mail;
 
-    /**
-     * クレジットカード番号。
-     */
-    private String creditNo;
+	/**
+	 * カード会員ログイン情報。
+	 */
+	private MemberLogin memberLogin;
 
-    /**
-     * クレジットカード有効期限。
-     */
-    private String creditTerm;
+	/**
+	 * 会員番号。
+	 */
+	private String membershipNumber;
 
-    /**
-     * クレジットカード種別。
-     */
-    private CreditType creditType;
+	/**
+	 * 電話番号。
+	 */
+	private String tel;
 
-    /**
-     * カード会員ログイン情報。
-     */
-    private MemberLogin memberLogin;
+	/**
+	 * 郵便番号。
+	 */
+	private String zipCode;
 
-    /**
-     * 会員番号を取得する。
-     * 
-     * @return 会員番号
-     */
-    public String getMembershipNumber() {
-        return membershipNumber;
-    }
+	/**
+	 * 住所を取得する。
+	 *
+	 * @return 住所
+	 */
+	public String getAddress() {
+		return address;
+	}
 
-    /**
-     * 会員番号を設定する。
-     * 
-     * @param membershipNumber 会員番号
-     */
-    public void setMembershipNumber(String membershipNumber) {
-        this.membershipNumber = membershipNumber;
-    }
+	/**
+	 * 住所を設定する。
+	 *
+	 * @param address 住所
+	 */
+	public void setAddress(String address) {
+		this.address = address;
+	}
 
-    /**
-     * 漢字姓を取得する。
-     *
-     * @return 漢字姓
-     */
-    public String getKanjiFamilyName() {
-        return kanjiFamilyName;
-    }
+	/**
+	 * 生年月日を取得する。
+	 *
+	 * @return 生年月日
+	 */
+	public Date getBirthday() {
+		return birthday;
+	}
 
-    /**
-     * 漢字姓を設定する。
-     *
-     * @param kanjiFamilyName 漢字姓
-     */
-    public void setKanjiFamilyName(String kanjiFamilyName) {
-        this.kanjiFamilyName = kanjiFamilyName;
-    }
+	/**
+	 * 生年月日を設定する。
+	 *
+	 * @param birthday 生年月日
+	 */
+	public void setBirthday(Date birthday) {
+		this.birthday = birthday;
+	}
 
-    /**
-     * 漢字名を取得する。
-     *
-     * @return 漢字名
-     */
-    public String getKanjiGivenName() {
-        return kanjiGivenName;
-    }
+	/**
+	 * クレジットカード番号を取得する。
+	 *
+	 * @return クレジットカード番号
+	 */
+	public String getCreditNo() {
+		return creditNo;
+	}
 
-    /**
-     * 漢字名を設定する。
-     *
-     * @param kanjiGivenName 漢字名
-     */
-    public void setKanjiGivenName(String kanjiGivenName) {
-        this.kanjiGivenName = kanjiGivenName;
-    }
+	/**
+	 * クレジットカード番号を設定する。
+	 *
+	 * @param creditNo クレジットカード番号
+	 */
+	public void setCreditNo(String creditNo) {
+		this.creditNo = creditNo;
+	}
 
-    /**
-     * カナ姓を取得する。
-     * 
-     * @return カナ姓
-     */
-    public String getKanaFamilyName() {
-        return kanaFamilyName;
-    }
+	/**
+	 * クレジットカード有効期限を取得する。
+	 *
+	 * @return クレジットカード有効期限
+	 */
+	public String getCreditTerm() {
+		return creditTerm;
+	}
 
-    /**
-     * カナ姓を設定する。
-     * 
-     * @param kanaFamilyName カナ姓
-     */
-    public void setKanaFamilyName(String kanaFamilyName) {
-        this.kanaFamilyName = kanaFamilyName;
-    }
+	/**
+	 * クレジットカード有効期限を設定する。
+	 *
+	 * @param creditTerm クレジットカード有効期限
+	 */
+	public void setCreditTerm(String creditTerm) {
+		this.creditTerm = creditTerm;
+	}
 
-    /**
-     * カナ名を取得する。
-     * 
-     * @return カナ名
-     */
-    public String getKanaGivenName() {
-        return kanaGivenName;
-    }
+	/**
+	 * クレジットカード種別を取得する。
+	 *
+	 * @return クレジットカード種別
+	 */
+	public CreditType getCreditType() {
+		return creditType;
+	}
 
-    /**
-     * カナ名を設定する。
-     * 
-     * @param kanaGivenName カナ名
-     */
-    public void setKanaGivenName(String kanaGivenName) {
-        this.kanaGivenName = kanaGivenName;
-    }
+	/**
+	 * クレジットカード種別を設定する。
+	 *
+	 * @param creditType クレジットカード種別
+	 */
+	public void setCreditType(CreditType creditType) {
+		this.creditType = creditType;
+	}
 
-    /**
-     * 生年月日を取得する。
-     * 
-     * @return 生年月日
-     */
-    public Date getBirthday() {
-        return birthday;
-    }
+	/**
+	 * 性別を取得する。
+	 *
+	 * @return 性別
+	 */
+	public Gender getGender() {
+		return gender;
+	}
 
-    /**
-     * 生年月日を設定する。
-     * 
-     * @param birthday 生年月日
-     */
-    public void setBirthday(Date birthday) {
-        this.birthday = birthday;
-    }
+	/**
+	 * 性別を設定する。
+	 *
+	 * @param gender 性別
+	 */
+	public void setGender(Gender gender) {
+		this.gender = gender;
+	}
 
-    /**
-     * 性別を取得する。
-     * 
-     * @return 性別
-     */
-    public Gender getGender() {
-        return gender;
-    }
+	/**
+	 * カナ姓を取得する。
+	 *
+	 * @return カナ姓
+	 */
+	public String getKanaFamilyName() {
+		return kanaFamilyName;
+	}
 
-    /**
-     * 性別を設定する。
-     * 
-     * @param gender 性別
-     */
-    public void setGender(Gender gender) {
-        this.gender = gender;
-    }
+	/**
+	 * カナ姓を設定する。
+	 *
+	 * @param kanaFamilyName カナ姓
+	 */
+	public void setKanaFamilyName(String kanaFamilyName) {
+		this.kanaFamilyName = kanaFamilyName;
+	}
 
-    /**
-     * 電話番号を取得する。
-     * 
-     * @return 電話番号
-     */
-    public String getTel() {
-        return tel;
-    }
+	/**
+	 * カナ名を取得する。
+	 *
+	 * @return カナ名
+	 */
+	public String getKanaGivenName() {
+		return kanaGivenName;
+	}
 
-    /**
-     * 電話番号を設定する。
-     * 
-     * @param tel 電話番号
-     */
-    public void setTel(String tel) {
-        this.tel = tel;
-    }
+	/**
+	 * カナ名を設定する。
+	 *
+	 * @param kanaGivenName カナ名
+	 */
+	public void setKanaGivenName(String kanaGivenName) {
+		this.kanaGivenName = kanaGivenName;
+	}
 
-    /**
-     * 郵便番号を取得する。
-     * 
-     * @return 郵便番号
-     */
-    public String getZipCode() {
-        return zipCode;
-    }
+	/**
+	 * 漢字姓を取得する。
+	 *
+	 * @return 漢字姓
+	 */
+	public String getKanjiFamilyName() {
+		return kanjiFamilyName;
+	}
 
-    /**
-     * 郵便番号を設定する。
-     * 
-     * @param zipCode 郵便番号
-     */
-    public void setZipCode(String zipCode) {
-        this.zipCode = zipCode;
-    }
+	/**
+	 * 漢字姓を設定する。
+	 *
+	 * @param kanjiFamilyName 漢字姓
+	 */
+	public void setKanjiFamilyName(String kanjiFamilyName) {
+		this.kanjiFamilyName = kanjiFamilyName;
+	}
 
-    /**
-     * 住所を取得する。
-     * 
-     * @return 住所
-     */
-    public String getAddress() {
-        return address;
-    }
+	/**
+	 * 漢字名を取得する。
+	 *
+	 * @return 漢字名
+	 */
+	public String getKanjiGivenName() {
+		return kanjiGivenName;
+	}
 
-    /**
-     * 住所を設定する。
-     * 
-     * @param address 住所
-     */
-    public void setAddress(String address) {
-        this.address = address;
-    }
+	/**
+	 * 漢字名を設定する。
+	 *
+	 * @param kanjiGivenName 漢字名
+	 */
+	public void setKanjiGivenName(String kanjiGivenName) {
+		this.kanjiGivenName = kanjiGivenName;
+	}
 
-    /**
-     * メールアドレスを取得する。
-     * 
-     * @return メールアドレス
-     */
-    public String getMail() {
-        return mail;
-    }
+	/**
+	 * メールアドレスを取得する。
+	 * 
+	 * @return メールアドレス
+	 */
+	public String getMail() {
+		return mail;
+	}
 
-    /**
-     * メールアドレスを設定する。
-     * 
-     * @param mail メールアドレス
-     */
-    public void setMail(String mail) {
-        this.mail = mail;
-    }
+	/**
+	 * メールアドレスを設定する。
+	 * 
+	 * @param mail メールアドレス
+	 */
+	public void setMail(String mail) {
+		this.mail = mail;
+	}
 
-    /**
-     * クレジットカード番号を取得する。
-     * 
-     * @return クレジットカード番号
-     */
-    public String getCreditNo() {
-        return creditNo;
-    }
+	/**
+	 * カード会員ログイン情報を取得する。
+	 *
+	 * @return カード会員ログイン情報
+	 */
+	public MemberLogin getMemberLogin() {
+		return memberLogin;
+	}
 
-    /**
-     * クレジットカード番号を設定する。
-     * 
-     * @param creditNo クレジットカード番号
-     */
-    public void setCreditNo(String creditNo) {
-        this.creditNo = creditNo;
-    }
+	/**
+	 * カード会員ログイン情報を設定する。
+	 *
+	 * @param memberLogin カード会員ログイン情報
+	 */
+	public void setMemberLogin(MemberLogin memberLogin) {
+		this.memberLogin = memberLogin;
+	}
 
-    /**
-     * クレジットカード有効期限を取得する。
-     * 
-     * @return クレジットカード有効期限
-     */
-    public String getCreditTerm() {
-        return creditTerm;
-    }
+	/**
+	 * 会員番号を取得する。
+	 *
+	 * @return 会員番号
+	 */
+	public String getMembershipNumber() {
+		return membershipNumber;
+	}
 
-    /**
-     * クレジットカード有効期限を設定する。
-     * 
-     * @param creditTerm クレジットカード有効期限
-     */
-    public void setCreditTerm(String creditTerm) {
-        this.creditTerm = creditTerm;
-    }
+	/**
+	 * 会員番号を設定する。
+	 *
+	 * @param membershipNumber 会員番号
+	 */
+	public void setMembershipNumber(String membershipNumber) {
+		this.membershipNumber = membershipNumber;
+	}
 
-    /**
-     * クレジットカード種別を取得する。
-     * 
-     * @return クレジットカード種別
-     */
-    public CreditType getCreditType() {
-        return creditType;
-    }
+	/**
+	 * 電話番号を取得する。
+	 *
+	 * @return 電話番号
+	 */
+	public String getTel() {
+		return tel;
+	}
 
-    /**
-     * クレジットカード種別を設定する。
-     * 
-     * @param creditType クレジットカード種別
-     */
-    public void setCreditType(CreditType creditType) {
-        this.creditType = creditType;
-    }
+	/**
+	 * 電話番号を設定する。
+	 *
+	 * @param tel 電話番号
+	 */
+	public void setTel(String tel) {
+		this.tel = tel;
+	}
 
-    /**
-     * カード会員ログイン情報を取得する。
-     * 
-     * @return カード会員ログイン情報
-     */
-    public MemberLogin getMemberLogin() {
-        return memberLogin;
-    }
+	/**
+	 * 郵便番号を取得する。
+	 *
+	 * @return 郵便番号
+	 */
+	public String getZipCode() {
+		return zipCode;
+	}
 
-    /**
-     * カード会員ログイン情報を設定する。
-     * 
-     * @param memberLogin カード会員ログイン情報
-     */
-    public void setMemberLogin(MemberLogin memberLogin) {
-        this.memberLogin = memberLogin;
-    }
+	/**
+	 * 郵便番号を設定する。
+	 *
+	 * @param zipCode 郵便番号
+	 */
+	public void setZipCode(String zipCode) {
+		this.zipCode = zipCode;
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String toString() {
-        return ToStringBuilder.reflectionToString(this, ToStringStyle.MULTI_LINE_STYLE);
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String toString() {
+		return ToStringBuilder.reflectionToString(this, ToStringStyle.MULTI_LINE_STYLE);
+	}
 
 }

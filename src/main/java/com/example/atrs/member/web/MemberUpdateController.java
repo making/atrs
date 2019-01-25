@@ -18,13 +18,12 @@ package com.example.atrs.member.web;
 
 import java.security.Principal;
 
-import org.terasoluna.gfw.common.exception.BusinessException;
-import org.terasoluna.gfw.common.message.ResultMessages;
-
+import com.example.atrs.auth.AtrsUserDetails;
 import com.example.atrs.common.message.MessageKeys;
 import com.example.atrs.member.Member;
-import com.example.atrs.auth.AtrsUserDetails;
 import com.example.atrs.member.MemberUpdateService;
+import org.terasoluna.gfw.common.exception.BusinessException;
+import org.terasoluna.gfw.common.message.ResultMessages;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -48,14 +47,14 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class MemberUpdateController {
 
 	/**
-	 * 会員情報変更サービス。
-	 */
-	private final MemberUpdateService memberUpdateService;
-
-	/**
 	 * 会員情報Helper。
 	 */
 	private final MemberHelper memberHelper;
+
+	/**
+	 * 会員情報変更サービス。
+	 */
+	private final MemberUpdateService memberUpdateService;
 
 	/**
 	 * 会員情報変更フォームのバリデータ。
@@ -91,37 +90,12 @@ public class MemberUpdateController {
 	}
 
 	/**
-	 * 会員情報変更画面を表示する。
-	 * 
-	 * @param model 出力情報を保持するクラス
-	 * @param principal ログイン情報を持つオブジェクト
-	 * @return View論理名
-	 */
-	@RequestMapping(method = RequestMethod.GET, params = "form")
-	public String updateForm(Model model, Principal principal) {
-
-		// ログインユーザ情報から会員番号を取得
-		String membershipNumber = principal.getName();
-
-		// 会員情報から会員情報変更フォームを生成し、設定
-		Member member = memberUpdateService.findMember(membershipNumber);
-		MemberUpdateForm memberUpdateForm = memberHelper.toMemberUpdateForm(member);
-		model.addAttribute(memberUpdateForm);
-
-		// カレンダー表示制御のため、生年月日入力可能日付を設定
-		model.addAttribute("dateOfBirthMinDate", memberHelper.getDateOfBirthMinDate());
-		model.addAttribute("dateOfBirthMaxDate", memberHelper.getDateOfBirthMaxDate());
-
-		return "C2/memberUpdateForm";
-	}
-
-	/**
 	 * 会員情報の変更を行う。
 	 * <ul>
 	 * <li>チェックエラーがある場合、会員情報変更画面を再表示する。</li>
 	 * <li>更新成功の場合、更新完了メッセージを設定して会員情報変更画面を表示する。</li>
 	 * </ul>
-	 * 
+	 *
 	 * @param memberUpdateForm 会員情報変更フォーム
 	 * @param model 出力情報を保持するクラス
 	 * @param redirectAttributes フラッシュスコープ格納用オブジェクト
@@ -177,7 +151,7 @@ public class MemberUpdateController {
 
 	/**
 	 * 会員情報変更完了の会員情報変更画面を表示する。
-	 * 
+	 *
 	 * @param model 出力情報を保持するクラス
 	 * @param principal ログイン情報を持つオブジェクト
 	 * @return View論理名
@@ -187,6 +161,31 @@ public class MemberUpdateController {
 
 		// 再検索して会員情報変更画面を表示
 		return updateForm(model, principal);
+	}
+
+	/**
+	 * 会員情報変更画面を表示する。
+	 *
+	 * @param model 出力情報を保持するクラス
+	 * @param principal ログイン情報を持つオブジェクト
+	 * @return View論理名
+	 */
+	@RequestMapping(method = RequestMethod.GET, params = "form")
+	public String updateForm(Model model, Principal principal) {
+
+		// ログインユーザ情報から会員番号を取得
+		String membershipNumber = principal.getName();
+
+		// 会員情報から会員情報変更フォームを生成し、設定
+		Member member = memberUpdateService.findMember(membershipNumber);
+		MemberUpdateForm memberUpdateForm = memberHelper.toMemberUpdateForm(member);
+		model.addAttribute(memberUpdateForm);
+
+		// カレンダー表示制御のため、生年月日入力可能日付を設定
+		model.addAttribute("dateOfBirthMinDate", memberHelper.getDateOfBirthMinDate());
+		model.addAttribute("dateOfBirthMaxDate", memberHelper.getDateOfBirthMaxDate());
+
+		return "C2/memberUpdateForm";
 	}
 
 	/**

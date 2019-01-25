@@ -23,13 +23,15 @@ package com.example.atrs.member;
  */
 public interface MemberRegisterService {
 
-    /**
-     * 会員情報を登録する。
-     * <p>登録時に発出された会員番号を格納した会員情報インスタンスが返される。</p>
-     * 
-     * @param member 会員情報
-     * @return Member 会員番号が格納された会員情報
-     */
-    Member register(Member member);
+	/**
+	 * 会員情報を登録する。
+	 * <p>
+	 * 登録時に発出された会員番号を格納した会員情報インスタンスが返される。
+	 * </p>
+	 * 
+	 * @param member 会員情報
+	 * @return Member 会員番号が格納された会員情報
+	 */
+	Member register(Member member);
 
 }

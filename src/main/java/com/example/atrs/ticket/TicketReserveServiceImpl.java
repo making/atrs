@@ -19,10 +19,10 @@ package com.example.atrs.ticket;
 import java.util.Date;
 import java.util.List;
 
-import com.example.atrs.config.AtrsProperties;
 import com.example.atrs.common.exception.AtrsBusinessException;
 import com.example.atrs.common.logging.LogMessages;
 import com.example.atrs.common.util.FareUtil;
+import com.example.atrs.config.AtrsProperties;
 import com.example.atrs.member.Gender;
 import com.example.atrs.member.Member;
 import com.example.atrs.member.MemberRepository;
@@ -44,11 +44,6 @@ import org.springframework.util.StringUtils;
 public class TicketReserveServiceImpl implements TicketReserveService {
 
 	/**
-	 * 予約代表者に必要な最小年齢。
-	 */
-	private final int representativeMinAge;
-
-	/**
 	 * 大人運賃が適用される最小年齢。
 	 */
 	private final int adultPassengerMinAge;
@@ -67,6 +62,11 @@ public class TicketReserveServiceImpl implements TicketReserveService {
 	 * カード会員情報リポジトリ。
 	 */
 	private final MemberRepository memberRepository;
+
+	/**
+	 * 予約代表者に必要な最小年齢。
+	 */
+	private final int representativeMinAge;
 
 	/**
 	 * 予約情報リポジトリ。
@@ -152,171 +152,11 @@ public class TicketReserveServiceImpl implements TicketReserveService {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void validateReservation(Reservation reservation) throws BusinessException {
+	public Member findMember(String membershipNumber) {
 
-		Assert.notNull(reservation);
-		Assert.notEmpty(reservation.getReserveFlightList());
+		Assert.hasText(membershipNumber);
 
-		// 予約代表者の年齢が18歳以上であることを検証
-		validateRepresentativeAge(reservation.getRepAge());
-
-		// 予約フライト情報一覧を取得
-		List<ReserveFlight> reserveFlightList = reservation.getReserveFlightList();
-
-		// 運賃種別の適用可否を検証
-		validateFareType(reserveFlightList);
-
-		// 予約者代表者の検証
-		validateRepresentativeMemberInfo(reservation);
-
-		// 搭乗者情報と登録されている会員情報を照合
-		validatePassengerMemberInfo(reserveFlightList);
-	}
-
-	/**
-	 * 搭乗者情報とカード会員情報の照合を行う。
-	 * 
-	 * @param reserveFlightList 予約フライト情報一覧
-	 * @throws AtrsBusinessException 照合失敗例外
-	 */
-	private void validatePassengerMemberInfo(List<ReserveFlight> reserveFlightList)
-			throws AtrsBusinessException {
-
-		for (ReserveFlight reserveFlight : reserveFlightList) {
-
-			Assert.notNull(reserveFlight);
-
-			// 搭乗者情報が登録されている会員情報と同一であることを確認
-
-			// 搭乗者情報一覧
-			List<Passenger> passengerList = reserveFlight.getPassengerList();
-			Assert.notEmpty(passengerList);
-
-			int position = 1;
-			for (Passenger passenger : passengerList) {
-				Assert.notNull(passenger);
-
-				String membershipNumber = passenger.getMember().getMembershipNumber();
-
-				// 搭乗者会員番号が入力されている場合のみ照合
-				if (StringUtils.hasLength(membershipNumber)) {
-
-					// 搭乗者のカード会員情報取得
-					Member passengerMember = memberRepository.findOne(membershipNumber);
-
-					// 会員情報が存在することを確認
-					if (passengerMember == null) {
-						throw new AtrsBusinessException(
-								TicketReserveErrorCode.E_AR_B2_2005, position);
-					}
-
-					// 取得した搭乗者のカード会員情報と搭乗者情報が同一であることを確認
-					if (!(passenger.getFamilyName()
-							.equals(passengerMember.getKanaFamilyName())
-							&& passenger.getGivenName()
-									.equals(passengerMember.getKanaGivenName())
-							&& passenger.getGender()
-									.equals(passengerMember.getGender()))) {
-						throw new AtrsBusinessException(
-								TicketReserveErrorCode.E_AR_B2_2006, position);
-					}
-				}
-				position++;
-			}
-
-		}
-	}
-
-	/**
-	 * 予約代表者の情報をチェックする。
-	 * 
-	 * @param reservation 予約情報
-	 * @throws AtrsBusinessException チェック失敗例外
-	 */
-	private void validateRepresentativeMemberInfo(Reservation reservation)
-			throws AtrsBusinessException {
-
-		String repMembershipNumber = reservation.getRepMember().getMembershipNumber();
-
-		// 予約代表者会員番号が入力されている場合のみチェック
-		if (StringUtils.hasLength(repMembershipNumber)) {
-
-			// 予約代表者の会員情報を取得
-			Member repMember = memberRepository.findOne(repMembershipNumber);
-
-			// 該当する会員情報が存在することを確認
-			if (repMember == null) {
-				throw new AtrsBusinessException(TicketReserveErrorCode.E_AR_B2_2002);
-			}
-
-			// 取得した会員情報と予約代表者情報が同一であることを確認
-			if (!(reservation.getRepFamilyName().equals(repMember.getKanaFamilyName())
-					&& reservation.getRepGivenName().equals(repMember.getKanaGivenName())
-					&& reservation.getRepGender().equals(repMember.getGender()))) {
-				throw new AtrsBusinessException(TicketReserveErrorCode.E_AR_B2_2003);
-			}
-		}
-	}
-
-	/**
-	 * 運賃種別の適用可否を確認する。
-	 * 
-	 * @param reserveFlightList 予約フライト情報一覧
-	 * @throws AtrsBusinessException チェック失敗例外
-	 */
-	private void validateFareType(List<ReserveFlight> reserveFlightList)
-			throws AtrsBusinessException {
-
-		for (ReserveFlight reserveFlight : reserveFlightList) {
-
-			Assert.notNull(reserveFlight);
-
-			// 運賃種別
-			FareType fareType = reserveFlight.getFlight().getFareType();
-
-			// 運賃種別コード
-			FareTypeCd fareTypeCd = fareType.getFareTypeCd();
-
-			// 搭乗者情報一覧
-			List<Passenger> passengerList = reserveFlight.getPassengerList();
-			Assert.notEmpty(passengerList);
-
-			if (fareTypeCd == FareTypeCd.LD) {
-				// 運賃種別がレディース割の場合
-
-				for (Passenger passenger : passengerList) {
-					Assert.notNull(passenger);
-					if (passenger.getGender() == Gender.M) {
-						// 男性の搭乗者がいる場合、業務例外をスロー
-						throw new AtrsBusinessException(
-								TicketReserveErrorCode.E_AR_B2_2007);
-					}
-				}
-			}
-			else if (fareTypeCd == FareTypeCd.GD) {
-				// 運賃種別がグループ割の場合
-
-				int passengerMinNum = fareType.getPassengerMinNum();
-				if (passengerList.size() < passengerMinNum) {
-					// 搭乗者数が利用可能最少人数未満の場合、業務例外をスロー
-					throw new AtrsBusinessException(TicketReserveErrorCode.E_AR_B2_2010,
-							fareType.getFareTypeName(), passengerMinNum);
-				}
-			}
-		}
-	}
-
-	/**
-	 * 予約代表者の年齢が予約代表者最小年齢以上であることをチェックする。
-	 * 
-	 * @param age 予約代表者の年齢
-	 */
-	private void validateRepresentativeAge(int age) {
-
-		if (age < representativeMinAge) {
-			throw new AtrsBusinessException(TicketReserveErrorCode.E_AR_B2_2004,
-					representativeMinAge);
-		}
+		return memberRepository.findOne(membershipNumber);
 	}
 
 	/**
@@ -420,11 +260,171 @@ public class TicketReserveServiceImpl implements TicketReserveService {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Member findMember(String membershipNumber) {
+	public void validateReservation(Reservation reservation) throws BusinessException {
 
-		Assert.hasText(membershipNumber);
+		Assert.notNull(reservation);
+		Assert.notEmpty(reservation.getReserveFlightList());
 
-		return memberRepository.findOne(membershipNumber);
+		// 予約代表者の年齢が18歳以上であることを検証
+		validateRepresentativeAge(reservation.getRepAge());
+
+		// 予約フライト情報一覧を取得
+		List<ReserveFlight> reserveFlightList = reservation.getReserveFlightList();
+
+		// 運賃種別の適用可否を検証
+		validateFareType(reserveFlightList);
+
+		// 予約者代表者の検証
+		validateRepresentativeMemberInfo(reservation);
+
+		// 搭乗者情報と登録されている会員情報を照合
+		validatePassengerMemberInfo(reserveFlightList);
+	}
+
+	/**
+	 * 運賃種別の適用可否を確認する。
+	 * 
+	 * @param reserveFlightList 予約フライト情報一覧
+	 * @throws AtrsBusinessException チェック失敗例外
+	 */
+	private void validateFareType(List<ReserveFlight> reserveFlightList)
+			throws AtrsBusinessException {
+
+		for (ReserveFlight reserveFlight : reserveFlightList) {
+
+			Assert.notNull(reserveFlight);
+
+			// 運賃種別
+			FareType fareType = reserveFlight.getFlight().getFareType();
+
+			// 運賃種別コード
+			FareTypeCd fareTypeCd = fareType.getFareTypeCd();
+
+			// 搭乗者情報一覧
+			List<Passenger> passengerList = reserveFlight.getPassengerList();
+			Assert.notEmpty(passengerList);
+
+			if (fareTypeCd == FareTypeCd.LD) {
+				// 運賃種別がレディース割の場合
+
+				for (Passenger passenger : passengerList) {
+					Assert.notNull(passenger);
+					if (passenger.getGender() == Gender.M) {
+						// 男性の搭乗者がいる場合、業務例外をスロー
+						throw new AtrsBusinessException(
+								TicketReserveErrorCode.E_AR_B2_2007);
+					}
+				}
+			}
+			else if (fareTypeCd == FareTypeCd.GD) {
+				// 運賃種別がグループ割の場合
+
+				int passengerMinNum = fareType.getPassengerMinNum();
+				if (passengerList.size() < passengerMinNum) {
+					// 搭乗者数が利用可能最少人数未満の場合、業務例外をスロー
+					throw new AtrsBusinessException(TicketReserveErrorCode.E_AR_B2_2010,
+							fareType.getFareTypeName(), passengerMinNum);
+				}
+			}
+		}
+	}
+
+	/**
+	 * 搭乗者情報とカード会員情報の照合を行う。
+	 *
+	 * @param reserveFlightList 予約フライト情報一覧
+	 * @throws AtrsBusinessException 照合失敗例外
+	 */
+	private void validatePassengerMemberInfo(List<ReserveFlight> reserveFlightList)
+			throws AtrsBusinessException {
+
+		for (ReserveFlight reserveFlight : reserveFlightList) {
+
+			Assert.notNull(reserveFlight);
+
+			// 搭乗者情報が登録されている会員情報と同一であることを確認
+
+			// 搭乗者情報一覧
+			List<Passenger> passengerList = reserveFlight.getPassengerList();
+			Assert.notEmpty(passengerList);
+
+			int position = 1;
+			for (Passenger passenger : passengerList) {
+				Assert.notNull(passenger);
+
+				String membershipNumber = passenger.getMember().getMembershipNumber();
+
+				// 搭乗者会員番号が入力されている場合のみ照合
+				if (StringUtils.hasLength(membershipNumber)) {
+
+					// 搭乗者のカード会員情報取得
+					Member passengerMember = memberRepository.findOne(membershipNumber);
+
+					// 会員情報が存在することを確認
+					if (passengerMember == null) {
+						throw new AtrsBusinessException(
+								TicketReserveErrorCode.E_AR_B2_2005, position);
+					}
+
+					// 取得した搭乗者のカード会員情報と搭乗者情報が同一であることを確認
+					if (!(passenger.getFamilyName()
+							.equals(passengerMember.getKanaFamilyName())
+							&& passenger.getGivenName()
+									.equals(passengerMember.getKanaGivenName())
+							&& passenger.getGender()
+									.equals(passengerMember.getGender()))) {
+						throw new AtrsBusinessException(
+								TicketReserveErrorCode.E_AR_B2_2006, position);
+					}
+				}
+				position++;
+			}
+
+		}
+	}
+
+	/**
+	 * 予約代表者の年齢が予約代表者最小年齢以上であることをチェックする。
+	 *
+	 * @param age 予約代表者の年齢
+	 */
+	private void validateRepresentativeAge(int age) {
+
+		if (age < representativeMinAge) {
+			throw new AtrsBusinessException(TicketReserveErrorCode.E_AR_B2_2004,
+					representativeMinAge);
+		}
+	}
+
+	/**
+	 * 予約代表者の情報をチェックする。
+	 *
+	 * @param reservation 予約情報
+	 * @throws AtrsBusinessException チェック失敗例外
+	 */
+	private void validateRepresentativeMemberInfo(Reservation reservation)
+			throws AtrsBusinessException {
+
+		String repMembershipNumber = reservation.getRepMember().getMembershipNumber();
+
+		// 予約代表者会員番号が入力されている場合のみチェック
+		if (StringUtils.hasLength(repMembershipNumber)) {
+
+			// 予約代表者の会員情報を取得
+			Member repMember = memberRepository.findOne(repMembershipNumber);
+
+			// 該当する会員情報が存在することを確認
+			if (repMember == null) {
+				throw new AtrsBusinessException(TicketReserveErrorCode.E_AR_B2_2002);
+			}
+
+			// 取得した会員情報と予約代表者情報が同一であることを確認
+			if (!(reservation.getRepFamilyName().equals(repMember.getKanaFamilyName())
+					&& reservation.getRepGivenName().equals(repMember.getKanaGivenName())
+					&& reservation.getRepGender().equals(repMember.getGender()))) {
+				throw new AtrsBusinessException(TicketReserveErrorCode.E_AR_B2_2003);
+			}
+		}
 	}
 
 }

@@ -25,30 +25,30 @@ import com.example.atrs.common.exception.AtrsErrorCode;
  */
 public enum AuthLoginErrorCode implements AtrsErrorCode {
 
-    /**
-     * 会員番号から会員情報を取得できない事を通知するためのエラーコード。
-     */
-    E_AR_A1_2001("e.ar.a1.2001");
+	/**
+	 * 会員番号から会員情報を取得できない事を通知するためのエラーコード。
+	 */
+	E_AR_A1_2001("e.ar.a1.2001");
 
-    /**
-     * エラーコード。
-     */
-    private final String code;
+	/**
+	 * エラーコード。
+	 */
+	private final String code;
 
-    /**
-     * コンストラクタ。
-     * 
-     * @param code エラーコード。
-     */
-    private AuthLoginErrorCode(String code) {
-        this.code = code;
-    }
+	/**
+	 * コンストラクタ。
+	 * 
+	 * @param code エラーコード。
+	 */
+	private AuthLoginErrorCode(String code) {
+		this.code = code;
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String code() {
-        return code;
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String code() {
+		return code;
+	}
 }

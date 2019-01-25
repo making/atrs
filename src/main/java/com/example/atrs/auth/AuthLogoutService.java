@@ -25,10 +25,10 @@ import com.example.atrs.member.Member;
  */
 public interface AuthLogoutService {
 
-    /**
-     * ログアウト時に必要な業務処理を行う。
-     * 
-     * @param member 会員情報
-     */
-    void logout(Member member);
+	/**
+	 * ログアウト時に必要な業務処理を行う。
+	 * 
+	 * @param member 会員情報
+	 */
+	void logout(Member member);
 }

@@ -16,9 +16,8 @@
  */
 package com.example.atrs.common.web.exception;
 
-import org.terasoluna.gfw.common.exception.ExceptionCodeProvider;
-
 import com.example.atrs.common.logging.LogMessages;
+import org.terasoluna.gfw.common.exception.ExceptionCodeProvider;
 
 import org.springframework.validation.Errors;
 
@@ -27,47 +26,47 @@ import org.springframework.validation.Errors;
  * 
  * @author NTT 電電太郎
  */
-public class BadRequestException extends RuntimeException implements
-    ExceptionCodeProvider {
+public class BadRequestException extends RuntimeException
+		implements ExceptionCodeProvider {
 
-    /**
-     * serialVersionUID。
-     */
-    private static final long serialVersionUID = -6131511074347102729L;
+	/**
+	 * serialVersionUID。
+	 */
+	private static final long serialVersionUID = -6131511074347102729L;
 
-    /**
-     * コンストラクタ。
-     * 
-     * @param causeMessage エラーメッセージ
-     */
-    public BadRequestException(String causeMessage) {
-        super(LogMessages.E_AR_A0_L9001.getMessage(causeMessage));
-    }
+	/**
+	 * コンストラクタ。
+	 * 
+	 * @param causeMessage エラーメッセージ
+	 */
+	public BadRequestException(String causeMessage) {
+		super(LogMessages.E_AR_A0_L9001.getMessage(causeMessage));
+	}
 
-    /**
-     * コンストラクタ。
-     * 
-     * @param errors エラーオブジェクト
-     */
-    public BadRequestException(Errors errors) {
-        super(LogMessages.E_AR_A0_L9001.getMessage(errors.toString()));
-    }
+	/**
+	 * コンストラクタ。
+	 * 
+	 * @param errors エラーオブジェクト
+	 */
+	public BadRequestException(Errors errors) {
+		super(LogMessages.E_AR_A0_L9001.getMessage(errors.toString()));
+	}
 
-    /**
-     * コンストラクタ。
-     * 
-     * @param e 例外オブジェクト
-     */
-    public BadRequestException(Exception e) {
-        super(LogMessages.E_AR_A0_L9001.getMessage(e.getMessage()), e);
-    }
+	/**
+	 * コンストラクタ。
+	 * 
+	 * @param e 例外オブジェクト
+	 */
+	public BadRequestException(Exception e) {
+		super(LogMessages.E_AR_A0_L9001.getMessage(e.getMessage()), e);
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String getCode() {
-        return LogMessages.E_AR_A0_L9001.getCode();
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String getCode() {
+		return LogMessages.E_AR_A0_L9001.getCode();
+	}
 
 }

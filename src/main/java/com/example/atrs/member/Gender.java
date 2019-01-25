@@ -16,7 +16,6 @@
  */
 package com.example.atrs.member;
 
-
 /**
  * 性別の列挙型。
  * 
@@ -24,22 +23,22 @@ package com.example.atrs.member;
  */
 public enum Gender {
 
-    /**
-     * 女性のコード値。
-     */
-    F,
+	/**
+	 * 女性のコード値。
+	 */
+	F,
 
-    /**
-     * 男性のコード値。
-     */
-    M;
+	/**
+	 * 男性のコード値。
+	 */
+	M;
 
-    /**
-     * 性別コードを取得する。
-     * 
-     * @return 性別コード
-     */
-    public String getCode() {
-        return name();
-    }
+	/**
+	 * 性別コードを取得する。
+	 * 
+	 * @return 性別コード
+	 */
+	public String getCode() {
+		return name();
+	}
 }
