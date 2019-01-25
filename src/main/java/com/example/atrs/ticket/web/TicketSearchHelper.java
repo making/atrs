@@ -82,7 +82,7 @@ public class TicketSearchHelper {
 		this.defaultDepAirportCd = props.getDefaults().getDepAirportCd();
 		this.defaultArrAirportCd = props.getDefaults().getArrAirportCd();
 		this.defaultBoardingClassCd = props.getDefaults().getBoardingClassCd();
-		this.reserveIntervalTime = props.getReserveIntervalTime();
+		this.reserveIntervalTime = (int) props.getReserveIntervalTime().toMinutes();
 	}
 
 	/**

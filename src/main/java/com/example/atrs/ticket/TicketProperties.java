@@ -1,5 +1,7 @@
 package com.example.atrs.ticket;
 
+import java.time.Duration;
+
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -16,7 +18,7 @@ public class TicketProperties {
 
 	private int representativeMinAge;
 
-	private int reserveIntervalTime;
+	private Duration reserveIntervalTime;
 
 	private DefaultProperties defaults;
 
@@ -52,11 +54,11 @@ public class TicketProperties {
 		this.representativeMinAge = representativeMinAge;
 	}
 
-	public int getReserveIntervalTime() {
+	public Duration getReserveIntervalTime() {
 		return reserveIntervalTime;
 	}
 
-	public void setReserveIntervalTime(int reserveIntervalTime) {
+	public void setReserveIntervalTime(Duration reserveIntervalTime) {
 		this.reserveIntervalTime = reserveIntervalTime;
 	}
 

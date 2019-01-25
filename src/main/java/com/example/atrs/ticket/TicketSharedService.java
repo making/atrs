@@ -17,6 +17,7 @@
 package com.example.atrs.ticket;
 
 import java.time.Clock;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
@@ -68,9 +69,9 @@ public class TicketSharedService {
 	private final PeakTimeProvider peakTimeProvider;
 
 	/**
-	 * 往路の到着時刻に対し、復路で予約可能となる出発時刻までの時間間隔(分)。
+	 * 往路の到着時刻に対し、復路で予約可能となる出発時刻までの時間間隔。
 	 */
-	private final int reserveIntervalTime;
+	private final Duration reserveIntervalTime;
 
 	public TicketSharedService(TicketProperties props, Clock clock,
 			BoardingClassProvider boardingClassProvider,
@@ -301,7 +302,7 @@ public class TicketSharedService {
 		// 選択した復路のフライトが搭乗範囲外の場合、業務例外をスロー
 		// (復路のフライトは往路のフライトの到着時刻より指定時間間隔以上経過した
 		// 出発時刻から搭乗可能となる)
-		if (outwardArriveDateTime.plusMinutes(reserveIntervalTime)
+		if (outwardArriveDateTime.plusMinutes(reserveIntervalTime.toMinutes())
 				.isAfter(homewardDepartureDateTime)) {
 			throw new AtrsBusinessException(TicketErrorCode.E_AR_B2_2001);
 		}
