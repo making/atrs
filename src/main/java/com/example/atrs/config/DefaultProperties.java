@@ -1,11 +1,12 @@
 package com.example.atrs.config;
 
-import com.example.atrs.domain.model.BoardingClassCd;
-import com.example.atrs.domain.model.FlightType;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
+
+import com.example.atrs.ticket.BoardingClassCd;
+import com.example.atrs.ticket.FlightType;
 
 @Component
 @ConfigurationProperties(prefix = "default")

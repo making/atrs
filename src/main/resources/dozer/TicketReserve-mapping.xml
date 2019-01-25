@@ -4,8 +4,8 @@
           xsi:schemaLocation="http://dozermapper.github.io/schema/bean-mapping https://dozermapper.github.io/schema/bean-mapping.xsd">
 
     <mapping type="one-way">
-        <class-a>com.example.atrs.domain.model.Member</class-a>
-        <class-b>com.example.atrs.app.b2.TicketReserveForm</class-b>
+        <class-a>com.example.atrs.member.Member</class-a>
+        <class-b>com.example.atrs.ticket.web.TicketReserveForm</class-b>
         <field>
             <a>kanaFamilyName</a>
             <b>repFamilyName</b>
@@ -29,8 +29,8 @@
     </mapping>
 
     <mapping type="one-way">
-        <class-a>com.example.atrs.app.b2.TicketReserveForm</class-a>
-        <class-b>com.example.atrs.app.b2.PassengerForm</class-b>
+        <class-a>com.example.atrs.ticket.web.TicketReserveForm</class-a>
+        <class-b>com.example.atrs.ticket.web.PassengerForm</class-b>
         <field>
             <a>repFamilyName</a>
             <b>familyName</b>
@@ -54,8 +54,8 @@
     </mapping>
 
     <mapping type="one-way">
-        <class-a>com.example.atrs.app.b2.TicketReserveForm</class-a>
-        <class-b>com.example.atrs.domain.model.Reservation</class-b>
+        <class-a>com.example.atrs.ticket.web.TicketReserveForm</class-a>
+        <class-b>com.example.atrs.ticket.Reservation</class-b>
         <field>
             <a>repMembershipNumber</a>
             <b>repMember.membershipNumber</b>
@@ -63,8 +63,8 @@
     </mapping>
 
     <mapping type="one-way">
-        <class-a>com.example.atrs.app.b2.PassengerForm</class-a>
-        <class-b>com.example.atrs.domain.model.Passenger</class-b>
+        <class-a>com.example.atrs.ticket.web.PassengerForm</class-a>
+        <class-b>com.example.atrs.ticket.Passenger</class-b>
         <field>
             <a>membershipNumber</a>
             <b>member.membershipNumber</b>
@@ -72,8 +72,8 @@
     </mapping>
 
     <mapping type="one-way">
-        <class-a>com.example.atrs.domain.model.Flight</class-a>
-        <class-b>com.example.atrs.app.b0.SelectFlightDto</class-b>
+        <class-a>com.example.atrs.ticket.Flight</class-a>
+        <class-b>com.example.atrs.ticket.web.SelectFlightDto</class-b>
         <field>
             <a>flightMaster.flightName</a>
             <b>flightName</b>

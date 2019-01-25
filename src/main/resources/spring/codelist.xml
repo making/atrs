@@ -14,7 +14,7 @@
     </bean>
 
     <!-- 空港 -->
-    <bean id="CL_AIRPORT" class="com.example.atrs.domain.common.codelist.AirportCodeList">
+    <bean id="CL_AIRPORT" class="com.example.atrs.common.codelist.AirportCodeList">
         <property name="dataSource" ref="dataSource"/>
         <property name="querySql"
                   value="SELECT airport_cd,airport_name,display_order FROM airport order by display_order ASC"/>

@@ -4,8 +4,8 @@
           xsi:schemaLocation="http://dozermapper.github.io/schema/bean-mapping https://dozermapper.github.io/schema/bean-mapping.xsd">
 
     <mapping type="one-way">
-        <class-a>com.example.atrs.app.b1.FlightSearchCriteriaForm</class-a>
-        <class-b>com.example.atrs.domain.service.b1.TicketSearchCriteriaDto</class-b>
+        <class-a>com.example.atrs.ticket.api.FlightSearchCriteriaForm</class-a>
+        <class-b>com.example.atrs.ticket.TicketSearchCriteriaDto</class-b>
         <field>
             <a>depAirportCd</a>
             <b>departureAirportCd</b>

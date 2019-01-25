@@ -4,8 +4,8 @@
           xsi:schemaLocation="http://dozermapper.github.io/schema/bean-mapping https://dozermapper.github.io/schema/bean-mapping.xsd">
 
     <mapping type="one-way">
-        <class-a>com.example.atrs.app.c2.MemberUpdateForm</class-a>
-        <class-b>com.example.atrs.domain.model.Member</class-b>
+        <class-a>com.example.atrs.member.web.MemberUpdateForm</class-a>
+        <class-b>com.example.atrs.member.Member</class-b>
         <field>
             <a>dateOfBirth</a>
             <b>birthday</b>
@@ -21,8 +21,8 @@
     </mapping>
 
     <mapping type="one-way">
-        <class-a>com.example.atrs.domain.model.Member</class-a>
-        <class-b>com.example.atrs.app.c2.MemberUpdateForm</class-b>
+        <class-a>com.example.atrs.member.Member</class-a>
+        <class-b>com.example.atrs.member.web.MemberUpdateForm</class-b>
         <field>
             <a>birthday</a>
             <b>dateOfBirth</b>

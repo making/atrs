@@ -2,8 +2,8 @@ package com.example.atrs.config;
 
 import org.terasoluna.gfw.security.web.logging.UserIdMDCPutFilter;
 
-import com.example.atrs.app.common.security.AtrsLogoutSuccessHandler;
-import com.example.atrs.app.common.security.AtrsUsernamePasswordAuthenticationFilter;
+import com.example.atrs.common.web.security.AtrsLogoutSuccessHandler;
+import com.example.atrs.common.web.security.AtrsUsernamePasswordAuthenticationFilter;
 
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Configuration;
