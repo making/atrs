@@ -22,6 +22,7 @@ import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
+import com.example.atrs.config.AtrsProperties;
 import com.example.atrs.domain.common.exception.AtrsBusinessException;
 import com.example.atrs.domain.common.masterdata.BoardingClassProvider;
 import com.example.atrs.domain.common.masterdata.PeakTimeProvider;
@@ -40,7 +41,6 @@ import com.example.atrs.domain.service.b1.TicketSearchErrorCode;
 import com.example.atrs.domain.service.b2.TicketReserveErrorCode;
 import org.terasoluna.gfw.common.exception.BusinessException;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
@@ -84,13 +84,11 @@ public class TicketSharedServiceImpl implements TicketSharedService {
 	 */
 	private final FlightRepository flightRepository;
 
-	public TicketSharedServiceImpl(
-			@Value("${atrs.reserveIntervalTime}") int reserveIntervalTime,
-			@Value("${atrs.limitDay}") int limitDay, Clock clock,
+	public TicketSharedServiceImpl(AtrsProperties props, Clock clock,
 			BoardingClassProvider boardingClassProvider,
 			PeakTimeProvider peakTimeProvider, FlightRepository flightRepository) {
-		this.reserveIntervalTime = reserveIntervalTime;
-		this.limitDay = limitDay;
+		this.reserveIntervalTime = props.getReserveIntervalTime();
+		this.limitDay = props.getLimitDay();
 		this.clock = clock;
 		this.boardingClassProvider = boardingClassProvider;
 		this.peakTimeProvider = peakTimeProvider;

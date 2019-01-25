@@ -19,9 +19,7 @@ package com.example.atrs.domain.service.b2;
 import java.util.Date;
 import java.util.List;
 
-import org.terasoluna.gfw.common.exception.BusinessException;
-import org.terasoluna.gfw.common.exception.SystemException;
-
+import com.example.atrs.config.AtrsProperties;
 import com.example.atrs.domain.common.exception.AtrsBusinessException;
 import com.example.atrs.domain.common.logging.LogMessages;
 import com.example.atrs.domain.common.util.FareUtil;
@@ -38,8 +36,9 @@ import com.example.atrs.domain.repository.flight.FlightRepository;
 import com.example.atrs.domain.repository.member.MemberRepository;
 import com.example.atrs.domain.repository.reservation.ReservationRepository;
 import com.example.atrs.domain.service.b0.TicketSharedService;
+import org.terasoluna.gfw.common.exception.BusinessException;
+import org.terasoluna.gfw.common.exception.SystemException;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
@@ -89,16 +88,13 @@ public class TicketReserveServiceImpl implements TicketReserveService {
 	 */
 	private final TicketSharedService ticketSharedService;
 
-	public TicketReserveServiceImpl(
-			@Value("${atrs.representativeMinAge}") int representativeMinAge,
-			@Value("${atrs.adultPassengerMinAge}") int adultPassengerMinAge,
-			@Value("${atrs.childFareRate}") int childFareRate,
+	public TicketReserveServiceImpl(AtrsProperties props,
 			FlightRepository flightRepository, MemberRepository memberRepository,
 			ReservationRepository reservationRepository,
 			TicketSharedService ticketSharedService) {
-		this.representativeMinAge = representativeMinAge;
-		this.adultPassengerMinAge = adultPassengerMinAge;
-		this.childFareRate = childFareRate;
+		this.representativeMinAge = props.getRepresentativeMinAge();
+		this.adultPassengerMinAge = props.getAdultPassengerMinAge();
+		this.childFareRate = props.getChildFareRate();
 		this.flightRepository = flightRepository;
 		this.memberRepository = memberRepository;
 		this.reservationRepository = reservationRepository;

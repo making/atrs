@@ -21,10 +21,10 @@ import java.time.Instant;
 import java.time.ZoneId;
 
 import com.example.atrs.app.c2.MemberUpdateForm;
+import com.example.atrs.config.AtrsProperties;
 import com.example.atrs.domain.model.Member;
 import com.github.dozermapper.core.Mapper;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
@@ -50,11 +50,10 @@ public class MemberHelper {
 	 */
 	private final String dateOfBirthMinDate;
 
-	public MemberHelper(Mapper beanMapper, Clock clock,
-			@Value("${atrs.dateOfBirthMinDate}") String dateOfBirthMinDate) {
+	public MemberHelper(Mapper beanMapper, Clock clock, AtrsProperties props) {
 		this.beanMapper = beanMapper;
 		this.clock = clock;
-		this.dateOfBirthMinDate = dateOfBirthMinDate;
+		this.dateOfBirthMinDate = props.getDateOfBirthMinDate();
 	}
 
 	/**

@@ -23,6 +23,8 @@ import java.util.Date;
 import java.util.List;
 
 import com.example.atrs.app.common.exception.BadRequestException;
+import com.example.atrs.config.AtrsProperties;
+import com.example.atrs.config.DefaultProperties;
 import com.example.atrs.domain.model.BoardingClassCd;
 import com.example.atrs.domain.model.Flight;
 import com.example.atrs.domain.model.FlightType;
@@ -30,7 +32,6 @@ import com.example.atrs.domain.service.b0.InvalidFlightException;
 import com.example.atrs.domain.service.b0.TicketSharedService;
 import org.terasoluna.gfw.common.exception.BusinessException;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 /**
@@ -74,18 +75,14 @@ public class TicketSearchHelper {
 	private final int reserveIntervalTime;
 
 	public TicketSearchHelper(Clock clock, TicketSharedService ticketSharedService,
-			@Value("${default.flightType}") FlightType defaultFlightType,
-			@Value("${default.depAirportCd}") String defaultDepAirportCd,
-			@Value("${default.arrAirportCd}") String defaultArrAirportCd,
-			@Value("${default.boardingClassCd}") BoardingClassCd defaultBoardingClassCd,
-			@Value("${atrs.reserveIntervalTime}") int reserveIntervalTime) {
+			DefaultProperties defaultProps, AtrsProperties atrsProps) {
 		this.clock = clock;
 		this.ticketSharedService = ticketSharedService;
-		this.defaultFlightType = defaultFlightType;
-		this.defaultDepAirportCd = defaultDepAirportCd;
-		this.defaultArrAirportCd = defaultArrAirportCd;
-		this.defaultBoardingClassCd = defaultBoardingClassCd;
-		this.reserveIntervalTime = reserveIntervalTime;
+		this.defaultFlightType = defaultProps.getFlightType();
+		this.defaultDepAirportCd = defaultProps.getDepAirportCd();
+		this.defaultArrAirportCd = defaultProps.getArrAirportCd();
+		this.defaultBoardingClassCd = defaultProps.getBoardingClassCd();
+		this.reserveIntervalTime = atrsProps.getReserveIntervalTime();
 	}
 
 	/**
