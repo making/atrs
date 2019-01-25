@@ -1,7 +1,5 @@
-package com.example.atrs.config;
+package com.example.atrs.ticket;
 
-import com.example.atrs.ticket.BoardingClassCd;
-import com.example.atrs.ticket.FlightType;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;

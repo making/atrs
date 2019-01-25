@@ -24,7 +24,6 @@ import java.util.List;
 
 import com.example.atrs.common.exception.AtrsBusinessException;
 import com.example.atrs.common.util.DateTimeUtil;
-import com.example.atrs.common.util.FareTypeUtil;
 import com.example.atrs.common.util.FareUtil;
 import com.example.atrs.config.AtrsProperties;
 import org.terasoluna.gfw.common.exception.BusinessException;

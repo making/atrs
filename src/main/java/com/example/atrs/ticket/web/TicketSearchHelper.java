@@ -24,7 +24,7 @@ import java.util.List;
 
 import com.example.atrs.common.web.exception.BadRequestException;
 import com.example.atrs.config.AtrsProperties;
-import com.example.atrs.config.DefaultProperties;
+import com.example.atrs.ticket.DefaultProperties;
 import com.example.atrs.ticket.BoardingClassCd;
 import com.example.atrs.ticket.Flight;
 import com.example.atrs.ticket.FlightType;

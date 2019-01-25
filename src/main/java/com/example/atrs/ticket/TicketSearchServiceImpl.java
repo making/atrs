@@ -29,7 +29,6 @@ import java.util.Map;
 
 import com.example.atrs.common.exception.AtrsBusinessException;
 import com.example.atrs.common.util.DateTimeUtil;
-import com.example.atrs.common.util.FareTypeUtil;
 import org.terasoluna.gfw.common.exception.BusinessException;
 
 import org.springframework.stereotype.Service;
