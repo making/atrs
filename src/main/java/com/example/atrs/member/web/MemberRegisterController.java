@@ -113,7 +113,7 @@ public class MemberRegisterController {
 	@RequestMapping(method = RequestMethod.GET, params = "complete")
 	public String registerComplete() {
 
-		return "C1/memberRegisterComplete";
+		return "member/memberRegisterComplete";
 	}
 
 	/**
@@ -138,7 +138,7 @@ public class MemberRegisterController {
 			return registerRedo(memberRegisterForm, model);
 		}
 
-		return "C1/memberRegisterConfirm";
+		return "member/memberRegisterConfirm";
 	}
 
 	/**
@@ -154,7 +154,7 @@ public class MemberRegisterController {
 		model.addAttribute("dateOfBirthMinDate", memberHelper.getDateOfBirthMinDate());
 		model.addAttribute("dateOfBirthMaxDate", memberHelper.getDateOfBirthMaxDate());
 
-		return "C1/memberRegisterForm";
+		return "member/memberRegisterForm";
 	}
 
 	/**
@@ -171,7 +171,7 @@ public class MemberRegisterController {
 		model.addAttribute("dateOfBirthMinDate", memberHelper.getDateOfBirthMinDate());
 		model.addAttribute("dateOfBirthMaxDate", memberHelper.getDateOfBirthMaxDate());
 
-		return "C1/memberRegisterForm";
+		return "member/memberRegisterForm";
 	}
 
 	/**

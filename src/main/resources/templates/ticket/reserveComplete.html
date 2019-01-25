@@ -12,7 +12,7 @@
   </head>
   <body>
 
-    <header th:replace="~{A0/header :: header}"></header>
+    <header th:replace="~{common/layout/header :: header}"></header>
 
     <div class="container">
 
@@ -48,14 +48,14 @@
         </section>
 
         <div class="text-center">
-          <a href="../A0/top.html" th:href="@{/}" class="btn btn-default">トップに戻る</a>
+          <a href="top.html" th:href="@{/}" class="btn btn-default">トップに戻る</a>
         </div>
 
       </div><!-- /row -->
 
     </div><!--/container  -->
 
-    <footer th:replace="~{A0/footer :: footer}"></footer>
+    <footer th:replace="~{common/layout/footer :: footer}"></footer>
 
     <script src="../../static/resources/vendor/jquery/jquery.min.js" th:src="@{/resources/vendor/jquery/jquery.min.js}"></script>
     <script src="../../static/resources/vendor/bootstrap/js/bootstrap.min.js" th:src="@{/resources/vendor/bootstrap/js/bootstrap.min.js}"></script>

@@ -12,7 +12,7 @@
   </head>
   <body>
 
-    <header th:replace="~{A0/header :: header}"></header>
+    <header th:replace="~{common/layout/header :: header}"></header>
 
     <div id="container" class="container">
 
@@ -30,7 +30,7 @@
             </div>
 
             <div class="panel-body">
-              <form id="login-form" action="../A0/top.html" th:action="@{/auth/dologin}" method="post">
+              <form id="login-form" action="../ticket/top.html" th:action="@{/auth/dologin}" method="post">
                 <div class="form-group">
                   <label class="control-label" for="membershipNumber">会員番号</label>
                   <input type="text" class="form-control" maxlength="10" id="membershipNumber" name="membershipNumber"
@@ -54,7 +54,7 @@
 
     </div>
 
-    <footer th:replace="~{A0/footer :: footer}"></footer>
+    <footer th:replace="~{common/layout/footer :: footer}"></footer>
 
     <script src="../../static/resources/vendor/jquery/jquery.min.js" th:src="@{/resources/vendor/jquery/jquery.min.js}"></script>
     <script src="../../static/resources/vendor/bootstrap/js/bootstrap.min.js" th:src="@{/resources/vendor/bootstrap/js/bootstrap.min.js}"></script>

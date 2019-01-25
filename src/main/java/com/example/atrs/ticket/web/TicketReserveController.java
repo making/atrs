@@ -176,7 +176,7 @@ public class TicketReserveController {
 	@RequestMapping(method = RequestMethod.GET, params = "complete")
 	public String reserveComplete() {
 
-		return "B2/reserveComplete";
+		return "ticket/reserveComplete";
 	}
 
 	/**
@@ -234,7 +234,7 @@ public class TicketReserveController {
 				.createSelectFlightDtoList(flightList);
 		model.addAttribute("selectFlightDtoList", selectFlightDtoList);
 
-		return "B2/reserveConfirm";
+		return "ticket/reserveConfirm";
 	}
 
 	/**
@@ -245,7 +245,7 @@ public class TicketReserveController {
 	@RequestMapping(method = RequestMethod.GET, params = "fail")
 	public String reserveFail() {
 
-		return "B2/reserveFail";
+		return "ticket/reserveFail";
 	}
 
 	/**
@@ -278,7 +278,7 @@ public class TicketReserveController {
 		model.addAttribute(ticketReserveForm);
 		model.addAttribute("selectFlightDtoList", selectFlightDtoList);
 
-		return "B2/reserveForm";
+		return "ticket/reserveForm";
 	}
 
 	/**
@@ -298,7 +298,7 @@ public class TicketReserveController {
 				.createSelectFlightDtoList(flightList);
 		model.addAttribute("selectFlightDtoList", selectFlightDtoList);
 
-		return "B2/reserveForm";
+		return "ticket/reserveForm";
 	}
 
 }

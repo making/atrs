@@ -35,7 +35,7 @@ public class AuthLoginController {
 	 */
 	@RequestMapping
 	public String loginForm() {
-		return "A1/loginForm";
+		return "auth/loginForm";
 	}
 
 }

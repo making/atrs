@@ -185,7 +185,7 @@ public class MemberUpdateController {
 		model.addAttribute("dateOfBirthMinDate", memberHelper.getDateOfBirthMinDate());
 		model.addAttribute("dateOfBirthMaxDate", memberHelper.getDateOfBirthMaxDate());
 
-		return "C2/memberUpdateForm";
+		return "member/memberUpdateForm";
 	}
 
 	/**
@@ -202,7 +202,7 @@ public class MemberUpdateController {
 		model.addAttribute("dateOfBirthMinDate", memberHelper.getDateOfBirthMinDate());
 		model.addAttribute("dateOfBirthMaxDate", memberHelper.getDateOfBirthMaxDate());
 
-		return "C2/memberUpdateForm";
+		return "member/memberUpdateForm";
 	}
 
 }

@@ -12,7 +12,7 @@
   </head>
   <body>
 
-  <header th:replace="~{A0/header :: header}"></header>
+  <header th:replace="~{common/layout/header :: header}"></header>
 
     <div class="container">
 
@@ -152,7 +152,7 @@
           </section>
 
         <form action="reserveComplete.html" th:action="@{/ticket/reserve}"
-         method="post" th:object="${ticketReserveForm}" class="text-center btns-block">
+              method="post" th:object="${ticketReserveForm}" class="text-center btns-block">
 
             <!-- 選択フライト情報 -->
             <input type="hidden" th:field="*{flightType}" />
@@ -192,7 +192,7 @@
 
     </div><!-- /container -->
 
-    <footer th:replace="~{A0/footer :: footer}"></footer>
+    <footer th:replace="~{common/layout/footer :: footer}"></footer>
 
     <script src="../../static/resources/vendor/jquery/jquery.min.js" th:src="@{/resources/vendor/jquery/jquery.min.js}"></script>
     <script src="../../static/resources/vendor/bootstrap/js/bootstrap.min.js" th:src="@{/resources/vendor/bootstrap/js/bootstrap.min.js}"></script>

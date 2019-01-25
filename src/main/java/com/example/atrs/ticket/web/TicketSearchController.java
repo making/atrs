@@ -116,7 +116,7 @@ public class TicketSearchController {
 		// 空席照会画面(TOP画面)表示情報設定
 		model.addAttribute(ticketSearchHelper.createFlightSearchOutputDto());
 
-		return "B1/flightSearch";
+			return "ticket/flightSearch";
 	}
 
 	/**
@@ -141,7 +141,7 @@ public class TicketSearchController {
 		// 国内線リンクから遷移時は初期空席照会を実施しない
 		model.addAttribute("isInitialSearchUnnecessary", true);
 
-		return "B1/flightSearch";
+		return "ticket/flightSearch";
 	}
 
 	/**
@@ -159,7 +159,7 @@ public class TicketSearchController {
 		// 空席照会画面(TOP画面)表示情報設定
 		model.addAttribute(ticketSearchHelper.createFlightSearchOutputDto());
 
-		return "B1/flightSearch";
+		return "ticket/flightSearch";
 	}
 
 	/**
@@ -236,7 +236,7 @@ public class TicketSearchController {
 
 		// ※本来はユースケース外の画面へ直接遷移することはしないが、
 		// TOP画面は空席照会条件入力部品を含むため、例外的に直接遷移する
-		return "A0/top";
+		return "ticket/top";
 	}
 
 }

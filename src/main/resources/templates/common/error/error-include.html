@@ -17,14 +17,14 @@
       <div class="container">
 
         <h1>
-          <a href="../../A0/top.html" th:href="@{/}">
+          <a href="../../ticket/top.html" th:href="@{/}">
             <span class="sr-only">Airline Ticket Reservation System</span>
           </a>
         </h1>
         <nav>
           <ul class="vertical-middle-box">
             <li>
-              <a href="../../B1/flightSearch.html" th:href="@{/ticket/search?form}">国内線</a>
+              <a href="../../ticket/flightSearch.html" th:href="@{/ticket/search?form}">国内線</a>
             </li>
           </ul>
         </nav>
@@ -50,7 +50,7 @@
           </div>
 
           <div class="col-md-12 text-center">
-            <a href="../../A0/top.html" th:href="@{/}" class="btn btn-default">トップに戻る</a>
+            <a href="../../ticket/top.html" th:href="@{/}" class="btn btn-default">トップに戻る</a>
           </div>
         </section>
 
@@ -58,7 +58,7 @@
 
     </div>
 
-    <footer th:replace="~{A0/footer :: footer}"></footer>
+    <footer th:replace="~{common/layout/footer :: footer}"></footer>
 
     <script src="../../../static/resources/vendor/jquery/jquery.min.js" th:src="@{/resources/vendor/jquery/jquery.min.js}"></script>
     <script src="../../../static/resources/vendor/bootstrap/js/bootstrap.min.js" th:src="@{/resources/vendor/bootstrap/js/bootstrap.min.js}"></script>

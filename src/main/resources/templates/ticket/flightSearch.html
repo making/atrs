@@ -21,7 +21,7 @@
   </head>
   <body>
 
-    <header th:replace="~{A0/header :: header}"></header>
+    <header th:replace="~{common/layout/header :: header}"></header>
 
     <div class="container">
 
@@ -61,12 +61,12 @@
       <div class="row">
 
         <section class="col-md-4">
-          <div th:replace="~{B1/flightSearchForm :: flightSearchForm}"></div>
+          <div th:replace="~{ticket/flightSearchForm :: flightSearchForm}"></div>
         </section>
 
         <section class="col-md-8">
           <form id="flights-select-form" th:class="hidden"
-            action="../B2/reserveForm.html"
+            action="reserveForm.html"
             th:action="@{/ticket/search?select}" method="post"
             th:object="${reservationFlightForm}">
 
@@ -441,7 +441,7 @@
             </tbody>
           </script>
 
-          <div th:replace="~{B2/reserveSelectForm :: reserveSelectForm}"></div>
+          <div th:replace="~{ticket/reserveSelectForm :: reserveSelectForm}"></div>
 
         </section>
 
@@ -449,7 +449,7 @@
 
     </div><!-- /container -->
 
-    <footer th:replace="~{A0/footer :: footer}"></footer>
+    <footer th:replace="~{common/layout/footer :: footer}"></footer>
 
     <script src="../../static/resources/vendor/jquery/jquery.min.js" th:src="@{/resources/vendor/jquery/jquery.min.js}"></script>
     <script src="../../static/resources/vendor/bootstrap/js/bootstrap.min.js" th:src="@{/resources/vendor/bootstrap/js/bootstrap.min.js}"></script>
