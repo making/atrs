@@ -33,6 +33,16 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
+import static com.example.atrs.ticket.TicketErrorCode.E_AR_B2_2002;
+import static com.example.atrs.ticket.TicketErrorCode.E_AR_B2_2003;
+import static com.example.atrs.ticket.TicketErrorCode.E_AR_B2_2004;
+import static com.example.atrs.ticket.TicketErrorCode.E_AR_B2_2005;
+import static com.example.atrs.ticket.TicketErrorCode.E_AR_B2_2006;
+import static com.example.atrs.ticket.TicketErrorCode.E_AR_B2_2007;
+import static com.example.atrs.ticket.TicketErrorCode.E_AR_B2_2008;
+import static com.example.atrs.ticket.TicketErrorCode.E_AR_B2_2009;
+import static com.example.atrs.ticket.TicketErrorCode.E_AR_B2_2010;
+
 /**
  * チケット予約のサービス実装クラス。
  * 
@@ -77,10 +87,10 @@ public class TicketReserveService {
 	 */
 	private final TicketSharedService ticketSharedService;
 
-	public TicketReserveService(TicketProperties props,
-								FlightRepository flightRepository, MemberRepository memberRepository,
-								ReservationRepository reservationRepository,
-								TicketSharedService ticketSharedService) {
+	public TicketReserveService(TicketProperties props, FlightRepository flightRepository,
+			MemberRepository memberRepository,
+			ReservationRepository reservationRepository,
+			TicketSharedService ticketSharedService) {
 		this.representativeMinAge = props.getRepresentativeMinAge();
 		this.adultPassengerMinAge = props.getAdultPassengerMinAge();
 		this.childFareRate = props.getChildFareRate();
@@ -189,7 +199,7 @@ public class TicketReserveService {
 			// 搭乗日が運賃種別予約可能時期範囲内かチェック
 			if (!ticketSharedService.isAvailableFareType(flight.getFareType(),
 					flight.getDepartureDate())) {
-				throw new AtrsBusinessException(TicketReserveErrorCode.E_AR_B2_2008);
+				throw new AtrsBusinessException(E_AR_B2_2008);
 			}
 
 			// 空席数を更新するために、フライト情報を取得する(排他)
@@ -204,7 +214,7 @@ public class TicketReserveService {
 			// 取得した空席数が搭乗者数以上であることを確認
 			if (vacantNum < passengerNum) {
 				// 空席数が搭乗者数未満の場合、業務例外をスロー
-				throw new AtrsBusinessException(TicketReserveErrorCode.E_AR_B2_2009);
+				throw new AtrsBusinessException(E_AR_B2_2009);
 			}
 
 			// 取得した空席数から搭乗者数を引いた数を、フライト情報の空席数に設定
@@ -320,8 +330,7 @@ public class TicketReserveService {
 					Assert.notNull(passenger);
 					if (passenger.getGender() == Gender.M) {
 						// 男性の搭乗者がいる場合、業務例外をスロー
-						throw new AtrsBusinessException(
-								TicketReserveErrorCode.E_AR_B2_2007);
+						throw new AtrsBusinessException(E_AR_B2_2007);
 					}
 				}
 			}
@@ -331,7 +340,7 @@ public class TicketReserveService {
 				int passengerMinNum = fareType.getPassengerMinNum();
 				if (passengerList.size() < passengerMinNum) {
 					// 搭乗者数が利用可能最少人数未満の場合、業務例外をスロー
-					throw new AtrsBusinessException(TicketReserveErrorCode.E_AR_B2_2010,
+					throw new AtrsBusinessException(E_AR_B2_2010,
 							fareType.getFareTypeName(), passengerMinNum);
 				}
 			}
@@ -371,8 +380,7 @@ public class TicketReserveService {
 
 					// 会員情報が存在することを確認
 					if (passengerMember == null) {
-						throw new AtrsBusinessException(
-								TicketReserveErrorCode.E_AR_B2_2005, position);
+						throw new AtrsBusinessException(E_AR_B2_2005, position);
 					}
 
 					// 取得した搭乗者のカード会員情報と搭乗者情報が同一であることを確認
@@ -382,8 +390,7 @@ public class TicketReserveService {
 									.equals(passengerMember.getKanaGivenName())
 							&& passenger.getGender()
 									.equals(passengerMember.getGender()))) {
-						throw new AtrsBusinessException(
-								TicketReserveErrorCode.E_AR_B2_2006, position);
+						throw new AtrsBusinessException(E_AR_B2_2006, position);
 					}
 				}
 				position++;
@@ -400,8 +407,7 @@ public class TicketReserveService {
 	private void validateRepresentativeAge(int age) {
 
 		if (age < representativeMinAge) {
-			throw new AtrsBusinessException(TicketReserveErrorCode.E_AR_B2_2004,
-					representativeMinAge);
+			throw new AtrsBusinessException(E_AR_B2_2004, representativeMinAge);
 		}
 	}
 
@@ -424,14 +430,14 @@ public class TicketReserveService {
 
 			// 該当する会員情報が存在することを確認
 			if (repMember == null) {
-				throw new AtrsBusinessException(TicketReserveErrorCode.E_AR_B2_2002);
+				throw new AtrsBusinessException(E_AR_B2_2002);
 			}
 
 			// 取得した会員情報と予約代表者情報が同一であることを確認
 			if (!(reservation.getRepFamilyName().equals(repMember.getKanaFamilyName())
 					&& reservation.getRepGivenName().equals(repMember.getKanaGivenName())
 					&& reservation.getRepGender().equals(repMember.getGender()))) {
-				throw new AtrsBusinessException(TicketReserveErrorCode.E_AR_B2_2003);
+				throw new AtrsBusinessException(E_AR_B2_2003);
 			}
 		}
 	}

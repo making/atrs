@@ -30,6 +30,8 @@ import org.terasoluna.gfw.common.exception.BusinessException;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
+import static com.example.atrs.ticket.TicketErrorCode.E_AR_B1_2001;
+
 /**
  * チケット予約共通サービス実装クラス。
  * 
@@ -71,8 +73,8 @@ public class TicketSharedService {
 	private final int reserveIntervalTime;
 
 	public TicketSharedService(TicketProperties props, Clock clock,
-							   BoardingClassProvider boardingClassProvider,
-							   PeakTimeProvider peakTimeProvider, FlightRepository flightRepository) {
+			BoardingClassProvider boardingClassProvider,
+			PeakTimeProvider peakTimeProvider, FlightRepository flightRepository) {
 		this.reserveIntervalTime = props.getReserveIntervalTime();
 		this.limitDay = props.getLimitDay();
 		this.clock = clock;
@@ -202,7 +204,7 @@ public class TicketSharedService {
 		// 指定された搭乗日が本日から照会可能限界日迄の間にあるかチェック
 		LocalDate depDate = DateTimeUtil.toLocalDate(departureDate);
 		if (depDate.isBefore(today) || depDate.isAfter(limitDate)) {
-			throw new AtrsBusinessException(TicketSearchErrorCode.E_AR_B1_2001);
+			throw new AtrsBusinessException(E_AR_B1_2001);
 		}
 	}
 
@@ -301,7 +303,7 @@ public class TicketSharedService {
 		// 出発時刻から搭乗可能となる)
 		if (outwardArriveDateTime.plusMinutes(reserveIntervalTime)
 				.isAfter(homewardDepartureDateTime)) {
-			throw new AtrsBusinessException(TicketReserveErrorCode.E_AR_B2_2001);
+			throw new AtrsBusinessException(TicketErrorCode.E_AR_B2_2001);
 		}
 	}
 

@@ -23,7 +23,31 @@ import com.example.atrs.common.exception.AtrsErrorCode;
  * 
  * @author NTT 電電三郎
  */
-public enum TicketReserveErrorCode implements AtrsErrorCode {
+public enum TicketErrorCode implements AtrsErrorCode {
+	/**
+	 * 空席照会の対象期間外の搭乗日が指定された事を通知するためのエラーコード。
+	 */
+	E_AR_B1_2001("e.ar.b1.2001"),
+
+	/**
+	 * 運行区間外の空港が指定された事を通知するためのエラーコード。
+	 */
+	E_AR_B1_2002("e.ar.b1.2002"),
+
+	/**
+	 * 条件に一致するフライトがない事を通知するためのエラーコード。
+	 */
+	E_AR_B1_2003("e.ar.b1.2003"),
+
+	/**
+	 * 出発空港と到着空港に同じ空港が指定された事を通知するためのエラーコード。
+	 */
+	E_AR_B1_5001("e.ar.b1.5001"),
+
+	/**
+	 * 復路搭乗日に往路搭乗日より前の日付が指定された事を通知するためのエラーコード。
+	 */
+	E_AR_B1_5002("e.ar.b1.5002"),
 
 	/**
 	 * 往路の到着時刻と復路の出発時刻の間が一定間隔以上経過していない事を通知するためのエラーコード。
@@ -124,7 +148,7 @@ public enum TicketReserveErrorCode implements AtrsErrorCode {
 	 *
 	 * @param code エラーコード。
 	 */
-	private TicketReserveErrorCode(String code) {
+	private TicketErrorCode(String code) {
 		this.code = code;
 	}
 

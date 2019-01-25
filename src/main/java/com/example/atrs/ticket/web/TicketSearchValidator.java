@@ -19,13 +19,15 @@ package com.example.atrs.ticket.web;
 import java.time.Instant;
 
 import com.example.atrs.ticket.FlightType;
-import com.example.atrs.ticket.TicketSearchErrorCode;
 
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
+
+import static com.example.atrs.ticket.TicketErrorCode.E_AR_B1_5001;
+import static com.example.atrs.ticket.TicketErrorCode.E_AR_B1_5002;
 
 /**
  * 空席照会フォームのバリデータ。
@@ -65,7 +67,7 @@ public class TicketSearchValidator implements Validator {
 			String depAirport = form.getDepAirportCd();
 			String arrAirport = form.getArrAirportCd();
 			if (depAirport.equals(arrAirport)) {
-				errors.reject(TicketSearchErrorCode.E_AR_B1_5001.code());
+				errors.reject(E_AR_B1_5001.code());
 			}
 		}
 
@@ -87,7 +89,7 @@ public class TicketSearchValidator implements Validator {
 				Instant outwardDate = form.getOutwardDate().toInstant();
 				Instant homewardDate = form.getHomewardDate().toInstant();
 				if (homewardDate.isBefore(outwardDate)) {
-					errors.reject(TicketSearchErrorCode.E_AR_B1_5002.code());
+					errors.reject(E_AR_B1_5002.code());
 				}
 			}
 		}

@@ -19,7 +19,7 @@ package com.example.atrs.ticket.web;
 import java.util.List;
 
 import com.example.atrs.common.validate.ValidationUtil;
-import com.example.atrs.ticket.TicketReserveErrorCode;
+import com.example.atrs.ticket.TicketErrorCode;
 
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.stereotype.Component;
@@ -90,7 +90,7 @@ public class TicketReserveValidator implements Validator {
 
 		// 搭乗者が1件以上入力されていることをチェック
 		if (inputtedPassengerCount == 0) {
-			errors.reject(TicketReserveErrorCode.E_AR_B2_5002.code());
+			errors.reject(TicketErrorCode.E_AR_B2_5002.code());
 			return;
 		}
 
@@ -113,7 +113,7 @@ public class TicketReserveValidator implements Validator {
 					new DefaultMessageSourceResolvable("repTel2"),
 					ValidationUtil.TEL1_AND_TEL2_MIN_LENGTH,
 					ValidationUtil.TEL1_AND_TEL2_MAX_LENGTH };
-			errors.reject(TicketReserveErrorCode.E_AR_B2_5003.code(), errorArgs, "");
+			errors.reject(TicketErrorCode.E_AR_B2_5003.code(), errorArgs, "");
 		}
 	}
 

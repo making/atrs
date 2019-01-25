@@ -18,6 +18,8 @@ package com.example.atrs.ticket;
 
 import com.example.atrs.common.exception.AtrsBusinessException;
 
+import static com.example.atrs.ticket.TicketErrorCode.E_AR_B1_2003;
+
 /**
  * フライト情報非存在業務例外クラス。
  * 
@@ -34,7 +36,7 @@ public class FlightNotFoundException extends AtrsBusinessException {
 	 * コンストラクタ。
 	 */
 	public FlightNotFoundException() {
-		super(TicketSearchErrorCode.E_AR_B1_2003);
+		super(E_AR_B1_2003);
 	}
 
 }

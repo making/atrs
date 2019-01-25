@@ -35,6 +35,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
+import static com.example.atrs.ticket.TicketErrorCode.E_AR_B1_2002;
+
 /**
  * 空席照会サービス実装クラス。
  * 
@@ -123,7 +125,7 @@ public class TicketSearchService {
 		// 指定された出発空港・到着空港に該当する区間が存在するかどうかチェック
 		Route route = routeProvider.getRouteByAirportCd(depAirportCd, arrAirportCd);
 		if (route == null) {
-			throw new AtrsBusinessException(TicketSearchErrorCode.E_AR_B1_2002);
+			throw new AtrsBusinessException(E_AR_B1_2002);
 		}
 
 		// システム日付が搭乗日から何日前かを計算

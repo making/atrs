@@ -30,6 +30,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
+import static com.example.atrs.member.MemberErrorCode.E_AR_A1_2001;
+
 /**
  * ログインユーザ情報サービス。
  * 
@@ -56,7 +58,7 @@ public class MemberUserDetailsService implements UserDetailsService {
 	private final MessageSource messageSource;
 
 	public MemberUserDetailsService(MessageSource messageSource,
-									MemberRepository memberRepository) {
+			MemberRepository memberRepository) {
 		this.messageSource = messageSource;
 		this.memberRepository = memberRepository;
 	}
@@ -77,8 +79,8 @@ public class MemberUserDetailsService implements UserDetailsService {
 			if (LOGGER.isInfoEnabled()) {
 				LOGGER.info(LogMessages.I_AR_A1_L2001.getMessage(username));
 			}
-			String errorMessage = messageSource.getMessage(
-					MemberUserDetailsErrorCode.E_AR_A1_2001.code(), null, Locale.getDefault());
+			String errorMessage = messageSource.getMessage(E_AR_A1_2001.code(), null,
+					Locale.getDefault());
 			// 該当する会員情報が存在しない場合、例外をスロー
 			throw new UsernameNotFoundException(errorMessage);
 		}

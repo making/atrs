@@ -18,7 +18,7 @@ package com.example.atrs.ticket.web;
 
 import java.util.List;
 
-import com.example.atrs.ticket.TicketReserveErrorCode;
+import com.example.atrs.ticket.TicketErrorCode;
 import org.apache.commons.collections.CollectionUtils;
 
 import org.springframework.context.support.DefaultMessageSourceResolvable;
@@ -84,7 +84,7 @@ public class ReservationFlightValidator implements Validator {
 					else if (selectFlightFormList.size() == 1) {
 
 						// 往路か復路のいずれかが未入力の場合
-						errors.reject(TicketReserveErrorCode.E_AR_B2_5001.code());
+						errors.reject(TicketErrorCode.E_AR_B2_5001.code());
 					}
 					else {
 

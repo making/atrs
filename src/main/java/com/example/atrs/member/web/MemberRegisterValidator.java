@@ -16,12 +16,12 @@
  */
 package com.example.atrs.member.web;
 
-import com.example.atrs.member.MemberRegisterErrorCode;
-
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
+
+import static com.example.atrs.member.MemberErrorCode.E_AR_C1_5001;
 
 /**
  * 会員情報登録フォームのバリデータ。
@@ -65,7 +65,7 @@ public class MemberRegisterValidator implements Validator {
 			if (!password.equals(reEnterPassword)) {
 
 				// パスワードと再入力パスワードが異なる場合エラー
-				errors.reject(MemberRegisterErrorCode.E_AR_C1_5001.code());
+				errors.reject(E_AR_C1_5001.code());
 			}
 		}
 

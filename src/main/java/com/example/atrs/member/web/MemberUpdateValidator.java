@@ -16,13 +16,14 @@
  */
 package com.example.atrs.member.web;
 
-import com.example.atrs.member.MemberUpdateErrorCode;
-
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
+
+import static com.example.atrs.member.MemberErrorCode.E_AR_C2_5001;
+import static com.example.atrs.member.MemberErrorCode.E_AR_C2_5002;
 
 /**
  * 会員情報変更フォームのバリデータ。
@@ -75,13 +76,13 @@ public class MemberUpdateValidator implements Validator {
 						|| !StringUtils.hasLength(reEnterPassword)) {
 
 					// 空欄がある場合エラー
-					errors.reject(MemberUpdateErrorCode.E_AR_C2_5002.code());
+					errors.reject(E_AR_C2_5002.code());
 
 				}
 				else if (!password.equals(reEnterPassword)) {
 
 					// パスワードと再入力パスワードが異なる場合エラー
-					errors.reject(MemberUpdateErrorCode.E_AR_C2_5001.code());
+					errors.reject(E_AR_C2_5001.code());
 				}
 			}
 		}

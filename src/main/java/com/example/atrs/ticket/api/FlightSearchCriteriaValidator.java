@@ -16,11 +16,11 @@
  */
 package com.example.atrs.ticket.api;
 
-import com.example.atrs.ticket.TicketSearchErrorCode;
-
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
+
+import static com.example.atrs.ticket.TicketErrorCode.E_AR_B1_5001;
 
 /**
  * 空席照会条件フォームのバリデータ。
@@ -58,7 +58,7 @@ public class FlightSearchCriteriaValidator implements Validator {
 			String depAirport = form.getDepAirportCd();
 			String arrAirport = form.getArrAirportCd();
 			if (depAirport.equals(arrAirport)) {
-				errors.reject(TicketSearchErrorCode.E_AR_B1_5001.code());
+				errors.reject(E_AR_B1_5001.code());
 			}
 		}
 

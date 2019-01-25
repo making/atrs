@@ -26,6 +26,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
+import static com.example.atrs.member.MemberErrorCode.E_AR_C2_2001;
+
 /**
  * 会員情報変更を行うService実装クラス。
  * 
@@ -46,7 +48,7 @@ public class MemberUpdateService {
 	private final PasswordEncoder passwordEncoder;
 
 	public MemberUpdateService(MemberRepository memberRepository,
-							   PasswordEncoder passwordEncoder) {
+			PasswordEncoder passwordEncoder) {
 		this.memberRepository = memberRepository;
 		this.passwordEncoder = passwordEncoder;
 	}
@@ -68,7 +70,7 @@ public class MemberUpdateService {
 
 			// パスワード不一致の場合、業務例外をスロー
 			if (!passwordEncoder.matches(password, currentPassword)) {
-				throw new AtrsBusinessException(MemberUpdateErrorCode.E_AR_C2_2001);
+				throw new AtrsBusinessException(E_AR_C2_2001);
 			}
 		}
 	}
