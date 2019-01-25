@@ -16,20 +16,71 @@
  */
 package com.example.atrs.auth;
 
+import java.time.Clock;
+import java.time.Instant;
+import java.util.Date;
+
+import com.example.atrs.common.logging.LogMessages;
 import com.example.atrs.member.Member;
+import com.example.atrs.member.MemberLogin;
+import com.example.atrs.member.MemberRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.terasoluna.gfw.common.exception.SystemException;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
 
 /**
- * 会員ログインサービスインタフェース。
+ * 会員ログインサービス実装クラス。
  * 
  * @author NTT 電電太郎
  */
-public interface AuthLoginService {
+@Service
+@Transactional
+public class AuthLoginService {
+
+	/**
+	 * ロガー。
+	 */
+	private static final Logger LOGGER = LoggerFactory
+			.getLogger(AuthLoginService.class);
+
+	private final Clock clock;
+
+	/**
+	 * カード会員情報リポジトリ。
+	 */
+	private final MemberRepository memberRepository;
+
+	public AuthLoginService(Clock clock, MemberRepository memberRepository) {
+		this.clock = clock;
+		this.memberRepository = memberRepository;
+	}
 
 	/**
 	 * ログイン時に必要な業務処理を行う。
-	 * 
+	 *
 	 * @param member 会員情報
 	 */
-	void login(Member member);
+	public void login(Member member) {
+
+		// パラメータチェック
+		Assert.notNull(member);
+
+		// ログインフラグ、ログイン日時を更新
+		Instant now = Instant.now(this.clock);
+		MemberLogin memberLogin = member.getMemberLogin();
+		memberLogin.setLoginDateTime(Date.from(now));
+		memberLogin.setLoginFlg(true);
+		int updateCount = memberRepository.updateToLoginStatus(member);
+		if (updateCount != 1) {
+			throw new SystemException(LogMessages.E_AR_A0_L9002.getCode(),
+					LogMessages.E_AR_A0_L9002.getMessage(updateCount, 1));
+		}
+
+		LOGGER.info(LogMessages.I_AR_A1_L0001.getMessage(member.getMembershipNumber()));
+	}
 
 }

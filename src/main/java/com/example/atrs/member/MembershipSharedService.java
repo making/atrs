@@ -16,19 +16,40 @@
  */
 package com.example.atrs.member;
 
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
+
 /**
- * 会員共通サービスインターフェース。
+ * 会員共通サービス実装クラス。
  * 
  * @author NTT 電電太郎
  */
-public interface MembershipSharedService {
+@Service
+public class MembershipSharedService {
+
+	/**
+	 * カード会員情報リポジトリ。
+	 */
+	private final MemberRepository memberRepository;
+
+	public MembershipSharedService(MemberRepository memberRepository) {
+		this.memberRepository = memberRepository;
+	}
 
 	/**
 	 * 会員であるか判定する。
-	 * 
+	 *
 	 * @param membershipNumber 会員番号
 	 * @return 会員の場合true
 	 */
-	boolean isMember(String membershipNumber);
+	@Transactional(readOnly = true)
+	public boolean isMember(String membershipNumber) {
+
+		Assert.hasText(membershipNumber);
+
+		// 該当する会員情報が存在するか判定
+		return (memberRepository.findOne(membershipNumber) != null);
+	}
 
 }
