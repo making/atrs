@@ -6,7 +6,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 @Component
-@ConfigurationProperties(prefix = "atrs")
+@ConfigurationProperties(prefix = "ticket")
 public class TicketProperties {
 	private int adultPassengerMinAge;
 
@@ -17,6 +17,8 @@ public class TicketProperties {
 	private int representativeMinAge;
 
 	private int reserveIntervalTime;
+
+	private DefaultProperties defaults;
 
 	public int getAdultPassengerMinAge() {
 		return adultPassengerMinAge;
@@ -58,9 +60,63 @@ public class TicketProperties {
 		this.reserveIntervalTime = reserveIntervalTime;
 	}
 
+	public DefaultProperties getDefaults() {
+		return defaults;
+	}
+
+	public void setDefaults(DefaultProperties defaults) {
+		this.defaults = defaults;
+	}
+
 	@Override
 	public String toString() {
 		return ToStringBuilder.reflectionToString(this);
 	}
 
+	public static class DefaultProperties {
+		private String arrAirportCd;
+
+		private BoardingClassCd boardingClassCd;
+
+		private String depAirportCd;
+
+		private FlightType flightType;
+
+		public String getArrAirportCd() {
+			return arrAirportCd;
+		}
+
+		public void setArrAirportCd(String arrAirportCd) {
+			this.arrAirportCd = arrAirportCd;
+		}
+
+		public BoardingClassCd getBoardingClassCd() {
+			return boardingClassCd;
+		}
+
+		public void setBoardingClassCd(BoardingClassCd boardingClassCd) {
+			this.boardingClassCd = boardingClassCd;
+		}
+
+		public String getDepAirportCd() {
+			return depAirportCd;
+		}
+
+		public void setDepAirportCd(String depAirportCd) {
+			this.depAirportCd = depAirportCd;
+		}
+
+		public FlightType getFlightType() {
+			return flightType;
+		}
+
+		public void setFlightType(FlightType flightType) {
+			this.flightType = flightType;
+		}
+
+		@Override
+		public String toString() {
+			return ToStringBuilder.reflectionToString(this);
+		}
+	}
 }

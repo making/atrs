@@ -6,7 +6,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 @Component
-@ConfigurationProperties(prefix = "atrs")
+@ConfigurationProperties(prefix = "member")
 public class MemberProperties {
 
 	private String dateOfBirthMinDate;
