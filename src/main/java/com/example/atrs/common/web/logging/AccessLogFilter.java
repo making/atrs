@@ -52,7 +52,7 @@ public class AccessLogFilter extends OncePerRequestFilter {
 		String logMessage = getLogMessage(request);
 		LOGGER.info("[ACCESS START    ] {}", logMessage);
 		filterChain.doFilter(request, response);
-		LOGGER.info("[ACCESS FINISH   ] ResponseStatus:{}\t{}", response.getStatus(),
+		LOGGER.info("[ACCESS FINISH   ] Status:{}\t{}", response.getStatus(),
 				logMessage);
 	}
 
@@ -79,7 +79,8 @@ public class AccessLogFilter extends OncePerRequestFilter {
 	 */
 	private String getLogMessage(HttpServletRequest request) {
 		StringBuilder sb = new StringBuilder();
-		sb.append("RequestURL:").append(request.getRequestURL().toString());
+		sb.append("Method:").append(request.getMethod()).append("\t");
+		sb.append("URL:").append(request.getRequestURL().toString());
 		String queryString = request.getQueryString();
 		if (queryString != null) {
 			sb.append("?").append(queryString);
