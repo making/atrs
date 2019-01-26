@@ -50,10 +50,10 @@ public class AccessLogFilter extends OncePerRequestFilter {
 			throws ServletException, IOException {
 
 		String logMessage = getLogMessage(request);
-		LOGGER.info("ACCESS START {}", logMessage);
+		LOGGER.info("ACCESS START  {}", logMessage);
 		filterChain.doFilter(request, response);
-		LOGGER.info("ACCESS FINISH {}, [ResponseStatus:{}]", logMessage,
-				response.getStatus());
+		LOGGER.info("ACCESS FINISH ResponseStatus:{}\t{}", response.getStatus(),
+				logMessage);
 	}
 
 	/**
@@ -78,23 +78,18 @@ public class AccessLogFilter extends OncePerRequestFilter {
 	 * @return ログメッセージ
 	 */
 	private String getLogMessage(HttpServletRequest request) {
-
 		StringBuilder sb = new StringBuilder();
-
-		sb.append("[RequestURL:").append(request.getRequestURL().toString());
+		sb.append("RequestURL:").append(request.getRequestURL().toString());
 		String queryString = request.getQueryString();
 		if (queryString != null) {
 			sb.append("?").append(queryString);
 		}
-		sb.append("], ");
-
+		sb.append("\t");
 		HttpSession session = request.getSession(false);
 		if (session != null) {
-			sb.append("[SessionID:").append(session.getId()).append("], ");
+			sb.append("SessionID:").append(session.getId()).append("\t");
 		}
-
-		sb.append("[RemoteAddress:").append(request.getRemoteAddr()).append("], ");
-
+		sb.append("RemoteAddress:").append(request.getRemoteAddr());
 		return sb.toString();
 	}
 }
