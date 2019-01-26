@@ -50,7 +50,7 @@ public class AccessLogFilter extends OncePerRequestFilter {
 			throws ServletException, IOException {
 
 		String logMessage = getLogMessage(request);
-		LOGGER.info("[ACCESS START    ]  {}", logMessage);
+		LOGGER.info("[ACCESS START    ] {}", logMessage);
 		filterChain.doFilter(request, response);
 		LOGGER.info("[ACCESS FINISH   ] ResponseStatus:{}\t{}", response.getStatus(),
 				logMessage);
