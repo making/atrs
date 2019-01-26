@@ -27,7 +27,6 @@ import javax.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 /**
@@ -35,7 +34,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
  * 
  * @author NTT 電電太郎
  */
-@Component
 public class AccessLogFilter extends OncePerRequestFilter {
 
 	/**
@@ -54,7 +52,8 @@ public class AccessLogFilter extends OncePerRequestFilter {
 		String logMessage = getLogMessage(request);
 		LOGGER.info("ACCESS START {}", logMessage);
 		filterChain.doFilter(request, response);
-		LOGGER.info("ACCESS FINISH {}", logMessage);
+		LOGGER.info("ACCESS FINISH {}, [ResponseStatus:{}]", logMessage,
+				response.getStatus());
 	}
 
 	/**

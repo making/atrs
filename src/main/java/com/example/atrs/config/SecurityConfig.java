@@ -2,6 +2,7 @@ package com.example.atrs.config;
 
 import com.example.atrs.auth.security.AtrsLogoutSuccessHandler;
 import com.example.atrs.auth.security.AtrsUsernamePasswordAuthenticationFilter;
+import com.example.atrs.common.web.logging.AccessLogFilter;
 import org.terasoluna.gfw.security.web.logging.UserIdMDCPutFilter;
 
 import org.springframework.context.MessageSource;
@@ -12,6 +13,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.web.authentication.AnonymousAuthenticationFilter;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.security.web.authentication.ui.DefaultLoginPageGeneratingFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
@@ -39,8 +41,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		http.addFilterAfter(this.userIdMDCPutFilter(),
-				AnonymousAuthenticationFilter.class) //
+		http.addFilterBefore(new AccessLogFilter(), LogoutFilter.class) //
+				.addFilterAfter(this.userIdMDCPutFilter(),
+						AnonymousAuthenticationFilter.class) //
 				.addFilterAt(this.usernamePasswordAuthenticationFilter(),
 						DefaultLoginPageGeneratingFilter.class) //
 				.formLogin() //
