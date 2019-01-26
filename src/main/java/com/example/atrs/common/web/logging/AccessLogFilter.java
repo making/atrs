@@ -94,7 +94,6 @@ public class AccessLogFilter extends OncePerRequestFilter {
 		}
 
 		sb.append("[RemoteAddress:").append(request.getRemoteAddr()).append("], ");
-		sb.append("[RemoteHost:").append(request.getRemoteHost()).append("] ");
 
 		return sb.toString();
 	}
