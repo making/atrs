@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <include resource="org/springframework/boot/logging/logback/base.xml"/>
+    <logger name="com.example.atrs" level="WARN"/>
+    <logger name="com.example.atrs.common.web.logging.AccessLogFilter" level="INFO"/>
+    <logger name="org.springframework" level="WARN"/>
+    <logger name="com.github.dozermapper" level="ERROR"/>
+    <logger name="com.zaxxer.hikari" level="WARN"/>
+    <logger name="org.apache.catalina" level="ERROR"/>
+</configuration>
