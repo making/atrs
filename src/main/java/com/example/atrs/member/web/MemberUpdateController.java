@@ -18,14 +18,15 @@ package com.example.atrs.member.web;
 
 import java.security.Principal;
 
-import com.example.atrs.member.MemberUserDetails;
 import com.example.atrs.common.message.MessageKeys;
 import com.example.atrs.member.Member;
 import com.example.atrs.member.MemberUpdateService;
+import com.example.atrs.member.MemberUserDetails;
 import org.terasoluna.gfw.common.exception.BusinessException;
 import org.terasoluna.gfw.common.message.ResultMessages;
 
-import org.springframework.security.core.Authentication;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -135,10 +136,11 @@ public class MemberUpdateController {
 		memberUpdateService.updateMember(member);
 
 		// 更新した会員情報をログインユーザ情報に設定
-		Authentication authentication = (Authentication) principal;
-		MemberUserDetails userDetails = (MemberUserDetails) authentication.getPrincipal();
 		Member loginMember = memberUpdateService.findMemberForLogin(membershipNumber);
-		userDetails.setMember(loginMember);
+		MemberUserDetails userDetails = new MemberUserDetails(loginMember);
+		UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
+				userDetails, null, userDetails.getAuthorities());
+		SecurityContextHolder.getContext().setAuthentication(token);
 
 		// 更新完了メッセージ設定
 		ResultMessages messages = ResultMessages.success()
