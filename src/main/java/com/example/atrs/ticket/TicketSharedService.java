@@ -326,7 +326,7 @@ public class TicketSharedService {
 
 			// 往路の運賃種別は片道運賃であることを検証
 			owFareTypeCd = flightList.get(0).getFareType().getFareTypeCd();
-			if (!FareTypeUtil.isOneWay(owFareTypeCd)) {
+			if (!owFareTypeCd.isOneWay()) {
 				throw new InvalidFlightException(
 						"outward flight fareType is invalid :" + owFareTypeCd);
 			}
@@ -337,14 +337,14 @@ public class TicketSharedService {
 
 			// 往路の運賃種別は往復運賃または特別往復運賃であることを検証
 			owFareTypeCd = flightList.get(0).getFareType().getFareTypeCd();
-			if (!FareTypeUtil.isRoundTrip(owFareTypeCd)) {
+			if (!owFareTypeCd.isRoundTrip()) {
 				throw new InvalidFlightException(
 						"outward flight fareType is invalid :" + owFareTypeCd);
 			}
 
 			// 復路の運賃種別が往復運賃または特別往復運賃でない場合、フライト不正例外をスロー
 			hwFareTypeCd = flightList.get(1).getFareType().getFareTypeCd();
-			if (!FareTypeUtil.isRoundTrip(hwFareTypeCd)) {
+			if (!owFareTypeCd.isRoundTrip()) {
 				throw new InvalidFlightException(
 						"homeward flight fareType is invalid :" + hwFareTypeCd);
 			}

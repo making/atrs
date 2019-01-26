@@ -135,7 +135,7 @@ public class TicketSearchService {
 		int beforeDayNum = (int) Duration.between(today, depLocalDate).toDays();
 
 		// フライト種別に応じて運賃種別コードを空席照会条件Dtoに設定
-		List<FareTypeCd> fareTypeList = FareTypeUtil.getFareTypeCdList(flightType);
+		List<FareTypeCd> fareTypeList = flightType.getFareTypeCdList();
 
 		VacantSeatSearchCriteriaDto criteria = new VacantSeatSearchCriteriaDto(depDate,
 				route, boardingClassCd, beforeDayNum, fareTypeList);

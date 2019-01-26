@@ -16,6 +16,12 @@
  */
 package com.example.atrs.ticket;
 
+import java.util.List;
+import java.util.function.Predicate;
+import java.util.stream.Stream;
+
+import static java.util.stream.Collectors.toList;
+
 /**
  * フライト種別の列挙型。
  * 
@@ -26,12 +32,18 @@ public enum FlightType {
 	/**
 	 * 往復のフライト種別。
 	 */
-	RT,
+	RT(FareTypeCd::isRoundTrip),
 
 	/**
 	 * 片道のフライト種別。
 	 */
-	OW;
+	OW(FareTypeCd::isOneWay);
+
+	private final Predicate<FareTypeCd> codeFilter;
+
+	FlightType(Predicate<FareTypeCd> codeFilter) {
+		this.codeFilter = codeFilter;
+	}
 
 	/**
 	 * フライト種別を取得する。
@@ -40,6 +52,15 @@ public enum FlightType {
 	 */
 	public String getCode() {
 		return this.name();
+	}
+
+	/**
+	 * フライト種別に応じた運賃種別リストを取得する。
+	 *
+	 * @return 運賃種別リスト
+	 */
+	public List<FareTypeCd> getFareTypeCdList() {
+		return Stream.of(FareTypeCd.values()).filter(this.codeFilter).collect(toList());
 	}
 
 }

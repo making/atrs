@@ -26,52 +26,74 @@ public enum FareTypeCd {
 	/**
 	 * 片道運賃の運賃種別コード。
 	 */
-	OW,
+	OW(false),
 
 	/**
 	 * 往復運賃の運賃種別コード。
 	 */
-	RT,
+	RT(true),
 
 	/**
 	 * 予約割1の運賃種別コード。
 	 */
-	RD1,
+	RD1(false),
 
 	/**
 	 * 予約割7の運賃種別コード。
 	 */
-	RD7,
+	RD7(false),
 
 	/**
 	 * 早期割の運賃種別コード。
 	 */
-	ED,
+	ED(false),
 
 	/**
 	 * レディース割の運賃種別コード。
 	 */
-	LD,
+	LD(false),
 
 	/**
 	 * グループ割の運賃種別コード。
 	 */
-	GD,
+	GD(false),
 
 	/**
 	 * 特別片道運賃の運賃種別コード。
 	 */
-	SOW,
+	SOW(false),
 
 	/**
 	 * 特別往復運賃の運賃種別コード。
 	 */
-	SRT,
+	SRT(true),
 
 	/**
 	 * 特別予約割の運賃種別コード。
 	 */
-	SRD;
+	SRD(false);
+
+	private final boolean roundTrip;
+
+	FareTypeCd(boolean roundTrip) {
+		this.roundTrip = roundTrip;
+	}
+
+	/**
+	 * 運賃種別が往復の運賃種別かを判定する。
+	 * @return 往復の運賃種別の場合true
+	 */
+	public boolean isRoundTrip() {
+		return this.roundTrip;
+	}
+
+	/**
+	 * 運賃種別が片道の運賃種別かを判定する。
+	 * @return 片道の運賃種別の場合true
+	 */
+	public boolean isOneWay() {
+		return !this.roundTrip;
+	}
 
 	/**
 	 * 運賃種別コードを取得する。
