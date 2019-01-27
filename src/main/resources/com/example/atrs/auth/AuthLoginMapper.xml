@@ -41,6 +41,9 @@
 
     <!-- 会員ログイン情報を登録 -->
     <insert id="insert" parameterType="com.example.atrs.auth.AuthLogin">
+        <selectKey keyProperty="membershipNumber" resultType="String" order="BEFORE">
+            SELECT TO_CHAR(NEXTVAL('sq_member_1'), 'FM0999999999')
+        </selectKey>
         INSERT INTO member_login
         (customer_no,
          password,

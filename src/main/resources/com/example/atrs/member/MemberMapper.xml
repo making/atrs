@@ -87,9 +87,6 @@
 
     <!-- 会員情報を登録 -->
     <insert id="insert" parameterType="com.example.atrs.member.Member">
-        <selectKey keyProperty="membershipNumber" resultType="String" order="BEFORE">
-            SELECT TO_CHAR(NEXTVAL('sq_member_1'), 'FM0999999999')
-        </selectKey>
         INSERT INTO member (
         customer_no,
         kanji_family_name,

@@ -77,20 +77,21 @@ public class MemberRegisterService {
 		authLogin.setLastPassword(hashedPassword);
 		authLogin.setLoginFlg(false);
 
-		// 会員情報登録
-		// (MyBatis3の機能(SelectKey)によりパラメータの会員情報に会員番号が格納される)
-		int insertMemberCount = memberMapper.insert(member);
-		if (insertMemberCount != 1) {
-			throw new SystemException(LogMessages.E_AR_A0_L9002.getCode(),
-					LogMessages.E_AR_A0_L9002.getMessage(insertMemberCount, 1));
-		}
-
-		authLogin.setMembershipNumber(member.getMembershipNumber());
 		// 会員ログイン情報登録
+		// (MyBatis3の機能(SelectKey)によりパラメータの会員情報に会員番号が格納される)
 		int insertAuthLoginCount = authLoginMapper.insert(authLogin);
 		if (insertAuthLoginCount != 1) {
 			throw new SystemException(LogMessages.E_AR_A0_L9002.getCode(),
 					LogMessages.E_AR_A0_L9002.getMessage(insertAuthLoginCount, 1));
+		}
+
+		member.setMembershipNumber(authLogin.getMembershipNumber());
+
+		// 会員情報登録
+		int insertMemberCount = memberMapper.insert(member);
+		if (insertMemberCount != 1) {
+			throw new SystemException(LogMessages.E_AR_A0_L9002.getCode(),
+					LogMessages.E_AR_A0_L9002.getMessage(insertMemberCount, 1));
 		}
 
 		return member;
