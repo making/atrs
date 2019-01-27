@@ -17,9 +17,6 @@
 package com.example.atrs.auth;
 
 import com.example.atrs.common.logging.LogMessages;
-import com.example.atrs.member.Member;
-import com.example.atrs.member.MemberLogin;
-import com.example.atrs.member.MemberMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.terasoluna.gfw.common.exception.SystemException;
@@ -40,36 +37,35 @@ public class AuthLogoutService {
 	/**
 	 * ロガー。
 	 */
-	private static final Logger LOGGER = LoggerFactory
-			.getLogger(AuthLogoutService.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(AuthLogoutService.class);
 
 	/**
 	 * カード会員情報リポジトリ。
 	 */
-	private final MemberMapper memberMapper;
+	private final AuthLoginMapper authLoginMapper;
 
-	public AuthLogoutService(MemberMapper memberMapper) {
-		this.memberMapper = memberMapper;
+	public AuthLogoutService(AuthLoginMapper authLoginMapper) {
+		this.authLoginMapper = authLoginMapper;
 	}
 
 	/**
 	 * ログアウト時に必要な業務処理を行う。
 	 *
-	 * @param member 会員情報
+	 * @param authLogin 会員情報
 	 */
-	public void logout(Member member) {
+	public void logout(AuthLogin authLogin) {
 
-		Assert.notNull(member);
+		Assert.notNull(authLogin);
 
 		// ログインフラグを更新
-		MemberLogin memberLogin = member.getMemberLogin();
-		memberLogin.setLoginFlg(false);
-		int updateCount = memberMapper.updateToLogoutStatus(member);
+		authLogin.setLoginFlg(false);
+		int updateCount = authLoginMapper.updateLogoutStatus(authLogin);
 		if (updateCount != 1) {
 			throw new SystemException(LogMessages.E_AR_A0_L9002.getCode(),
 					LogMessages.E_AR_A0_L9002.getMessage(updateCount, 1));
 		}
 
-		LOGGER.info(LogMessages.I_AR_A2_L0001.getMessage(member.getMembershipNumber()));
+		LOGGER.info(
+				LogMessages.I_AR_A2_L0001.getMessage(authLogin.getMembershipNumber()));
 	}
 }

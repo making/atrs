@@ -16,6 +16,8 @@
  */
 package com.example.atrs.member;
 
+import com.example.atrs.auth.AuthLogin;
+import com.example.atrs.auth.AuthLoginMapper;
 import com.example.atrs.common.logging.LogMessages;
 import org.terasoluna.gfw.common.exception.SystemException;
 
@@ -33,6 +35,7 @@ import org.springframework.util.Assert;
 @Transactional
 public class MemberRegisterService {
 
+	private final AuthLoginMapper authLoginMapper;
 	/**
 	 * 会員情報リポジトリ。
 	 */
@@ -43,8 +46,9 @@ public class MemberRegisterService {
 	 */
 	private final PasswordEncoder passwordEncoder;
 
-	public MemberRegisterService(MemberMapper memberMapper,
-                                 PasswordEncoder passwordEncoder) {
+	public MemberRegisterService(AuthLoginMapper authLoginMapper,
+			MemberMapper memberMapper, PasswordEncoder passwordEncoder) {
+		this.authLoginMapper = authLoginMapper;
 		this.memberMapper = memberMapper;
 		this.passwordEncoder = passwordEncoder;
 	}
@@ -62,16 +66,16 @@ public class MemberRegisterService {
 
 		Assert.notNull(member);
 
-		MemberLogin memberLogin = member.getMemberLogin();
-		Assert.notNull(memberLogin);
+		AuthLogin authLogin = member.getAuthLogin();
+		Assert.notNull(authLogin);
 
 		// パスワードをエンコード
 		String hashedPassword = passwordEncoder
-				.encode(member.getMemberLogin().getPassword());
+				.encode(member.getAuthLogin().getPassword());
 
-		memberLogin.setPassword(hashedPassword);
-		memberLogin.setLastPassword(hashedPassword);
-		memberLogin.setLoginFlg(false);
+		authLogin.setPassword(hashedPassword);
+		authLogin.setLastPassword(hashedPassword);
+		authLogin.setLoginFlg(false);
 
 		// 会員情報登録
 		// (MyBatis3の機能(SelectKey)によりパラメータの会員情報に会員番号が格納される)
@@ -81,11 +85,12 @@ public class MemberRegisterService {
 					LogMessages.E_AR_A0_L9002.getMessage(insertMemberCount, 1));
 		}
 
+		authLogin.setMembershipNumber(member.getMembershipNumber());
 		// 会員ログイン情報登録
-		int insertMemberLoginCount = memberMapper.insertMemberLogin(member);
-		if (insertMemberLoginCount != 1) {
+		int insertAuthLoginCount = authLoginMapper.insert(authLogin);
+		if (insertAuthLoginCount != 1) {
 			throw new SystemException(LogMessages.E_AR_A0_L9002.getCode(),
-					LogMessages.E_AR_A0_L9002.getMessage(insertMemberLoginCount, 1));
+					LogMessages.E_AR_A0_L9002.getMessage(insertAuthLoginCount, 1));
 		}
 
 		return member;

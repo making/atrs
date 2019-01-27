@@ -20,7 +20,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.example.atrs.member.MemberUserDetails;
+import com.example.atrs.auth.AuthLoginUserDetails;
 import com.example.atrs.common.web.exception.BadRequestException;
 import com.example.atrs.ticket.Flight;
 import org.terasoluna.gfw.common.exception.BusinessException;
@@ -258,7 +258,7 @@ public class TicketReserveController {
 	 */
 	@RequestMapping(method = RequestMethod.GET, params = "form")
 	public String reserveForm(ReservationFlightForm reservationFlightForm,
-                              @AuthenticationPrincipal MemberUserDetails userDetails, Model model) {
+                              @AuthenticationPrincipal AuthLoginUserDetails userDetails, Model model) {
 
 		// チケット予約フォームにデフォルト値を設定
 		TicketReserveForm ticketReserveForm = ticketReserveHelper

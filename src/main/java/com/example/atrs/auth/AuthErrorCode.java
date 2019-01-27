@@ -20,7 +20,7 @@ import com.example.atrs.common.exception.AtrsErrorCode;
 
 public enum AuthErrorCode implements AtrsErrorCode {
 	/**
-	 * 会員番号またはパスワードが確認できませんでした。入力情報をご確認ください。
+	 * 会員番号から会員情報を取得できない事を通知するためのエラーコード。
 	 */
 	E_AR_A1_2001("e.ar.a1.2001");
 

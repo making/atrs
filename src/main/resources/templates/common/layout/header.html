@@ -30,7 +30,7 @@ xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
       <div sec:authorize="hasRole('MEMBER')" class="vertical-middle-box">
         <div class="dropdown">
           <span class="btn btn-default dropdown-toggle" data-toggle="dropdown"
-            th:with="member=${#authentication.principal.member}">
+            th:with="member=${memberSession.member}">
             <span th:text="|ようこそ ${member.kanjiFamilyName} ${member.kanjiGivenName} さま |">ようこそ 電電 太郎 さま</span>
             <span class='caret'></span>
           </span>

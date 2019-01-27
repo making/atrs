@@ -19,6 +19,7 @@ package com.example.atrs.member;
 import java.io.Serializable;
 import java.util.Date;
 
+import com.example.atrs.auth.AuthLogin;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
@@ -92,7 +93,7 @@ public class Member implements Serializable {
 	/**
 	 * カード会員ログイン情報。
 	 */
-	private MemberLogin memberLogin;
+	private AuthLogin authLogin;
 
 	/**
 	 * 会員番号。
@@ -312,17 +313,17 @@ public class Member implements Serializable {
 	 *
 	 * @return カード会員ログイン情報
 	 */
-	public MemberLogin getMemberLogin() {
-		return memberLogin;
+	public AuthLogin getAuthLogin() {
+		return authLogin;
 	}
 
 	/**
 	 * カード会員ログイン情報を設定する。
 	 *
-	 * @param memberLogin カード会員ログイン情報
+	 * @param authLogin カード会員ログイン情報
 	 */
-	public void setMemberLogin(MemberLogin memberLogin) {
-		this.memberLogin = memberLogin;
+	public void setAuthLogin(AuthLogin authLogin) {
+		this.authLogin = authLogin;
 	}
 
 	/**

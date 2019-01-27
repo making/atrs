@@ -16,7 +16,7 @@
         </field>
         <field>
             <a>password</a>
-            <b>memberLogin.password</b>
+            <b>authLogin.password</b>
         </field>
     </mapping>
 

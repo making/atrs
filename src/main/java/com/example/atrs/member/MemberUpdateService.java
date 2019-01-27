@@ -16,6 +16,8 @@
  */
 package com.example.atrs.member;
 
+import com.example.atrs.auth.AuthLogin;
+import com.example.atrs.auth.AuthLoginMapper;
 import com.example.atrs.common.exception.AtrsBusinessException;
 import com.example.atrs.common.logging.LogMessages;
 import org.terasoluna.gfw.common.exception.SystemException;
@@ -36,7 +38,7 @@ import static com.example.atrs.member.MemberErrorCode.E_AR_C2_2001;
 @Service
 @Transactional
 public class MemberUpdateService {
-
+	private final AuthLoginMapper authLoginMapper;
 	/**
 	 * 会員情報リポジトリ。
 	 */
@@ -47,8 +49,9 @@ public class MemberUpdateService {
 	 */
 	private final PasswordEncoder passwordEncoder;
 
-	public MemberUpdateService(MemberMapper memberMapper,
-							   PasswordEncoder passwordEncoder) {
+	public MemberUpdateService(AuthLoginMapper authLoginMapper, MemberMapper memberMapper,
+			PasswordEncoder passwordEncoder) {
+		this.authLoginMapper = authLoginMapper;
 		this.memberMapper = memberMapper;
 		this.passwordEncoder = passwordEncoder;
 	}
@@ -66,7 +69,7 @@ public class MemberUpdateService {
 
 			// 登録パスワードを取得
 			Member member = memberMapper.findOne(membershipNumber);
-			String currentPassword = member.getMemberLogin().getPassword();
+			String currentPassword = member.getAuthLogin().getPassword();
 
 			// パスワード不一致の場合、業務例外をスロー
 			if (!passwordEncoder.matches(password, currentPassword)) {
@@ -94,11 +97,11 @@ public class MemberUpdateService {
 	 * @param membershipNumber 会員番号
 	 * @return カード会員情報(ログイン時に必要な情報のみ)
 	 */
-	public Member findMemberForLogin(String membershipNumber) {
+	public AuthLogin findMemberForLogin(String membershipNumber) {
 
 		Assert.hasText(membershipNumber);
 
-		return memberMapper.findOneForLogin(membershipNumber);
+		return authLoginMapper.findOne(membershipNumber);
 	}
 
 	/**
@@ -109,8 +112,8 @@ public class MemberUpdateService {
 	public void updateMember(Member member) {
 
 		Assert.notNull(member);
-		MemberLogin memberLogin = member.getMemberLogin();
-		Assert.notNull(memberLogin);
+		AuthLogin authLogin = member.getAuthLogin();
+		Assert.notNull(authLogin);
 
 		// 会員情報更新
 		int updateMemberCount = memberMapper.update(member);
@@ -120,17 +123,16 @@ public class MemberUpdateService {
 		}
 
 		// パスワードの変更がある場合のみ会員ログイン情報を更新
-		if (StringUtils.hasLength(memberLogin.getPassword())) {
+		if (StringUtils.hasLength(authLogin.getPassword())) {
 
 			// パスワードのハッシュ化
-			memberLogin.setPassword(
-					passwordEncoder.encode(member.getMemberLogin().getPassword()));
+			authLogin.setPassword(passwordEncoder.encode(authLogin.getPassword()));
 
 			// 会員ログイン情報更新
-			int updateMemberLoginCount = memberMapper.updateMemberLogin(member);
-			if (updateMemberLoginCount != 1) {
+			int updateAuthLoginCount = authLoginMapper.update(authLogin);
+			if (updateAuthLoginCount != 1) {
 				throw new SystemException(LogMessages.E_AR_A0_L9002.getCode(),
-						LogMessages.E_AR_A0_L9002.getMessage(updateMemberLoginCount, 1));
+						LogMessages.E_AR_A0_L9002.getMessage(updateAuthLoginCount, 1));
 			}
 		}
 	}

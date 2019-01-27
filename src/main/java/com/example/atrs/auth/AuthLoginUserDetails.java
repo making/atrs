@@ -14,13 +14,11 @@
  * limitations under the License.
  *
  */
-package com.example.atrs.member;
+package com.example.atrs.auth;
 
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-
-import com.example.atrs.member.Member;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -31,7 +29,7 @@ import org.springframework.security.core.userdetails.UserDetails;
  * 
  * @author NTT 電電太郎
  */
-public class MemberUserDetails implements UserDetails {
+public class AuthLoginUserDetails implements UserDetails {
 
 	/**
 	 * デフォルト権限設定。
@@ -47,15 +45,15 @@ public class MemberUserDetails implements UserDetails {
 	/**
 	 * カード会員情報。
 	 */
-	private Member member;
+	private final AuthLogin authLogin;
 
 	/**
 	 * コンストラクタ。
 	 * 
-	 * @param member カード会員情報
+	 * @param authLogin カード会員情報
 	 */
-	public MemberUserDetails(Member member) {
-		this.member = member;
+	public AuthLoginUserDetails(AuthLogin authLogin) {
+		this.authLogin = authLogin;
 	}
 
 	/**
@@ -71,17 +69,8 @@ public class MemberUserDetails implements UserDetails {
 	 *
 	 * @return カード会員情報
 	 */
-	public Member getMember() {
-		return member;
-	}
-
-	/**
-	 * カード会員情報を設定する。
-	 *
-	 * @param member カード会員情報
-	 */
-	public void setMember(Member member) {
-		this.member = member;
+	public AuthLogin getAuthLogin() {
+		return this.authLogin;
 	}
 
 	/**
@@ -89,7 +78,7 @@ public class MemberUserDetails implements UserDetails {
 	 */
 	@Override
 	public String getPassword() {
-		return member.getMemberLogin().getPassword();
+		return this.authLogin.getPassword();
 	}
 
 	/**
@@ -97,7 +86,7 @@ public class MemberUserDetails implements UserDetails {
 	 */
 	@Override
 	public String getUsername() {
-		return member.getMembershipNumber();
+		return this.authLogin.getMembershipNumber();
 	}
 
 	/**

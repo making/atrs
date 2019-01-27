@@ -14,7 +14,7 @@
  * limitations under the License.
  *
  */
-package com.example.atrs.member;
+package com.example.atrs.auth;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -27,12 +27,16 @@ import org.apache.commons.lang3.builder.ToStringStyle;
  * 
  * @author NTT 電電太郎
  */
-public class MemberLogin implements Serializable {
+public class AuthLogin implements Serializable {
 
 	/**
 	 * serialVersionUID。
 	 */
 	private static final long serialVersionUID = 4454136798154120517L;
+	/**
+	 * 会員番号。
+	 */
+	private String membershipNumber;
 
 	/**
 	 * 前回パスワード。
@@ -53,6 +57,14 @@ public class MemberLogin implements Serializable {
 	 * パスワード。
 	 */
 	private String password;
+
+	public String getMembershipNumber() {
+		return membershipNumber;
+	}
+
+	public void setMembershipNumber(String membershipNumber) {
+		this.membershipNumber = membershipNumber;
+	}
 
 	/**
 	 * 前回パスワード を取得する。

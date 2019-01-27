@@ -28,7 +28,7 @@ import java.util.Map;
 import com.example.atrs.common.util.DateTimeUtil;
 import com.example.atrs.common.web.exception.BadRequestException;
 import com.example.atrs.member.Member;
-import com.example.atrs.member.MemberUserDetails;
+import com.example.atrs.auth.AuthLoginUserDetails;
 import com.example.atrs.ticket.Flight;
 import com.example.atrs.ticket.FlightMaster;
 import com.example.atrs.ticket.FlightMasterProvider;
@@ -169,7 +169,7 @@ public class TicketReserveHelper {
 	 * @param userDetails ログイン情報を保持するオブジェクト
 	 * @return チケット予約フォーム
 	 */
-	public TicketReserveForm createTicketReserveForm(MemberUserDetails userDetails) {
+	public TicketReserveForm createTicketReserveForm(AuthLoginUserDetails userDetails) {
 
 		TicketReserveForm ticketReserveForm = new TicketReserveForm();
 

@@ -14,7 +14,7 @@
  * limitations under the License.
  *
  */
-package com.example.atrs.member;
+package com.example.atrs.auth;
 
 import java.util.Locale;
 
@@ -30,7 +30,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
-import static com.example.atrs.member.MemberErrorCode.E_AR_A1_2001;
+import static com.example.atrs.auth.AuthErrorCode.E_AR_A1_2001;
 
 /**
  * ログインユーザ情報サービス。
@@ -39,28 +39,28 @@ import static com.example.atrs.member.MemberErrorCode.E_AR_A1_2001;
  */
 @Component
 @Transactional
-public class MemberUserDetailsService implements UserDetailsService {
+public class AuthLoginUserDetailsService implements UserDetailsService {
 
 	/**
 	 * ロガー。
 	 */
 	private static final Logger LOGGER = LoggerFactory
-			.getLogger(MemberUserDetailsService.class);
+			.getLogger(AuthLoginUserDetailsService.class);
 
 	/**
 	 * カード会員情報リポジトリ。
 	 */
-	private final MemberMapper memberMapper;
+	private final AuthLoginMapper authLoginMapper;
 
 	/**
 	 * メッセージプロパティ設定。
 	 */
 	private final MessageSource messageSource;
 
-	public MemberUserDetailsService(MessageSource messageSource,
-			MemberMapper memberMapper) {
+	public AuthLoginUserDetailsService(MessageSource messageSource,
+                                       AuthLoginMapper authLoginMapper) {
 		this.messageSource = messageSource;
-		this.memberMapper = memberMapper;
+		this.authLoginMapper = authLoginMapper;
 	}
 
 	/**
@@ -72,10 +72,10 @@ public class MemberUserDetailsService implements UserDetailsService {
 
 		Assert.hasText(username);
 
-		// 会員情報(ログイン時に必要な情報のみ)を取得
-		Member member = memberMapper.findOneForLogin(username);
+		// 会員情報を取得
+		AuthLogin authLogin = authLoginMapper.findOne(username);
 
-		if (member == null) {
+		if (authLogin == null) {
 			if (LOGGER.isInfoEnabled()) {
 				LOGGER.info(LogMessages.I_AR_A1_L2001.getMessage(username));
 			}
@@ -85,7 +85,7 @@ public class MemberUserDetailsService implements UserDetailsService {
 			throw new UsernameNotFoundException(errorMessage);
 		}
 
-		return new MemberUserDetails(member);
+		return new AuthLoginUserDetails(authLogin);
 	}
 
 }
