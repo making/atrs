@@ -1,0 +1,8 @@
+      _     _________  _______     ______
+     / \   |  _   _  ||_   __ \  .' ____ \
+    / _ \  |_/ | | \_|  | |__) | | (___ \_|
+   / ___ \     | |      |  __ /   _.____`.
+ _/ /   \ \_  _| |_    _| |  \ \_| \____) |
+|____| |____||_____|  |____| |___|\______.'
+
+${AnsiColor.GREEN}:: Powered by Spring Boot ::        ${AnsiStyle.FAINT}${AnsiColor.BLACK}${spring-boot.formatted-version}${AnsiStyle.NORMAL}
