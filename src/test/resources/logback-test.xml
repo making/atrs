@@ -7,4 +7,6 @@
     <logger name="com.github.dozermapper" level="ERROR"/>
     <logger name="com.zaxxer.hikari" level="WARN"/>
     <logger name="org.apache.catalina" level="ERROR"/>
+    <logger name="io.undertow" level="ERROR"/>
+    <logger name="org.xnio" level="WARN"/>
 </configuration>
