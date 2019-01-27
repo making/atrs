@@ -31,10 +31,10 @@ public class MembershipSharedService {
 	/**
 	 * カード会員情報リポジトリ。
 	 */
-	private final MemberRepository memberRepository;
+	private final MemberMapper memberMapper;
 
-	public MembershipSharedService(MemberRepository memberRepository) {
-		this.memberRepository = memberRepository;
+	public MembershipSharedService(MemberMapper memberMapper) {
+		this.memberMapper = memberMapper;
 	}
 
 	/**
@@ -49,7 +49,7 @@ public class MembershipSharedService {
 		Assert.hasText(membershipNumber);
 
 		// 該当する会員情報が存在するか判定
-		return (memberRepository.findOne(membershipNumber) != null);
+		return (memberMapper.findOne(membershipNumber) != null);
 	}
 
 }

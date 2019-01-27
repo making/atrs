@@ -19,7 +19,7 @@ package com.example.atrs.auth;
 import com.example.atrs.common.logging.LogMessages;
 import com.example.atrs.member.Member;
 import com.example.atrs.member.MemberLogin;
-import com.example.atrs.member.MemberRepository;
+import com.example.atrs.member.MemberMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.terasoluna.gfw.common.exception.SystemException;
@@ -46,10 +46,10 @@ public class AuthLogoutService {
 	/**
 	 * カード会員情報リポジトリ。
 	 */
-	private final MemberRepository memberRepository;
+	private final MemberMapper memberMapper;
 
-	public AuthLogoutService(MemberRepository memberRepository) {
-		this.memberRepository = memberRepository;
+	public AuthLogoutService(MemberMapper memberMapper) {
+		this.memberMapper = memberMapper;
 	}
 
 	/**
@@ -64,7 +64,7 @@ public class AuthLogoutService {
 		// ログインフラグを更新
 		MemberLogin memberLogin = member.getMemberLogin();
 		memberLogin.setLoginFlg(false);
-		int updateCount = memberRepository.updateToLogoutStatus(member);
+		int updateCount = memberMapper.updateToLogoutStatus(member);
 		if (updateCount != 1) {
 			throw new SystemException(LogMessages.E_AR_A0_L9002.getCode(),
 					LogMessages.E_AR_A0_L9002.getMessage(updateCount, 1));

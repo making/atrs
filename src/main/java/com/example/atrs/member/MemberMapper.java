@@ -24,7 +24,7 @@ import org.apache.ibatis.annotations.Mapper;
  * @author NTT 電電太郎
  */
 @Mapper
-public interface MemberRepository {
+public interface MemberMapper {
 
 	/**
 	 * 会員番号に該当するカード会員情報を取得する。

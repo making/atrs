@@ -41,10 +41,10 @@ public class FlightMasterProvider {
 	/**
 	 * フライト基本情報リポジトリ。
 	 */
-	private final FlightRepository flightRepository;
+	private final FlightMapper flightMapper;
 
-	public FlightMasterProvider(FlightRepository flightRepository) {
-		this.flightRepository = flightRepository;
+	public FlightMasterProvider(FlightMapper flightMapper) {
+		this.flightMapper = flightMapper;
 	}
 
 	/**
@@ -63,7 +63,7 @@ public class FlightMasterProvider {
 	 */
 	@PostConstruct
 	public void load() {
-		List<FlightMaster> flightMasterList = flightRepository.findAllFlightMaster();
+		List<FlightMaster> flightMasterList = flightMapper.findAllFlightMaster();
 		for (FlightMaster flightMaster : flightMasterList) {
 			flightMasterMap.put(flightMaster.getFlightName(), flightMaster);
 		}

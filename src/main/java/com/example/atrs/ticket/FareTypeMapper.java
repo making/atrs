@@ -26,7 +26,7 @@ import org.apache.ibatis.annotations.Mapper;
  * @author NTT 電電太郎
  */
 @Mapper
-public interface FareTypeRepository {
+public interface FareTypeMapper {
 	/**
 	 * 全ての運賃種別を取得する。
 	 * 

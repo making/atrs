@@ -36,16 +36,16 @@ public class MemberRegisterService {
 	/**
 	 * 会員情報リポジトリ。
 	 */
-	private final MemberRepository memberRepository;
+	private final MemberMapper memberMapper;
 
 	/**
 	 * パスワードをハッシュ化するためのエンコーダ。
 	 */
 	private final PasswordEncoder passwordEncoder;
 
-	public MemberRegisterService(MemberRepository memberRepository,
-			PasswordEncoder passwordEncoder) {
-		this.memberRepository = memberRepository;
+	public MemberRegisterService(MemberMapper memberMapper,
+                                 PasswordEncoder passwordEncoder) {
+		this.memberMapper = memberMapper;
 		this.passwordEncoder = passwordEncoder;
 	}
 
@@ -75,14 +75,14 @@ public class MemberRegisterService {
 
 		// 会員情報登録
 		// (MyBatis3の機能(SelectKey)によりパラメータの会員情報に会員番号が格納される)
-		int insertMemberCount = memberRepository.insert(member);
+		int insertMemberCount = memberMapper.insert(member);
 		if (insertMemberCount != 1) {
 			throw new SystemException(LogMessages.E_AR_A0_L9002.getCode(),
 					LogMessages.E_AR_A0_L9002.getMessage(insertMemberCount, 1));
 		}
 
 		// 会員ログイン情報登録
-		int insertMemberLoginCount = memberRepository.insertMemberLogin(member);
+		int insertMemberLoginCount = memberMapper.insertMemberLogin(member);
 		if (insertMemberLoginCount != 1) {
 			throw new SystemException(LogMessages.E_AR_A0_L9002.getCode(),
 					LogMessages.E_AR_A0_L9002.getMessage(insertMemberLoginCount, 1));

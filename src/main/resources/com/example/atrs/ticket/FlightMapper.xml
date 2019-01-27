@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.example.atrs.ticket.FlightRepository">
+<mapper namespace="com.example.atrs.ticket.FlightMapper">
 
   <resultMap id="flight-map" type="com.example.atrs.ticket.Flight">
     <id property="departureDate" column="departure_date"/>

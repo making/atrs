@@ -28,7 +28,7 @@ import org.apache.ibatis.annotations.Param;
  * @author NTT 電電太郎
  */
 @Mapper
-public interface FlightRepository {
+public interface FlightMapper {
 
 	/**
 	 * 指定したフライトのフライト情報が存在するかチェックする。

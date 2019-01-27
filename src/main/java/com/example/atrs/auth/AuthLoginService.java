@@ -23,7 +23,7 @@ import java.util.Date;
 import com.example.atrs.common.logging.LogMessages;
 import com.example.atrs.member.Member;
 import com.example.atrs.member.MemberLogin;
-import com.example.atrs.member.MemberRepository;
+import com.example.atrs.member.MemberMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.terasoluna.gfw.common.exception.SystemException;
@@ -52,11 +52,11 @@ public class AuthLoginService {
 	/**
 	 * カード会員情報リポジトリ。
 	 */
-	private final MemberRepository memberRepository;
+	private final MemberMapper memberMapper;
 
-	public AuthLoginService(Clock clock, MemberRepository memberRepository) {
+	public AuthLoginService(Clock clock, MemberMapper memberMapper) {
 		this.clock = clock;
-		this.memberRepository = memberRepository;
+		this.memberMapper = memberMapper;
 	}
 
 	/**
@@ -74,7 +74,7 @@ public class AuthLoginService {
 		MemberLogin memberLogin = member.getMemberLogin();
 		memberLogin.setLoginDateTime(Date.from(now));
 		memberLogin.setLoginFlg(true);
-		int updateCount = memberRepository.updateToLoginStatus(member);
+		int updateCount = memberMapper.updateToLoginStatus(member);
 		if (updateCount != 1) {
 			throw new SystemException(LogMessages.E_AR_A0_L9002.getCode(),
 					LogMessages.E_AR_A0_L9002.getMessage(updateCount, 1));

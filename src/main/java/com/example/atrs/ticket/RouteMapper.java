@@ -21,16 +21,17 @@ import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 
 /**
- * 搭乗クラステーブルにアクセスするリポジトリインターフェース。
+ * 区間テーブルにアクセスするリポジトリインターフェース。
  * 
  * @author NTT 電電太郎
  */
 @Mapper
-public interface BoardingClassRepository {
+public interface RouteMapper {
+
 	/**
-	 * 全ての搭乗クラスを取得する。
+	 * 全ての区間情報を取得する。
 	 * 
-	 * @return 搭乗クラスリスト
+	 * @return 区間情報リスト
 	 */
-	List<BoardingClass> findAll();
+	List<Route> findAll();
 }

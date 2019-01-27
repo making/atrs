@@ -26,7 +26,7 @@ import org.apache.ibatis.annotations.Mapper;
  * @author NTT 電電太郎
  */
 @Mapper
-public interface PeakTimeRepository {
+public interface PeakTimeMapper {
 
 	/**
 	 * 全てのピーク時期を取得する。

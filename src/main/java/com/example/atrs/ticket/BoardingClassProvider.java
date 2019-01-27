@@ -41,10 +41,10 @@ public class BoardingClassProvider {
 	/**
 	 * 搭乗クラス情報リポジトリ。
 	 */
-	private final BoardingClassRepository boardingClassRepository;
+	private final BoardingClassMapper boardingClassMapper;
 
-	public BoardingClassProvider(BoardingClassRepository boardingClassRepository) {
-		this.boardingClassRepository = boardingClassRepository;
+	public BoardingClassProvider(BoardingClassMapper boardingClassMapper) {
+		this.boardingClassMapper = boardingClassMapper;
 	}
 
 	/**
@@ -63,7 +63,7 @@ public class BoardingClassProvider {
 	 */
 	@PostConstruct
 	public void load() {
-		List<BoardingClass> boardingClassList = boardingClassRepository.findAll();
+		List<BoardingClass> boardingClassList = boardingClassMapper.findAll();
 		for (BoardingClass boardingClass : boardingClassList) {
 			boardingClassCodeMap.put(boardingClass.getBoardingClassCd(), boardingClass);
 		}

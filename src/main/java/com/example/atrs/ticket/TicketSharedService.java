@@ -56,7 +56,7 @@ public class TicketSharedService {
 	/**
 	 * フライト情報リポジトリ。
 	 */
-	private final FlightRepository flightRepository;
+	private final FlightMapper flightMapper;
 
 	/**
 	 * 予約可能限界日数。
@@ -75,13 +75,13 @@ public class TicketSharedService {
 
 	public TicketSharedService(TicketProperties props, Clock clock,
 			BoardingClassProvider boardingClassProvider,
-			PeakTimeProvider peakTimeProvider, FlightRepository flightRepository) {
+			PeakTimeProvider peakTimeProvider, FlightMapper flightMapper) {
 		this.reserveIntervalTime = props.getReserveIntervalTime();
 		this.limitDay = props.getLimitDay();
 		this.clock = clock;
 		this.boardingClassProvider = boardingClassProvider;
 		this.peakTimeProvider = peakTimeProvider;
-		this.flightRepository = flightRepository;
+		this.flightMapper = flightMapper;
 	}
 
 	/**
@@ -141,7 +141,7 @@ public class TicketSharedService {
 	public boolean existsFlight(Flight flight) {
 		Assert.notNull(flight);
 		Assert.notNull(flight.getFlightMaster());
-		return flightRepository.exists(flight.getDepartureDate(),
+		return flightMapper.exists(flight.getDepartureDate(),
 				flight.getFlightMaster().getFlightName(), flight.getBoardingClass(),
 				flight.getFareType());
 	}

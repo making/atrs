@@ -44,10 +44,10 @@ public class PeakTimeProvider {
 	/**
 	 * ピーク時期情報リポジトリ。
 	 */
-	private final PeakTimeRepository peakTimeRepository;
+	private final PeakTimeMapper peakTimeMapper;
 
-	public PeakTimeProvider(PeakTimeRepository peakTimeRepository) {
-		this.peakTimeRepository = peakTimeRepository;
+	public PeakTimeProvider(PeakTimeMapper peakTimeMapper) {
+		this.peakTimeMapper = peakTimeMapper;
 	}
 
 	/**
@@ -76,7 +76,7 @@ public class PeakTimeProvider {
 	 */
 	@PostConstruct
 	public void load() {
-		peakTimeList.addAll(peakTimeRepository.findAll());
+		peakTimeList.addAll(peakTimeMapper.findAll());
 	}
 
 }

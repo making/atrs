@@ -50,7 +50,7 @@ public class MemberUserDetailsService implements UserDetailsService {
 	/**
 	 * カード会員情報リポジトリ。
 	 */
-	private final MemberRepository memberRepository;
+	private final MemberMapper memberMapper;
 
 	/**
 	 * メッセージプロパティ設定。
@@ -58,9 +58,9 @@ public class MemberUserDetailsService implements UserDetailsService {
 	private final MessageSource messageSource;
 
 	public MemberUserDetailsService(MessageSource messageSource,
-			MemberRepository memberRepository) {
+			MemberMapper memberMapper) {
 		this.messageSource = messageSource;
-		this.memberRepository = memberRepository;
+		this.memberMapper = memberMapper;
 	}
 
 	/**
@@ -73,7 +73,7 @@ public class MemberUserDetailsService implements UserDetailsService {
 		Assert.hasText(username);
 
 		// 会員情報(ログイン時に必要な情報のみ)を取得
-		Member member = memberRepository.findOneForLogin(username);
+		Member member = memberMapper.findOneForLogin(username);
 
 		if (member == null) {
 			if (LOGGER.isInfoEnabled()) {

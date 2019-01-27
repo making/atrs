@@ -41,10 +41,10 @@ public class RouteProvider {
 	/**
 	 * 区間情報リポジトリ。
 	 */
-	private final RouteRepository routeRepository;
+	private final RouteMapper routeMapper;
 
-	public RouteProvider(RouteRepository routeRepository) {
-		this.routeRepository = routeRepository;
+	public RouteProvider(RouteMapper routeMapper) {
+		this.routeMapper = routeMapper;
 	}
 
 	/**
@@ -68,7 +68,7 @@ public class RouteProvider {
 	 */
 	@PostConstruct
 	public void load() {
-		List<Route> routeList = routeRepository.findAll();
+		List<Route> routeList = routeMapper.findAll();
 		for (Route route : routeList) {
 			String cacheKey = makeCacheKey(route.getDepartureAirport().getCode(),
 					route.getArrivalAirport().getCode());

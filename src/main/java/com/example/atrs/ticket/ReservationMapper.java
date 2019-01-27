@@ -24,7 +24,7 @@ import org.apache.ibatis.annotations.Mapper;
  * @author NTT 電電太郎
  */
 @Mapper
-public interface ReservationRepository {
+public interface ReservationMapper {
 
 	/**
 	 * 予約情報を登録する。

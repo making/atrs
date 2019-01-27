@@ -65,7 +65,7 @@ public class TicketSearchService {
 	/**
 	 * フライト情報リポジトリ。
 	 */
-	private final FlightRepository flightRepository;
+	private final FlightMapper flightMapper;
 
 	/**
 	 * 区間情報提供クラス。
@@ -77,13 +77,13 @@ public class TicketSearchService {
 	 */
 	private final TicketSharedService ticketSharedService;
 
-	public TicketSearchService(Clock clock, FlightRepository flightRepository,
+	public TicketSearchService(Clock clock, FlightMapper flightMapper,
 							   RouteProvider routeProvider, FareTypeProvider fareTypeProvider,
 							   FlightMasterProvider flightMasterProvider,
 							   BoardingClassProvider boardingClassProvider,
 							   TicketSharedService ticketSharedService) {
 		this.clock = clock;
-		this.flightRepository = flightRepository;
+		this.flightMapper = flightMapper;
 		this.routeProvider = routeProvider;
 		this.fareTypeProvider = fareTypeProvider;
 		this.flightMasterProvider = flightMasterProvider;
@@ -141,7 +141,7 @@ public class TicketSearchService {
 				route, boardingClassCd, beforeDayNum, fareTypeList);
 
 		// リポジトリから照会結果を取得
-		List<Flight> flightList = flightRepository
+		List<Flight> flightList = flightMapper
 				.findByVacantSeatSearchCriteria(criteria);
 
 		// 照会結果件数をチェック

@@ -40,16 +40,16 @@ public class MemberUpdateService {
 	/**
 	 * 会員情報リポジトリ。
 	 */
-	private final MemberRepository memberRepository;
+	private final MemberMapper memberMapper;
 
 	/**
 	 * パスワードをハッシュ化するためのエンコーダ。
 	 */
 	private final PasswordEncoder passwordEncoder;
 
-	public MemberUpdateService(MemberRepository memberRepository,
-			PasswordEncoder passwordEncoder) {
-		this.memberRepository = memberRepository;
+	public MemberUpdateService(MemberMapper memberMapper,
+							   PasswordEncoder passwordEncoder) {
+		this.memberMapper = memberMapper;
 		this.passwordEncoder = passwordEncoder;
 	}
 
@@ -65,7 +65,7 @@ public class MemberUpdateService {
 		if (StringUtils.hasLength(password)) {
 
 			// 登録パスワードを取得
-			Member member = memberRepository.findOne(membershipNumber);
+			Member member = memberMapper.findOne(membershipNumber);
 			String currentPassword = member.getMemberLogin().getPassword();
 
 			// パスワード不一致の場合、業務例外をスロー
@@ -85,7 +85,7 @@ public class MemberUpdateService {
 
 		Assert.hasText(membershipNumber);
 
-		return memberRepository.findOne(membershipNumber);
+		return memberMapper.findOne(membershipNumber);
 	}
 
 	/**
@@ -98,7 +98,7 @@ public class MemberUpdateService {
 
 		Assert.hasText(membershipNumber);
 
-		return memberRepository.findOneForLogin(membershipNumber);
+		return memberMapper.findOneForLogin(membershipNumber);
 	}
 
 	/**
@@ -113,7 +113,7 @@ public class MemberUpdateService {
 		Assert.notNull(memberLogin);
 
 		// 会員情報更新
-		int updateMemberCount = memberRepository.update(member);
+		int updateMemberCount = memberMapper.update(member);
 		if (updateMemberCount != 1) {
 			throw new SystemException(LogMessages.E_AR_A0_L9002.getCode(),
 					LogMessages.E_AR_A0_L9002.getMessage(updateMemberCount, 1));
@@ -127,7 +127,7 @@ public class MemberUpdateService {
 					passwordEncoder.encode(member.getMemberLogin().getPassword()));
 
 			// 会員ログイン情報更新
-			int updateMemberLoginCount = memberRepository.updateMemberLogin(member);
+			int updateMemberLoginCount = memberMapper.updateMemberLogin(member);
 			if (updateMemberLoginCount != 1) {
 				throw new SystemException(LogMessages.E_AR_A0_L9002.getCode(),
 						LogMessages.E_AR_A0_L9002.getMessage(updateMemberLoginCount, 1));

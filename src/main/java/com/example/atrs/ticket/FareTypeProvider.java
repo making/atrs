@@ -41,10 +41,10 @@ public class FareTypeProvider {
 	/**
 	 * 運賃種別情報リポジトリ。
 	 */
-	private final FareTypeRepository fareTypeRepository;
+	private final FareTypeMapper fareTypeMapper;
 
-	public FareTypeProvider(FareTypeRepository fareTypeRepository) {
-		this.fareTypeRepository = fareTypeRepository;
+	public FareTypeProvider(FareTypeMapper fareTypeMapper) {
+		this.fareTypeMapper = fareTypeMapper;
 	}
 
 	/**
@@ -63,7 +63,7 @@ public class FareTypeProvider {
 	 */
 	@PostConstruct
 	public void load() {
-		List<FareType> fareTypeList = fareTypeRepository.findAll();
+		List<FareType> fareTypeList = fareTypeMapper.findAll();
 		for (FareType fareType : fareTypeList) {
 			fareTypeMap.put(fareType.getFareTypeCd(), fareType);
 		}
