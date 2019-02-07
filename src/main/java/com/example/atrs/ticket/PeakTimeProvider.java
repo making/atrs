@@ -25,6 +25,7 @@ import javax.annotation.PostConstruct;
 
 import com.example.atrs.common.util.DateTimeUtil;
 
+import org.springframework.boot.autoconfigure.flyway.FlywayMigrationInitializer;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
@@ -46,7 +47,8 @@ public class PeakTimeProvider {
 	 */
 	private final PeakTimeMapper peakTimeMapper;
 
-	public PeakTimeProvider(PeakTimeMapper peakTimeMapper) {
+	public PeakTimeProvider(PeakTimeMapper peakTimeMapper,
+			FlywayMigrationInitializer flywayMigrationInitializer) {
 		this.peakTimeMapper = peakTimeMapper;
 	}
 

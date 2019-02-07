@@ -10,6 +10,7 @@ import org.terasoluna.gfw.common.codelist.SimpleMapCodeList;
 import org.terasoluna.gfw.common.exception.ExceptionLogger;
 import org.terasoluna.gfw.common.exception.SimpleMappingExceptionCodeResolver;
 
+import org.springframework.boot.autoconfigure.flyway.FlywayMigrationInitializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -44,7 +45,9 @@ public class AppConfig {
 	}
 
 	@Bean(name = "CL_AIRPORT")
-	public AirportCodeList airportCodeList(JdbcTemplate jdbcTemplate) {
+	public AirportCodeList airportCodeList(
+			FlywayMigrationInitializer flywayMigrationInitializer,
+			JdbcTemplate jdbcTemplate) {
 		AirportCodeList codeList = new AirportCodeList();
 		codeList.setJdbcTemplate(jdbcTemplate);
 		codeList.setQuerySql(
@@ -58,7 +61,9 @@ public class AppConfig {
 	}
 
 	@Bean(name = "CL_BOARDINGCLASS")
-	public JdbcCodeList boardingClassCodeList(JdbcTemplate jdbcTemplate) {
+	public JdbcCodeList boardingClassCodeList(
+			FlywayMigrationInitializer flywayMigrationInitializer,
+			JdbcTemplate jdbcTemplate) {
 		JdbcCodeList codeList = new JdbcCodeList();
 		codeList.setJdbcTemplate(jdbcTemplate);
 		codeList.setQuerySql(
@@ -69,7 +74,9 @@ public class AppConfig {
 	}
 
 	@Bean(name = "CL_FARETYPE")
-	public JdbcCodeList fareTypeCodeList(JdbcTemplate jdbcTemplate) {
+	public JdbcCodeList fareTypeCodeList(
+			FlywayMigrationInitializer flywayMigrationInitializer,
+			JdbcTemplate jdbcTemplate) {
 		JdbcCodeList codeList = new JdbcCodeList();
 		codeList.setJdbcTemplate(jdbcTemplate);
 		codeList.setQuerySql(
@@ -112,7 +119,9 @@ public class AppConfig {
 	}
 
 	@Bean(name = "CL_CREDITTYPE")
-	public JdbcCodeList creditTypeCodeList(JdbcTemplate jdbcTemplate) {
+	public JdbcCodeList creditTypeCodeList(
+			FlywayMigrationInitializer flywayMigrationInitializer,
+			JdbcTemplate jdbcTemplate) {
 		JdbcCodeList codeList = new JdbcCodeList();
 		codeList.setJdbcTemplate(jdbcTemplate);
 		codeList.setQuerySql(

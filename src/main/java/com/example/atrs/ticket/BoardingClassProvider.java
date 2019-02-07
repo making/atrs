@@ -22,6 +22,7 @@ import java.util.Map;
 
 import javax.annotation.PostConstruct;
 
+import org.springframework.boot.autoconfigure.flyway.FlywayMigrationInitializer;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
@@ -43,7 +44,8 @@ public class BoardingClassProvider {
 	 */
 	private final BoardingClassMapper boardingClassMapper;
 
-	public BoardingClassProvider(BoardingClassMapper boardingClassMapper) {
+	public BoardingClassProvider(BoardingClassMapper boardingClassMapper,
+			FlywayMigrationInitializer flywayMigrationInitializer) {
 		this.boardingClassMapper = boardingClassMapper;
 	}
 
