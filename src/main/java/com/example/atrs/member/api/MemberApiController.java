@@ -61,7 +61,7 @@ public class MemberApiController {
 			return new ResponseEntity<>(HttpStatus.OK);
 		}
 
-		return membershipSharedService.isMember(membershipNumber)
+		return membershipSharedService.findByMembershipNumber(membershipNumber) != null
 				? new ResponseEntity<>(HttpStatus.OK)
 				: new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	}

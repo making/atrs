@@ -3,6 +3,7 @@
     <include resource="org/springframework/boot/logging/logback/base.xml"/>
     <logger name="com.example.atrs" level="WARN"/>
     <logger name="com.example.atrs.common.web.logging.AccessLogFilter" level="INFO"/>
+    <logger name="org.springframework.web.client.RestTemplate" level="DEBUG" />
     <logger name="org.springframework" level="WARN"/>
     <logger name="com.github.dozermapper" level="ERROR"/>
     <logger name="com.zaxxer.hikari" level="WARN"/>

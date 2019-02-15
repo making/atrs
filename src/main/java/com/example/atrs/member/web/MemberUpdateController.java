@@ -22,7 +22,7 @@ import com.example.atrs.common.message.MessageKeys;
 import com.example.atrs.member.Member;
 import com.example.atrs.member.MemberSession;
 import com.example.atrs.member.MemberUpdateService;
-import org.terasoluna.gfw.common.exception.BusinessException;
+import com.example.atrs.member.MembershipSharedService;
 import org.terasoluna.gfw.common.message.ResultMessages;
 
 import org.springframework.stereotype.Controller;
@@ -30,6 +30,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -44,29 +45,19 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @Controller
 @RequestMapping("member/update")
 public class MemberUpdateController {
-
-	/**
-	 * 会員情報Helper。
-	 */
 	private final MemberHelper memberHelper;
-
-	/**
-	 * 会員情報変更サービス。
-	 */
+	private final MembershipSharedService membershipSharedService;
 	private final MemberUpdateService memberUpdateService;
-
-	/**
-	 * 会員情報変更フォームのバリデータ。
-	 */
 	private final MemberUpdateValidator memberUpdateValidator;
 
 	private final MemberSession memberSession;
 
 	public MemberUpdateController(MemberUpdateService memberUpdateService,
-			MemberHelper memberHelper, MemberUpdateValidator memberUpdateValidator,
-			MemberSession memberSession) {
+			MemberHelper memberHelper, MembershipSharedService membershipSharedService,
+			MemberUpdateValidator memberUpdateValidator, MemberSession memberSession) {
 		this.memberUpdateService = memberUpdateService;
 		this.memberHelper = memberHelper;
+		this.membershipSharedService = membershipSharedService;
 		this.memberUpdateValidator = memberUpdateValidator;
 		this.memberSession = memberSession;
 	}
@@ -108,34 +99,19 @@ public class MemberUpdateController {
 	 */
 	@RequestMapping(method = RequestMethod.POST)
 	public String update(@Validated MemberUpdateForm memberUpdateForm,
-			BindingResult result, Model model, RedirectAttributes redirectAttributes,
-			Principal principal) {
+			@CookieValue("atrs-auth") String jwt, BindingResult result, Model model,
+			RedirectAttributes redirectAttributes, Principal principal) {
 
 		if (result.hasErrors()) {
 			// 検証エラーがある場合は画面再表示
 			return updateRedo(memberUpdateForm, model);
 		}
-
 		// ログインユーザ情報から会員番号を取得
 		String membershipNumber = principal.getName();
-
-		// 入力パスワードが登録情報と一致しているかチェック(未入力の場合はチェックされない)
-		try {
-			memberUpdateService.checkMemberPassword(memberUpdateForm.getCurrentPassword(),
-					membershipNumber);
-		}
-		catch (BusinessException e) {
-
-			// パスワード不一致の場合、メッセージ設定後に画面再表示
-			model.addAttribute(e.getResultMessages());
-
-			return updateRedo(memberUpdateForm, model);
-		}
-
 		// 会員情報更新
 		Member member = memberHelper.toMember(memberUpdateForm);
 		member.setMembershipNumber(membershipNumber);
-		memberUpdateService.updateMember(member);
+		this.memberUpdateService.updateMember(member, jwt);
 
 		this.memberSession.updateMember(member);
 
@@ -156,10 +132,11 @@ public class MemberUpdateController {
 	 * @return View論理名
 	 */
 	@RequestMapping(method = RequestMethod.GET, params = "complete")
-	public String updateComplete(Model model, Principal principal) {
+	public String updateComplete(Model model, Principal principal,
+			@CookieValue("atrs-auth") String jwt) {
 
 		// 再検索して会員情報変更画面を表示
-		return updateForm(model, principal);
+		return updateForm(model, principal, jwt);
 	}
 
 	/**
@@ -170,13 +147,11 @@ public class MemberUpdateController {
 	 * @return View論理名
 	 */
 	@RequestMapping(method = RequestMethod.GET, params = "form")
-	public String updateForm(Model model, Principal principal) {
-
-		// ログインユーザ情報から会員番号を取得
-		String membershipNumber = principal.getName();
+	public String updateForm(Model model, Principal principal,
+			@CookieValue("atrs-auth") String jwt) {
 
 		// 会員情報から会員情報変更フォームを生成し、設定
-		Member member = memberUpdateService.findMember(membershipNumber);
+		Member member = this.membershipSharedService.findMe(jwt);
 		MemberUpdateForm memberUpdateForm = memberHelper.toMemberUpdateForm(member);
 		model.addAttribute(memberUpdateForm);
 

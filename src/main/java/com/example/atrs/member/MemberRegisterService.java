@@ -17,14 +17,15 @@
 package com.example.atrs.member;
 
 import com.example.atrs.auth.AuthLogin;
-import com.example.atrs.auth.AuthLoginMapper;
-import com.example.atrs.common.logging.LogMessages;
-import org.terasoluna.gfw.common.exception.SystemException;
 
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.http.RequestEntity;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
 /**
  * 会員情報登録を行うService実装クラス。
@@ -34,23 +35,12 @@ import org.springframework.util.Assert;
 @Service
 @Transactional
 public class MemberRegisterService {
+	private final RestTemplate restTemplate;
+	private final MemberProperties props;
 
-	private final AuthLoginMapper authLoginMapper;
-	/**
-	 * 会員情報リポジトリ。
-	 */
-	private final MemberMapper memberMapper;
-
-	/**
-	 * パスワードをハッシュ化するためのエンコーダ。
-	 */
-	private final PasswordEncoder passwordEncoder;
-
-	public MemberRegisterService(AuthLoginMapper authLoginMapper,
-			MemberMapper memberMapper, PasswordEncoder passwordEncoder) {
-		this.authLoginMapper = authLoginMapper;
-		this.memberMapper = memberMapper;
-		this.passwordEncoder = passwordEncoder;
+	public MemberRegisterService(RestTemplateBuilder builder, MemberProperties props) {
+		this.restTemplate = builder.build();
+		this.props = props;
 	}
 
 	/**
@@ -63,38 +53,15 @@ public class MemberRegisterService {
 	 * @return Member 会員番号が格納された会員情報
 	 */
 	public Member register(Member member) {
-
 		Assert.notNull(member);
-
 		AuthLogin authLogin = member.getAuthLogin();
 		Assert.notNull(authLogin);
-
-		// パスワードをエンコード
-		String hashedPassword = passwordEncoder
-				.encode(member.getAuthLogin().getPassword());
-
-		authLogin.setPassword(hashedPassword);
-		authLogin.setLastPassword(hashedPassword);
-		authLogin.setLoginFlg(false);
-
-		// 会員ログイン情報登録
-		// (MyBatis3の機能(SelectKey)によりパラメータの会員情報に会員番号が格納される)
-		int insertAuthLoginCount = authLoginMapper.insert(authLogin);
-		if (insertAuthLoginCount != 1) {
-			throw new SystemException(LogMessages.E_AR_A0_L9002.getCode(),
-					LogMessages.E_AR_A0_L9002.getMessage(insertAuthLoginCount, 1));
-		}
-
-		member.setMembershipNumber(authLogin.getMembershipNumber());
-
-		// 会員情報登録
-		int insertMemberCount = memberMapper.insert(member);
-		if (insertMemberCount != 1) {
-			throw new SystemException(LogMessages.E_AR_A0_L9002.getCode(),
-					LogMessages.E_AR_A0_L9002.getMessage(insertMemberCount, 1));
-		}
-
-		return member;
+		RequestEntity<Member> requestEntity = RequestEntity.post(UriComponentsBuilder
+				.fromHttpUrl(props.getUrl()).pathSegment("members", "me").build().toUri())
+				.body(member);
+		ResponseEntity<Member> exchange = this.restTemplate.exchange(requestEntity,
+				Member.class);
+		return exchange.getBody();
 	}
 
 }

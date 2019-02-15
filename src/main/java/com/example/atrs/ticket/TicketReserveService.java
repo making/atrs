@@ -24,7 +24,7 @@ import com.example.atrs.common.logging.LogMessages;
 import com.example.atrs.common.util.FareUtil;
 import com.example.atrs.member.Gender;
 import com.example.atrs.member.Member;
-import com.example.atrs.member.MemberMapper;
+import com.example.atrs.member.MembershipSharedService;
 import org.terasoluna.gfw.common.exception.BusinessException;
 import org.terasoluna.gfw.common.exception.SystemException;
 
@@ -68,11 +68,6 @@ public class TicketReserveService {
 	private final FlightMapper flightMapper;
 
 	/**
-	 * カード会員情報リポジトリ。
-	 */
-	private final MemberMapper memberMapper;
-
-	/**
 	 * 予約代表者に必要な最小年齢。
 	 */
 	private final int representativeMinAge;
@@ -87,17 +82,18 @@ public class TicketReserveService {
 	 */
 	private final TicketSharedService ticketSharedService;
 
+	private final MembershipSharedService membershipSharedService;
+
 	public TicketReserveService(TicketProperties props, FlightMapper flightMapper,
-			MemberMapper memberMapper,
-			ReservationMapper reservationMapper,
-			TicketSharedService ticketSharedService) {
+			ReservationMapper reservationMapper, TicketSharedService ticketSharedService,
+			MembershipSharedService membershipSharedService) {
 		this.representativeMinAge = props.getRepresentativeMinAge();
 		this.adultPassengerMinAge = props.getAdultPassengerMinAge();
 		this.childFareRate = props.getChildFareRate();
 		this.flightMapper = flightMapper;
-		this.memberMapper = memberMapper;
 		this.reservationMapper = reservationMapper;
 		this.ticketSharedService = ticketSharedService;
+		this.membershipSharedService = membershipSharedService;
 	}
 
 	/**
@@ -167,10 +163,8 @@ public class TicketReserveService {
 	 * @return カード会員情報
 	 */
 	public Member findMember(String membershipNumber) {
-
 		Assert.hasText(membershipNumber);
-
-		return memberMapper.findOne(membershipNumber);
+		return this.membershipSharedService.findByMembershipNumber(membershipNumber);
 	}
 
 	/**
@@ -256,8 +250,7 @@ public class TicketReserveService {
 			// 全搭乗者情報を登録
 			for (Passenger passenger : reserveFlight.getPassengerList()) {
 				passenger.setReserveFlightNo(reserveFlight.getReserveFlightNo());
-				int passengerInsertCount = reservationMapper
-						.insertPassenger(passenger);
+				int passengerInsertCount = reservationMapper.insertPassenger(passenger);
 				if (passengerInsertCount != 1) {
 					throw new SystemException(LogMessages.E_AR_A0_L9002.getCode(),
 							LogMessages.E_AR_A0_L9002.getMessage(passengerInsertCount,
@@ -376,7 +369,7 @@ public class TicketReserveService {
 				if (StringUtils.hasLength(membershipNumber)) {
 
 					// 搭乗者のカード会員情報取得
-					Member passengerMember = memberMapper.findOne(membershipNumber);
+					Member passengerMember = this.findMember(membershipNumber);
 
 					// 会員情報が存在することを確認
 					if (passengerMember == null) {
@@ -426,7 +419,7 @@ public class TicketReserveService {
 		if (StringUtils.hasLength(repMembershipNumber)) {
 
 			// 予約代表者の会員情報を取得
-			Member repMember = memberMapper.findOne(repMembershipNumber);
+			Member repMember = this.findMember(repMembershipNumber);
 
 			// 該当する会員情報が存在することを確認
 			if (repMember == null) {

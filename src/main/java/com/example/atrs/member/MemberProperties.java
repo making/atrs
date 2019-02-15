@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 @Component
 @ConfigurationProperties(prefix = "member")
 public class MemberProperties {
+	private String url;
 
 	private String dateOfBirthMinDate;
 
@@ -17,6 +18,14 @@ public class MemberProperties {
 
 	public void setDateOfBirthMinDate(String dateOfBirthMinDate) {
 		this.dateOfBirthMinDate = dateOfBirthMinDate;
+	}
+
+	public String getUrl() {
+		return url;
+	}
+
+	public void setUrl(String url) {
+		this.url = url;
 	}
 
 	@Override

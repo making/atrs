@@ -17,18 +17,16 @@
 package com.example.atrs.member;
 
 import com.example.atrs.auth.AuthLogin;
-import com.example.atrs.auth.AuthLoginMapper;
-import com.example.atrs.common.exception.AtrsBusinessException;
-import com.example.atrs.common.logging.LogMessages;
-import org.terasoluna.gfw.common.exception.SystemException;
 
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.http.RequestEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
-import org.springframework.util.StringUtils;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
-import static com.example.atrs.member.MemberErrorCode.E_AR_C2_2001;
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 /**
  * 会員情報変更を行うService実装クラス。
@@ -38,70 +36,12 @@ import static com.example.atrs.member.MemberErrorCode.E_AR_C2_2001;
 @Service
 @Transactional
 public class MemberUpdateService {
-	private final AuthLoginMapper authLoginMapper;
-	/**
-	 * 会員情報リポジトリ。
-	 */
-	private final MemberMapper memberMapper;
+	private final RestTemplate restTemplate;
+	private final MemberProperties props;
 
-	/**
-	 * パスワードをハッシュ化するためのエンコーダ。
-	 */
-	private final PasswordEncoder passwordEncoder;
-
-	public MemberUpdateService(AuthLoginMapper authLoginMapper, MemberMapper memberMapper,
-			PasswordEncoder passwordEncoder) {
-		this.authLoginMapper = authLoginMapper;
-		this.memberMapper = memberMapper;
-		this.passwordEncoder = passwordEncoder;
-	}
-
-	/**
-	 * 引数に渡されたパスワードがDBに登録されているパスワードと同一かチェックする。
-	 *
-	 * @param password チェックするパスワード
-	 * @param membershipNumber パスワードを確認する会員の会員番号
-	 */
-	public void checkMemberPassword(String password, String membershipNumber) {
-
-		// パスワードの変更がある場合のみパスワードを比較
-		if (StringUtils.hasLength(password)) {
-
-			// 登録パスワードを取得
-			Member member = memberMapper.findOne(membershipNumber);
-			String currentPassword = member.getAuthLogin().getPassword();
-
-			// パスワード不一致の場合、業務例外をスロー
-			if (!passwordEncoder.matches(password, currentPassword)) {
-				throw new AtrsBusinessException(E_AR_C2_2001);
-			}
-		}
-	}
-
-	/**
-	 * 会員番号に該当する会員情報を取得する。
-	 *
-	 * @param membershipNumber 会員番号
-	 * @return 会員番号に該当するユーザの会員情報
-	 */
-	public Member findMember(String membershipNumber) {
-
-		Assert.hasText(membershipNumber);
-
-		return memberMapper.findOne(membershipNumber);
-	}
-
-	/**
-	 * 会員番号に該当するカード会員情報(ログイン時に必要な情報のみ)を取得する。
-	 *
-	 * @param membershipNumber 会員番号
-	 * @return カード会員情報(ログイン時に必要な情報のみ)
-	 */
-	public AuthLogin findMemberForLogin(String membershipNumber) {
-
-		Assert.hasText(membershipNumber);
-
-		return authLoginMapper.findOne(membershipNumber);
+	public MemberUpdateService(RestTemplateBuilder builder, MemberProperties props) {
+		this.restTemplate = builder.build();
+		this.props = props;
 	}
 
 	/**
@@ -109,32 +49,15 @@ public class MemberUpdateService {
 	 *
 	 * @param member 会員情報
 	 */
-	public void updateMember(Member member) {
-
+	public void updateMember(Member member, String jwt) {
 		Assert.notNull(member);
 		AuthLogin authLogin = member.getAuthLogin();
 		Assert.notNull(authLogin);
-
-		// 会員情報更新
-		int updateMemberCount = memberMapper.update(member);
-		if (updateMemberCount != 1) {
-			throw new SystemException(LogMessages.E_AR_A0_L9002.getCode(),
-					LogMessages.E_AR_A0_L9002.getMessage(updateMemberCount, 1));
-		}
-
-		// パスワードの変更がある場合のみ会員ログイン情報を更新
-		if (StringUtils.hasLength(authLogin.getPassword())) {
-
-			// パスワードのハッシュ化
-			authLogin.setPassword(passwordEncoder.encode(authLogin.getPassword()));
-
-			// 会員ログイン情報更新
-			int updateAuthLoginCount = authLoginMapper.update(authLogin);
-			if (updateAuthLoginCount != 1) {
-				throw new SystemException(LogMessages.E_AR_A0_L9002.getCode(),
-						LogMessages.E_AR_A0_L9002.getMessage(updateAuthLoginCount, 1));
-			}
-		}
+		RequestEntity<Member> requestEntity = RequestEntity
+				.put(UriComponentsBuilder.fromHttpUrl(props.getUrl())
+						.pathSegment("members", "me").build().toUri())
+				.header(AUTHORIZATION, String.format("Bearer %s", jwt)).body(member);
+		this.restTemplate.exchange(requestEntity, Member.class);
 	}
 
 }

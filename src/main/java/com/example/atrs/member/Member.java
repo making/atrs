@@ -110,6 +110,8 @@ public class Member implements Serializable {
 	 */
 	private String zipCode;
 
+	private String currentPassword;
+
 	/**
 	 * 住所を取得する。
 	 *
@@ -378,6 +380,23 @@ public class Member implements Serializable {
 	 */
 	public void setZipCode(String zipCode) {
 		this.zipCode = zipCode;
+	}
+
+	// TODO 詰め替え
+	public String getPassword() {
+		if (this.authLogin == null) {
+			return null;
+		}
+		return this.authLogin.getPassword();
+	}
+
+	// TODO 詰め替え
+	public String getCurrentPassword() {
+		return this.currentPassword;
+	}
+
+	public void setCurrentPassword(String currentPassword) {
+		this.currentPassword = currentPassword;
 	}
 
 	/**
