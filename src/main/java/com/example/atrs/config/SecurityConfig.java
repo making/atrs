@@ -1,83 +1,73 @@
 package com.example.atrs.config;
 
-import com.example.atrs.auth.security.AtrsLogoutSuccessHandler;
-import com.example.atrs.auth.security.AtrsUsernamePasswordAuthenticationFilter;
-import com.example.atrs.common.web.logging.AccessLogFilter;
+import javax.servlet.Filter;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.terasoluna.gfw.security.web.logging.UserIdMDCPutFilter;
 
-import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.AnonymousAuthenticationFilter;
-import org.springframework.security.web.authentication.AuthenticationFailureHandler;
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
-import org.springframework.security.web.authentication.logout.LogoutFilter;
-import org.springframework.security.web.authentication.ui.DefaultLoginPageGeneratingFilter;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.security.web.session.SessionManagementFilter;
+import org.springframework.web.filter.CommonsRequestLoggingFilter;
+
+import static org.springframework.http.HttpMethod.GET;
+import static org.springframework.http.HttpMethod.POST;
 
 @Configuration
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-	private final AtrsLogoutSuccessHandler atrsLogoutSuccessHandler;
-	private final AuthenticationFailureHandler authenticationFailureHandler;
-	private final AuthenticationSuccessHandler authenticationSuccessHandler;
-	private final MessageSource messageSource;
-
-	public SecurityConfig(AtrsLogoutSuccessHandler atrsLogoutSuccessHandler,
-			AuthenticationFailureHandler authenticationFailureHandler,
-			AuthenticationSuccessHandler authenticationSuccessHandler,
-			MessageSource messageSource) {
-		this.atrsLogoutSuccessHandler = atrsLogoutSuccessHandler;
-		this.authenticationFailureHandler = authenticationFailureHandler;
-		this.authenticationSuccessHandler = authenticationSuccessHandler;
-		this.messageSource = messageSource;
-	}
-
-	@Override
-	public void configure(WebSecurity web) throws Exception {
-		web.ignoring().mvcMatchers("/resources/**");
-	}
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		http.addFilterBefore(new AccessLogFilter(), LogoutFilter.class) //
+		http.addFilterBefore(loggingFilter(), SessionManagementFilter.class) //
 				.addFilterAfter(this.userIdMDCPutFilter(),
 						AnonymousAuthenticationFilter.class) //
-				.addFilterAt(this.usernamePasswordAuthenticationFilter(),
-						DefaultLoginPageGeneratingFilter.class) //
-				.formLogin() //
-				.loginPage("/auth/login") //
-				.and() //
-				.logout() //
-				.logoutUrl("/auth/dologout") //
-				.logoutSuccessHandler(this.atrsLogoutSuccessHandler) //
-				.and() //
 				.authorizeRequests() //
-				.mvcMatchers("/member/update").hasRole("MEMBER");
+				.mvcMatchers(POST, "/members/me").permitAll() //
+				.mvcMatchers("/members/me").hasAuthority("SCOPE_member.me") //
+				.mvcMatchers(GET, "/members/{id}").hasAuthority("SCOPE_member.read") //
+				.anyRequest().denyAll() //
+				.and() //
+				.csrf().disable() //
+				.oauth2ResourceServer().jwt() //
+		;
+	}
+
+	private Filter loggingFilter() {
+		CommonsRequestLoggingFilter filter = new CommonsRequestLoggingFilter();
+		filter.setIncludeClientInfo(true);
+		filter.setIncludeQueryString(true);
+		filter.setBeforeMessagePrefix("[ACCESS START    ] ");
+		filter.setBeforeMessageSuffix("");
+		filter.setAfterMessagePrefix("[ACCESS FINISH   ] ");
+		filter.setAfterMessageSuffix("");
+		return filter;
 	}
 
 	private UserIdMDCPutFilter userIdMDCPutFilter() {
-		UserIdMDCPutFilter userIdMDCPutFilter = new UserIdMDCPutFilter();
+		UserIdMDCPutFilter userIdMDCPutFilter = new UserIdMDCPutFilter() {
+			@Override
+			protected String getMDCValue(HttpServletRequest request,
+					HttpServletResponse response) {
+				Authentication authentication = SecurityContextHolder.getContext()
+						.getAuthentication();
+				if (authentication != null) {
+					Object principal = authentication.getPrincipal();
+					if (principal instanceof UserDetails) {
+						return ((UserDetails) principal).getUsername();
+					}
+					return authentication.getName();
+				}
+				return null;
+			}
+		};
 		userIdMDCPutFilter.setRemoveValue(true);
 		userIdMDCPutFilter.setAttributeName("user");
 		return userIdMDCPutFilter;
-	}
-
-	private AtrsUsernamePasswordAuthenticationFilter usernamePasswordAuthenticationFilter()
-			throws Exception {
-		AtrsUsernamePasswordAuthenticationFilter usernamePasswordAuthenticationFilter = new AtrsUsernamePasswordAuthenticationFilter();
-		usernamePasswordAuthenticationFilter
-				.setAuthenticationManager(this.authenticationManager());
-		usernamePasswordAuthenticationFilter
-				.setAuthenticationSuccessHandler(this.authenticationSuccessHandler);
-		usernamePasswordAuthenticationFilter
-				.setAuthenticationFailureHandler(this.authenticationFailureHandler);
-		usernamePasswordAuthenticationFilter.setMessageSource(this.messageSource);
-		usernamePasswordAuthenticationFilter.setRequiresAuthenticationRequestMatcher(
-				new AntPathRequestMatcher("/auth/dologin", "POST"));
-		usernamePasswordAuthenticationFilter.setUsernameParameter("membershipNumber");
-		usernamePasswordAuthenticationFilter.setPasswordParameter("password");
-		return usernamePasswordAuthenticationFilter;
 	}
 }

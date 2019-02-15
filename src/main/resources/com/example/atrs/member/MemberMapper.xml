@@ -25,36 +25,11 @@
         <result property="creditNo" column="credit_no"/>
         <result property="creditTerm" column="credit_term"/>
         <association property="creditType" resultMap="creditType-map"/>
-        <association property="authLogin" resultMap="authLogin-map"/>
     </resultMap>
-
-    <resultMap id="authLogin-map" type="com.example.atrs.auth.AuthLogin">
-        <id property="membershipNumber" column="customer_no"/>
-        <result property="password" column="password"/>
-        <result property="lastPassword" column="last_password"/>
-        <result property="loginDateTime" column="login_date_time"/>
-        <result property="loginFlg" column="login_flg"/>
-    </resultMap>
-
     <resultMap id="creditType-map" type="com.example.atrs.member.CreditType">
         <id property="creditTypeCd" column="credit_type_cd"/>
         <result property="creditFirm" column="credit_firm"/>
     </resultMap>
-
-    <!-- ログイン時の会員情報取得 -->
-    <select id="findOneForLogin" parameterType="java.lang.String" resultMap="findOneForLogin-member-map">
-        SELECT m.customer_no,
-               m.kanji_family_name,
-               m.kanji_given_name,
-               m_l.password,
-               m_l.last_password,
-               m_l.login_date_time,
-               m_l.login_flg
-        FROM member m,
-             member_login m_l
-        WHERE m.customer_no = #{customerNo}
-          AND m.customer_no = m_l.customer_no
-    </select>
 
     <!-- 会員情報を取得 -->
     <select id="findOne" parameterType="String" resultMap="member-map">
@@ -71,55 +46,44 @@
                m.mail,
                m.credit_no,
                m.credit_term,
-               m_l.password,
-               m_l.last_password,
-               m_l.login_date_time,
-               m_l.login_flg,
                c_t.credit_type_cd,
                c_t.credit_firm
         FROM member m,
-             member_login m_l,
              credit_type c_t
         WHERE m.customer_no = #{customerNo}
-          AND m.customer_no = m_l.customer_no
           AND m.credit_type_cd = c_t.credit_type_cd
     </select>
 
     <!-- 会員情報を登録 -->
     <insert id="insert" parameterType="com.example.atrs.member.Member">
-        INSERT INTO member (
-        customer_no,
-        kanji_family_name,
-        kanji_given_name,
-        kana_family_name,
-        kana_given_name,
-        birthday,
-        gender,
-        tel,
-        zip_code,
-        address,
-        mail,
-        credit_no,
-        credit_type_cd,
-        credit_term
-        )
-        VALUES
-        (
-        #{membershipNumber},
-        #{kanjiFamilyName},
-        #{kanjiGivenName},
-        #{kanaFamilyName},
-        #{kanaGivenName},
-        #{birthday},
-        #{gender},
-        #{tel},
-        #{zipCode},
-        #{address},
-        #{mail},
-        #{creditNo},
-        #{creditType.creditTypeCd},
-        #{creditTerm}
-        )
+        INSERT INTO member (customer_no,
+                            kanji_family_name,
+                            kanji_given_name,
+                            kana_family_name,
+                            kana_given_name,
+                            birthday,
+                            gender,
+                            tel,
+                            zip_code,
+                            address,
+                            mail,
+                            credit_no,
+                            credit_type_cd,
+                            credit_term)
+        VALUES (#{membershipNumber},
+                #{kanjiFamilyName},
+                #{kanjiGivenName},
+                #{kanaFamilyName},
+                #{kanaGivenName},
+                #{birthday},
+                #{gender},
+                #{tel},
+                #{zipCode},
+                #{address},
+                #{mail},
+                #{creditNo},
+                #{creditType.creditTypeCd},
+                #{creditTerm})
     </insert>
 
 

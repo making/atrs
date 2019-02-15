@@ -1,5 +1,8 @@
 applications:
-- name: atrs
+- name: atrs-member
+  memory: 768m
   services:
-  - atrs-db # cf create-service elephantsql turtle atrs-db
-  path: target/atrs-0.0.1-SNAPSHOT.jar
+  - atrs-member-db # cf create-service elephantsql turtle atrs-member-db
+  path: target/atrs-member-0.0.1-SNAPSHOT.jar
+  env:
+    SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: https://atrs.cfapps.io/oauth/token

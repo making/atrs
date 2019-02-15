@@ -19,9 +19,11 @@ package com.example.atrs.member;
 import java.io.Serializable;
 import java.util.Date;
 
-import com.example.atrs.auth.AuthLogin;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
+
+import static com.fasterxml.jackson.annotation.JsonProperty.Access.WRITE_ONLY;
 
 /**
  * カード会員情報。
@@ -91,11 +93,6 @@ public class Member implements Serializable {
 	private String mail;
 
 	/**
-	 * カード会員ログイン情報。
-	 */
-	private AuthLogin authLogin;
-
-	/**
 	 * 会員番号。
 	 */
 	private String membershipNumber;
@@ -109,6 +106,9 @@ public class Member implements Serializable {
 	 * 郵便番号。
 	 */
 	private String zipCode;
+
+	private String password;
+	private String currentPassword;
 
 	/**
 	 * 住所を取得する。
@@ -309,24 +309,6 @@ public class Member implements Serializable {
 	}
 
 	/**
-	 * カード会員ログイン情報を取得する。
-	 *
-	 * @return カード会員ログイン情報
-	 */
-	public AuthLogin getAuthLogin() {
-		return authLogin;
-	}
-
-	/**
-	 * カード会員ログイン情報を設定する。
-	 *
-	 * @param authLogin カード会員ログイン情報
-	 */
-	public void setAuthLogin(AuthLogin authLogin) {
-		this.authLogin = authLogin;
-	}
-
-	/**
 	 * 会員番号を取得する。
 	 *
 	 * @return 会員番号
@@ -378,6 +360,26 @@ public class Member implements Serializable {
 	 */
 	public void setZipCode(String zipCode) {
 		this.zipCode = zipCode;
+	}
+
+	// TODO 詰め替え
+	@JsonProperty(access = WRITE_ONLY)
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	// TODO 詰め替え
+	@JsonProperty(access = WRITE_ONLY)
+	public String getCurrentPassword() {
+		return currentPassword;
+	}
+
+	public void setCurrentPassword(String currentPassword) {
+		this.currentPassword = currentPassword;
 	}
 
 	/**
