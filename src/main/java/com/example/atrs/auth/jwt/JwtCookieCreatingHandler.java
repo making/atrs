@@ -24,11 +24,10 @@ import java.util.Date;
 
 import javax.servlet.http.HttpServletResponse;
 
-import com.example.atrs.auth.AuthLogin;
 import com.example.atrs.auth.AuthLoginUserDetails;
+import com.example.atrs.member.Member;
 import com.nimbusds.jwt.JWTClaimsSet;
 
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
 import org.springframework.security.authentication.event.AuthenticationSuccessEvent;
 import org.springframework.security.core.Authentication;
@@ -41,19 +40,22 @@ public class JwtCookieCreatingHandler {
 	private final CookieGenerator cookieGenerator;
 	private final JwtHandler jwtHandler;
 	private final OidcProps props;
-	private final ApplicationEventPublisher eventPublisher;
 
-	String generateToken(AuthLogin authLogin) {
+	String generateToken(Member member) {
 		Instant now = Instant.now();
 		Instant exp = now.plus(1, ChronoUnit.HOURS);
 		JWTClaimsSet claimsSet = new JWTClaimsSet.Builder()
 				.issuer(props.getExternalUrl() + "/oauth/token") //
 				.expirationTime(Date.from(exp)) //
 				.issueTime(Date.from(now)) //
-				.subject(authLogin.getMembershipNumber()) //
+				.subject(member.getMembershipNumber()) //
 				.audience("atrs") //
 				.claim("scope", Arrays.asList("openid", "member.me")) //
-				.claim("name", authLogin.getMembershipNumber()) //
+				.claim("name", member.getMail()) //
+				.claim("email", member.getMail()) //
+				.claim("email_verified", false) //
+				.claim("family_name", member.getKanjiFamilyName()) //
+				.claim("given_name", member.getKanjiGivenName()) //
 				.claim("grant_type", "password") //
 				.claim("azp", "atrs") //
 				.claim("client_id", "atrs") //
@@ -62,13 +64,11 @@ public class JwtCookieCreatingHandler {
 	}
 
 	public JwtCookieCreatingHandler(HttpServletResponse response,
-			CookieGenerator cookieGenerator, JwtHandler jwtHandler, OidcProps props,
-			ApplicationEventPublisher eventPublisher) {
+			CookieGenerator cookieGenerator, JwtHandler jwtHandler, OidcProps props) {
 		this.response = response;
 		this.cookieGenerator = cookieGenerator;
 		this.jwtHandler = jwtHandler;
 		this.props = props;
-		this.eventPublisher = eventPublisher;
 	}
 
 	@EventListener
@@ -76,8 +76,7 @@ public class JwtCookieCreatingHandler {
 		Authentication authentication = event.getAuthentication();
 		AuthLoginUserDetails userDetails = (AuthLoginUserDetails) authentication
 				.getPrincipal();
-		String jwt = this.generateToken(userDetails.getAuthLogin());
-		this.eventPublisher.publishEvent(new JwtCreatedEvent(jwt));
+		String jwt = this.generateToken(userDetails.getMember());
 		this.cookieGenerator.addCookie(this.response, jwt);
 	}
 }

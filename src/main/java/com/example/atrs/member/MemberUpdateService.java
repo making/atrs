@@ -16,17 +16,14 @@
  */
 package com.example.atrs.member;
 
-import com.example.atrs.auth.AuthLogin;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.http.RequestEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriComponentsBuilder;
-
-import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 /**
  * 会員情報変更を行うService実装クラス。
@@ -36,6 +33,7 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 @Service
 @Transactional
 public class MemberUpdateService {
+	private static Logger log = LoggerFactory.getLogger(MemberUpdateService.class);
 	private final RestTemplate restTemplate;
 	private final MemberProperties props;
 
@@ -49,15 +47,10 @@ public class MemberUpdateService {
 	 *
 	 * @param member 会員情報
 	 */
-	public void updateMember(Member member, String jwt) {
+	public void updateMember(Member member) {
 		Assert.notNull(member);
-		AuthLogin authLogin = member.getAuthLogin();
-		Assert.notNull(authLogin);
-		RequestEntity<Member> requestEntity = RequestEntity
-				.put(UriComponentsBuilder.fromHttpUrl(props.getUrl())
-						.pathSegment("members", "me").build().toUri())
-				.header(AUTHORIZATION, String.format("Bearer %s", jwt)).body(member);
-		this.restTemplate.exchange(requestEntity, Member.class);
+		// TODO update
+		log.warn("Not Implemented update={}", member);
 	}
 
 }

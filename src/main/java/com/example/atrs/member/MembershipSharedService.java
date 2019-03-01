@@ -16,30 +16,21 @@
  */
 package com.example.atrs.member;
 
+import java.text.ParseException;
 import java.time.Clock;
-import java.time.Instant;
-import java.util.Arrays;
-import java.util.Date;
 
+import com.example.atrs.auth.LegacrmToAtrs;
 import com.example.atrs.auth.jwt.JwtHandler;
 import com.example.atrs.auth.jwt.OidcProps;
-import com.nimbusds.jwt.JWTClaimsSet;
+import com.example.atrs.legacrm.LegacrmService;
 import com.nimbusds.jwt.SignedJWT;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.RequestEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
-import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriComponentsBuilder;
-
-import static org.springframework.http.HttpHeaders.AUTHORIZATION;
-import static org.springframework.http.HttpHeaders.WWW_AUTHENTICATE;
 
 /**
  * 会員共通サービス実装クラス。
@@ -49,15 +40,17 @@ import static org.springframework.http.HttpHeaders.WWW_AUTHENTICATE;
 @Service
 public class MembershipSharedService {
 	private final Logger log = LoggerFactory.getLogger(MembershipSharedService.class);
+	private final LegacrmService legacrmService;
 	private final RestTemplate restTemplate;
 	private final MemberProperties memberProps;
 	private final JwtHandler jwtHandler;
 	private final OidcProps oidcProps;
 	private final Clock clock;
 
-	public MembershipSharedService(RestTemplateBuilder builder,
-			MemberProperties memberProps, JwtHandler jwtHandler, OidcProps oidcProps,
-			Clock clock) {
+	public MembershipSharedService(LegacrmService legacrmService,
+			RestTemplateBuilder builder, MemberProperties memberProps,
+			JwtHandler jwtHandler, OidcProps oidcProps, Clock clock) {
+		this.legacrmService = legacrmService;
 		this.restTemplate = builder.build();
 		this.memberProps = memberProps;
 		this.jwtHandler = jwtHandler;
@@ -73,56 +66,20 @@ public class MembershipSharedService {
 	 */
 	public Member findMe(String jwt) {
 		Assert.hasText(jwt);
-		RequestEntity<?> requestEntity = RequestEntity
-				.get(UriComponentsBuilder.fromHttpUrl(memberProps.getUrl())
-						.pathSegment("members", "me").build().toUri())
-				.header(AUTHORIZATION, String.format("Bearer %s", jwt)).build();
 		try {
-			return this.restTemplate.exchange(requestEntity, Member.class).getBody();
+			String membershipNumber = SignedJWT.parse(jwt).getJWTClaimsSet().getSubject();
+			return this.findByMembershipNumber(membershipNumber);
 		}
-		catch (HttpClientErrorException e) {
-			if (HttpStatus.UNAUTHORIZED == e.getStatusCode()) {
-				HttpHeaders responseHeaders = e.getResponseHeaders();
-				if (responseHeaders != null
-						&& responseHeaders.containsKey(WWW_AUTHENTICATE)) {
-					log.warn("headers={}", responseHeaders.get(WWW_AUTHENTICATE));
-				}
-			}
-			throw e;
+		catch (ParseException e) {
+			throw new IllegalArgumentException(e);
 		}
 	}
 
 	public Member findByMembershipNumber(String membershipNumber) {
 		Assert.hasText(membershipNumber);
-		Instant now = Instant.now(this.clock);
-		Instant exp = now.plusSeconds(60);
-		JWTClaimsSet claimsSet = new JWTClaimsSet.Builder()
-				.issuer(oidcProps.getExternalUrl() + "/oauth/token") //
-				.expirationTime(Date.from(exp)) //
-				.issueTime(Date.from(now)) //
-				.subject("atrs") //
-				.audience("atrs") //
-				.claim("scope", Arrays.asList("member.read")) //
-				.claim("name", "atrs") //
-				.claim("grant_type", "client_credentials") //
-				.claim("azp", "atrs") //
-				.claim("client_id", "atrs") //
-				.build();
-		SignedJWT jwt = this.jwtHandler.sign(claimsSet);
-		RequestEntity<?> requestEntity = RequestEntity
-				.get(UriComponentsBuilder.fromHttpUrl(memberProps.getUrl())
-						.pathSegment("members", membershipNumber).build().toUri())
-				.header(AUTHORIZATION, String.format("Bearer %s", jwt.serialize()))
-				.build();
-		try {
-			return this.restTemplate.exchange(requestEntity, Member.class).getBody();
-		}
-		catch (HttpClientErrorException e) {
-			if (HttpStatus.NOT_FOUND == e.getStatusCode()) {
-				return null;
-			}
-			throw e;
-		}
+		Member member = this.legacrmService.getMember(membershipNumber,
+				LegacrmToAtrs::convert);
+		return member;
 	}
 
 }

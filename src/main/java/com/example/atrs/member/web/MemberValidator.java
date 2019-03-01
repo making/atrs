@@ -19,7 +19,6 @@ package com.example.atrs.member.web;
 import java.time.Clock;
 import java.time.LocalDate;
 
-import com.example.atrs.common.util.DateTimeUtil;
 import com.example.atrs.common.validate.ValidationUtil;
 import com.example.atrs.member.MemberErrorCode;
 import com.example.atrs.member.MemberProperties;
@@ -93,7 +92,7 @@ public class MemberValidator implements Validator {
 			LocalDate dateOfBirthMin = LocalDate.parse(dateOfBirthMinDate,
 					DATE_FORMATTER);
 			LocalDate dateOfBirthMax = LocalDate.now(this.clock);
-			LocalDate dateOfBirth = DateTimeUtil.toLocalDate(form.getDateOfBirth());
+			LocalDate dateOfBirth = form.getDateOfBirth();
 
 			if (dateOfBirth.isBefore(dateOfBirthMin)
 					&& dateOfBirth.isAfter(dateOfBirthMax)) {

@@ -17,7 +17,7 @@
 package com.example.atrs.member;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDate;
 
 import com.example.atrs.auth.AuthLogin;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -43,7 +43,7 @@ public class Member implements Serializable {
 	/**
 	 * 生年月日。
 	 */
-	private Date birthday;
+	private LocalDate birthday;
 
 	/**
 	 * クレジットカード番号。
@@ -135,7 +135,7 @@ public class Member implements Serializable {
 	 *
 	 * @return 生年月日
 	 */
-	public Date getBirthday() {
+	public LocalDate getBirthday() {
 		return birthday;
 	}
 
@@ -144,7 +144,7 @@ public class Member implements Serializable {
 	 *
 	 * @param birthday 生年月日
 	 */
-	public void setBirthday(Date birthday) {
+	public void setBirthday(LocalDate birthday) {
 		this.birthday = birthday;
 	}
 

@@ -17,7 +17,7 @@
 package com.example.atrs.member.web;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDate;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
@@ -90,7 +90,7 @@ public class MemberRegisterForm implements IMemberForm, Serializable {
 	 */
 	@NotNull
 	@DateTimeFormat(pattern = "yyyy/MM/dd")
-	private Date dateOfBirth;
+	private LocalDate dateOfBirth;
 
 	/**
 	 * 性別。
@@ -302,7 +302,7 @@ public class MemberRegisterForm implements IMemberForm, Serializable {
 	 * @return 生年月日
 	 */
 	@Override
-	public Date getDateOfBirth() {
+	public LocalDate getDateOfBirth() {
 		return dateOfBirth;
 	}
 
@@ -311,7 +311,7 @@ public class MemberRegisterForm implements IMemberForm, Serializable {
 	 * 
 	 * @param dateOfBirth 生年月日
 	 */
-	public void setDateOfBirth(Date dateOfBirth) {
+	public void setDateOfBirth(LocalDate dateOfBirth) {
 		this.dateOfBirth = dateOfBirth;
 	}
 

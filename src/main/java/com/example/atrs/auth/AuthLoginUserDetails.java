@@ -20,6 +20,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import com.example.atrs.member.Member;
+
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -45,15 +47,15 @@ public class AuthLoginUserDetails implements UserDetails {
 	/**
 	 * カード会員情報。
 	 */
-	private final AuthLogin authLogin;
+	private final Member member;
 
 	/**
 	 * コンストラクタ。
 	 * 
-	 * @param authLogin カード会員情報
+	 * @param member カード会員情報
 	 */
-	public AuthLoginUserDetails(AuthLogin authLogin) {
-		this.authLogin = authLogin;
+	public AuthLoginUserDetails(Member member) {
+		this.member = member;
 	}
 
 	/**
@@ -64,13 +66,17 @@ public class AuthLoginUserDetails implements UserDetails {
 		return DEFAULT_AUTHORITIES;
 	}
 
+	public Member getMember() {
+		return member;
+	}
+
 	/**
 	 * カード会員情報を取得する。
 	 *
 	 * @return カード会員情報
 	 */
 	public AuthLogin getAuthLogin() {
-		return this.authLogin;
+		return this.member.getAuthLogin();
 	}
 
 	/**
@@ -78,7 +84,7 @@ public class AuthLoginUserDetails implements UserDetails {
 	 */
 	@Override
 	public String getPassword() {
-		return this.authLogin.getPassword();
+		return this.member.getPassword();
 	}
 
 	/**
@@ -86,7 +92,7 @@ public class AuthLoginUserDetails implements UserDetails {
 	 */
 	@Override
 	public String getUsername() {
-		return this.authLogin.getMembershipNumber();
+		return this.member.getMembershipNumber();
 	}
 
 	/**

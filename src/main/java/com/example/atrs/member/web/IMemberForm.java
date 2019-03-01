@@ -16,7 +16,7 @@
  */
 package com.example.atrs.member.web;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 /**
  * 会員情報フォームインタフェース。 共通入力値チェック、共通Bean変換処理で使用するメソッドを定義する。
@@ -46,7 +46,7 @@ public interface IMemberForm {
 	 *
 	 * @return 生年月日
 	 */
-	Date getDateOfBirth();
+	LocalDate getDateOfBirth();
 
 	/**
 	 * Eメールを取得する。

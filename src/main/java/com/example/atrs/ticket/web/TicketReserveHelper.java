@@ -19,16 +19,17 @@ package com.example.atrs.ticket.web;
 import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.example.atrs.auth.AuthLoginUserDetails;
 import com.example.atrs.common.util.DateTimeUtil;
 import com.example.atrs.common.web.exception.BadRequestException;
 import com.example.atrs.member.Member;
-import com.example.atrs.auth.AuthLoginUserDetails;
 import com.example.atrs.ticket.Flight;
 import com.example.atrs.ticket.FlightMaster;
 import com.example.atrs.ticket.FlightMasterProvider;
@@ -289,9 +290,10 @@ public class TicketReserveHelper {
 	 * @param birthday 生年月日
 	 * @return 年齢
 	 */
-	private Integer calculateAge(Date birthday) {
-		Instant now = Instant.now(this.clock);
-		return (int) (Duration.between(birthday.toInstant(), now).toDays() / 365);
+	private Integer calculateAge(LocalDate birthday) {
+		LocalDate now = LocalDate.now(this.clock);
+		return (int) (Duration.between(birthday.atStartOfDay(), now.atStartOfDay())
+				.toDays() / 365);
 	}
 
 	/**

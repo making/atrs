@@ -16,21 +16,19 @@
  */
 package com.example.atrs.member.web;
 
-import java.security.Principal;
-
+import com.example.atrs.auth.AuthLoginUserDetails;
 import com.example.atrs.common.message.MessageKeys;
 import com.example.atrs.member.Member;
-import com.example.atrs.member.MemberSession;
 import com.example.atrs.member.MemberUpdateService;
 import com.example.atrs.member.MembershipSharedService;
 import org.terasoluna.gfw.common.message.ResultMessages;
 
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -50,16 +48,13 @@ public class MemberUpdateController {
 	private final MemberUpdateService memberUpdateService;
 	private final MemberUpdateValidator memberUpdateValidator;
 
-	private final MemberSession memberSession;
-
 	public MemberUpdateController(MemberUpdateService memberUpdateService,
 			MemberHelper memberHelper, MembershipSharedService membershipSharedService,
-			MemberUpdateValidator memberUpdateValidator, MemberSession memberSession) {
+			MemberUpdateValidator memberUpdateValidator) {
 		this.memberUpdateService = memberUpdateService;
 		this.memberHelper = memberHelper;
 		this.membershipSharedService = membershipSharedService;
 		this.memberUpdateValidator = memberUpdateValidator;
-		this.memberSession = memberSession;
 	}
 
 	/**
@@ -94,26 +89,27 @@ public class MemberUpdateController {
 	 * @param model 出力情報を保持するクラス
 	 * @param redirectAttributes フラッシュスコープ格納用オブジェクト
 	 * @param result チェック結果を保持するクラス
-	 * @param principal ログイン情報を持つオブジェクト
+	 * @param userDetails ログイン情報を持つオブジェクト
 	 * @return View論理名
 	 */
 	@RequestMapping(method = RequestMethod.POST)
 	public String update(@Validated MemberUpdateForm memberUpdateForm,
-			@CookieValue("atrs-auth") String jwt, BindingResult result, Model model,
-			RedirectAttributes redirectAttributes, Principal principal) {
+			BindingResult result, Model model, RedirectAttributes redirectAttributes,
+			@AuthenticationPrincipal AuthLoginUserDetails userDetails) {
 
 		if (result.hasErrors()) {
 			// 検証エラーがある場合は画面再表示
 			return updateRedo(memberUpdateForm, model);
 		}
 		// ログインユーザ情報から会員番号を取得
-		String membershipNumber = principal.getName();
+		String membershipNumber = userDetails.getUsername();
 		// 会員情報更新
 		Member member = memberHelper.toMember(memberUpdateForm);
 		member.setMembershipNumber(membershipNumber);
-		this.memberUpdateService.updateMember(member, jwt);
+		this.memberUpdateService.updateMember(member);
 
-		this.memberSession.updateMember(member);
+		// TODO
+		// Update UserDetails
 
 		// 更新完了メッセージ設定
 		ResultMessages messages = ResultMessages.success()
@@ -128,30 +124,30 @@ public class MemberUpdateController {
 	 * 会員情報変更完了の会員情報変更画面を表示する。
 	 *
 	 * @param model 出力情報を保持するクラス
-	 * @param principal ログイン情報を持つオブジェクト
+	 * @param userDetails ログイン情報を持つオブジェクト
 	 * @return View論理名
 	 */
 	@RequestMapping(method = RequestMethod.GET, params = "complete")
-	public String updateComplete(Model model, Principal principal,
-			@CookieValue("atrs-auth") String jwt) {
+	public String updateComplete(Model model,
+			@AuthenticationPrincipal AuthLoginUserDetails userDetails) {
 
 		// 再検索して会員情報変更画面を表示
-		return updateForm(model, principal, jwt);
+		return updateForm(model, userDetails);
 	}
 
 	/**
 	 * 会員情報変更画面を表示する。
 	 *
 	 * @param model 出力情報を保持するクラス
-	 * @param principal ログイン情報を持つオブジェクト
+	 * @param userDetails ログイン情報を持つオブジェクト
 	 * @return View論理名
 	 */
 	@RequestMapping(method = RequestMethod.GET, params = "form")
-	public String updateForm(Model model, Principal principal,
-			@CookieValue("atrs-auth") String jwt) {
+	public String updateForm(Model model,
+			@AuthenticationPrincipal AuthLoginUserDetails userDetails) {
 
 		// 会員情報から会員情報変更フォームを生成し、設定
-		Member member = this.membershipSharedService.findMe(jwt);
+		Member member = userDetails.getMember();
 		MemberUpdateForm memberUpdateForm = memberHelper.toMemberUpdateForm(member);
 		model.addAttribute(memberUpdateForm);
 

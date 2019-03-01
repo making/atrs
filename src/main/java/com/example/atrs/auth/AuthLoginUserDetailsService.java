@@ -19,6 +19,8 @@ package com.example.atrs.auth;
 import java.util.Locale;
 
 import com.example.atrs.common.logging.LogMessages;
+import com.example.atrs.legacrm.LegacrmService;
+import com.example.atrs.member.Member;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,20 +49,17 @@ public class AuthLoginUserDetailsService implements UserDetailsService {
 	private static final Logger LOGGER = LoggerFactory
 			.getLogger(AuthLoginUserDetailsService.class);
 
-	/**
-	 * カード会員情報リポジトリ。
-	 */
-	private final AuthLoginMapper authLoginMapper;
+	private final LegacrmService legacrmService;
 
 	/**
 	 * メッセージプロパティ設定。
 	 */
 	private final MessageSource messageSource;
 
-	public AuthLoginUserDetailsService(MessageSource messageSource,
-                                       AuthLoginMapper authLoginMapper) {
+	public AuthLoginUserDetailsService(LegacrmService legacrmService,
+			MessageSource messageSource) {
+		this.legacrmService = legacrmService;
 		this.messageSource = messageSource;
-		this.authLoginMapper = authLoginMapper;
 	}
 
 	/**
@@ -73,19 +72,20 @@ public class AuthLoginUserDetailsService implements UserDetailsService {
 		Assert.hasText(username);
 
 		// 会員情報を取得
-		AuthLogin authLogin = authLoginMapper.findOne(username);
-
-		if (authLogin == null) {
+		try {
+			Member member = this.legacrmService.getMember(username,
+					LegacrmToAtrs::convert);
+			return new AuthLoginUserDetails(member);
+		}
+		catch (RuntimeException e) {
 			if (LOGGER.isInfoEnabled()) {
 				LOGGER.info(LogMessages.I_AR_A1_L2001.getMessage(username));
 			}
 			String errorMessage = messageSource.getMessage(E_AR_A1_2001.code(), null,
 					Locale.getDefault());
 			// 該当する会員情報が存在しない場合、例外をスロー
-			throw new UsernameNotFoundException(errorMessage);
+			throw new UsernameNotFoundException(errorMessage, e);
 		}
-
-		return new AuthLoginUserDetails(authLogin);
 	}
 
 }

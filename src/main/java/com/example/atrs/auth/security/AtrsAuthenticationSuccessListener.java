@@ -18,6 +18,8 @@ package com.example.atrs.auth.security;
 
 import com.example.atrs.auth.AuthLoginService;
 import com.example.atrs.auth.AuthLoginUserDetails;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.springframework.context.ApplicationListener;
 import org.springframework.security.authentication.event.AuthenticationSuccessEvent;
@@ -32,7 +34,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class AtrsAuthenticationSuccessListener
 		implements ApplicationListener<AuthenticationSuccessEvent> {
-
+	private static final Logger log = LoggerFactory
+			.getLogger(AtrsAuthenticationSuccessListener.class);
 	/**
 	 * 会員ログインサービス。
 	 */
@@ -53,8 +56,10 @@ public class AtrsAuthenticationSuccessListener
 	public void onApplicationEvent(AuthenticationSuccessEvent event) {
 		Authentication authentication = event.getAuthentication();
 
-		AuthLoginUserDetails userDetails = (AuthLoginUserDetails) authentication.getPrincipal();
-		authLoginService.login(userDetails.getAuthLogin());
+		AuthLoginUserDetails userDetails = (AuthLoginUserDetails) authentication
+				.getPrincipal();
+		log.info("login = {}", userDetails.getMember());
+		// authLoginService.login(userDetails.getAuthLogin());
 
 	}
 }

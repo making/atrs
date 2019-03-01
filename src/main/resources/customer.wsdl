@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><wsdl:definitions xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:sch="http://customer.legacrm.poc.example.com" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://customer.legacrm.poc.example.com" targetNamespace="http://customer.legacrm.poc.example.com">
+  <wsdl:types>
+    <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://customer.legacrm.poc.example.com">
+
+    <xs:element name="getMemberRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="membershipNumber" type="xs:string"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="getMemberResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="member" type="tns:member"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="createMemberRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="member" type="tns:member"/>
+                <xs:element minOccurs="0" name="rawPassword" type="xs:string"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="createMemberResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="member" type="tns:member"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="updateMemberRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="member" type="tns:member"/>
+                <xs:element minOccurs="0" name="rawPassword" type="xs:string"/>
+                <xs:element minOccurs="0" name="currentPassword" type="xs:string"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="updateMemberResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="member" type="tns:member"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:complexType name="member">
+        <xs:sequence>
+            <xs:element minOccurs="0" name="address" type="xs:string"/>
+            <xs:element minOccurs="0" name="authLogin" type="tns:authLogin"/>
+            <xs:element minOccurs="0" name="birthday" type="xs:date"/>
+            <xs:element minOccurs="0" name="creditNo" type="xs:string"/>
+            <xs:element minOccurs="0" name="creditTerm" type="xs:string"/>
+            <xs:element minOccurs="0" name="creditType" type="tns:creditType"/>
+            <xs:element minOccurs="0" name="currentPassword" type="xs:string"/>
+            <xs:element minOccurs="0" name="gender" type="tns:gender"/>
+            <xs:element minOccurs="0" name="kanaFamilyName" type="xs:string"/>
+            <xs:element minOccurs="0" name="kanaGivenName" type="xs:string"/>
+            <xs:element minOccurs="0" name="kanjiFamilyName" type="xs:string"/>
+            <xs:element minOccurs="0" name="kanjiGivenName" type="xs:string"/>
+            <xs:element minOccurs="0" name="mail" type="xs:string"/>
+            <xs:element minOccurs="0" name="membershipNumber" type="xs:string"/>
+            <xs:element minOccurs="0" name="tel" type="xs:string"/>
+            <xs:element minOccurs="0" name="zipCode" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="authLogin">
+        <xs:sequence>
+            <xs:element minOccurs="0" name="lastPassword" type="xs:string"/>
+            <xs:element minOccurs="0" name="loginDateTime" type="xs:dateTime"/>
+            <xs:element minOccurs="0" name="loginFlg" type="xs:boolean"/>
+            <xs:element minOccurs="0" name="membershipNumber" type="xs:string"/>
+            <xs:element minOccurs="0" name="password" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="creditType">
+        <xs:sequence>
+            <xs:element minOccurs="0" name="creditFirm" type="xs:string"/>
+            <xs:element minOccurs="0" name="creditTypeCd" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:simpleType name="gender">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="F"/>
+            <xs:enumeration value="M"/>
+        </xs:restriction>
+    </xs:simpleType>
+</xs:schema>
+  </wsdl:types>
+  <wsdl:message name="createMemberRequest">
+    <wsdl:part element="tns:createMemberRequest" name="createMemberRequest">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="createMemberResponse">
+    <wsdl:part element="tns:createMemberResponse" name="createMemberResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getMemberRequest">
+    <wsdl:part element="tns:getMemberRequest" name="getMemberRequest">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="updateMemberRequest">
+    <wsdl:part element="tns:updateMemberRequest" name="updateMemberRequest">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="updateMemberResponse">
+    <wsdl:part element="tns:updateMemberResponse" name="updateMemberResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getMemberResponse">
+    <wsdl:part element="tns:getMemberResponse" name="getMemberResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:portType name="CustomerPort">
+    <wsdl:operation name="createMember">
+      <wsdl:input message="tns:createMemberRequest" name="createMemberRequest">
+    </wsdl:input>
+      <wsdl:output message="tns:createMemberResponse" name="createMemberResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getMember">
+      <wsdl:input message="tns:getMemberRequest" name="getMemberRequest">
+    </wsdl:input>
+      <wsdl:output message="tns:getMemberResponse" name="getMemberResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="updateMember">
+      <wsdl:input message="tns:updateMemberRequest" name="updateMemberRequest">
+    </wsdl:input>
+      <wsdl:output message="tns:updateMemberResponse" name="updateMemberResponse">
+    </wsdl:output>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="CustomerPortSoap11" type="tns:CustomerPort">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="createMember">
+      <soap:operation soapAction=""/>
+      <wsdl:input name="createMemberRequest">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="createMemberResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getMember">
+      <soap:operation soapAction=""/>
+      <wsdl:input name="getMemberRequest">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="getMemberResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="updateMember">
+      <soap:operation soapAction=""/>
+      <wsdl:input name="updateMemberRequest">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="updateMemberResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="CustomerPortService">
+    <wsdl:port binding="tns:CustomerPortSoap11" name="CustomerPortSoap11">
+      <soap:address location="/ws"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>
