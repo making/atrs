@@ -27,6 +27,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.example.atrs.auth.AuthLoginUserDetails;
 import com.example.atrs.member.Member;
 import com.nimbusds.jwt.JWTClaimsSet;
+import com.nimbusds.jwt.SignedJWT;
 
 import org.springframework.context.event.EventListener;
 import org.springframework.security.authentication.event.AuthenticationSuccessEvent;
@@ -41,7 +42,7 @@ public class JwtCookieCreatingHandler {
 	private final JwtHandler jwtHandler;
 	private final OidcProps props;
 
-	String generateToken(Member member) {
+	public SignedJWT generateIdToken(Member member) {
 		Instant now = Instant.now();
 		Instant exp = now.plus(1, ChronoUnit.HOURS);
 		JWTClaimsSet claimsSet = new JWTClaimsSet.Builder()
@@ -60,7 +61,26 @@ public class JwtCookieCreatingHandler {
 				.claim("azp", "atrs") //
 				.claim("client_id", "atrs") //
 				.build();
-		return this.jwtHandler.sign(claimsSet).serialize();
+		return this.jwtHandler.sign(claimsSet);
+	}
+
+	public SignedJWT generateAccessToken(Member member) {
+		Instant now = Instant.now();
+		Instant exp = now.plus(30, ChronoUnit.MINUTES);
+		JWTClaimsSet claimsSet = new JWTClaimsSet.Builder()
+				.issuer(props.getExternalUrl() + "/oauth/token") //
+				.expirationTime(Date.from(exp)) //
+				.issueTime(Date.from(now)) //
+				.subject(member.getMembershipNumber()) //
+				.audience("atrs") //
+				.claim("scope", Arrays.asList("openid", "member.me")) //
+				.claim("name", member.getMail()) //
+				.claim("email", member.getMail()) //
+				.claim("grant_type", "password") //
+				.claim("azp", "atrs") //
+				.claim("client_id", "atrs") //
+				.build();
+		return this.jwtHandler.sign(claimsSet);
 	}
 
 	public JwtCookieCreatingHandler(HttpServletResponse response,
@@ -76,7 +96,7 @@ public class JwtCookieCreatingHandler {
 		Authentication authentication = event.getAuthentication();
 		AuthLoginUserDetails userDetails = (AuthLoginUserDetails) authentication
 				.getPrincipal();
-		String jwt = this.generateToken(userDetails.getMember());
+		String jwt = this.generateIdToken(userDetails.getMember()).serialize();
 		this.cookieGenerator.addCookie(this.response, jwt);
 	}
 }

@@ -73,7 +73,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.authorizeRequests() //
 				.mvcMatchers("/member/update").hasRole("MEMBER") //
 				.and() //
-				.csrf().ignoringAntMatchers("/auth", "/auth/password");
+				.csrf().ignoringAntMatchers("/auth", "/auth/password", "/oauth/token");
 	}
 
 	private Filter loggingFilter() {
