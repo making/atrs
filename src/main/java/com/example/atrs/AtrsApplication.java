@@ -7,7 +7,6 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
 @SpringBootApplication
 @EnableAspectJAutoProxy(proxyTargetClass = true)
 public class AtrsApplication {
-
 	public static void main(String[] args) {
 		SpringApplication.run(AtrsApplication.class, args);
 	}

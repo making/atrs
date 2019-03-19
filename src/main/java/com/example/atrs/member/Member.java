@@ -17,8 +17,9 @@
 package com.example.atrs.member;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDate;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -45,7 +46,7 @@ public class Member implements Serializable {
 	/**
 	 * 生年月日。
 	 */
-	private Date birthday;
+	private LocalDate birthday;
 
 	/**
 	 * クレジットカード番号。
@@ -110,6 +111,8 @@ public class Member implements Serializable {
 	private String password;
 	private String currentPassword;
 
+	private AuthLogin authLogin;
+
 	/**
 	 * 住所を取得する。
 	 *
@@ -133,7 +136,7 @@ public class Member implements Serializable {
 	 *
 	 * @return 生年月日
 	 */
-	public Date getBirthday() {
+	public LocalDate getBirthday() {
 		return birthday;
 	}
 
@@ -142,7 +145,7 @@ public class Member implements Serializable {
 	 *
 	 * @param birthday 生年月日
 	 */
-	public void setBirthday(Date birthday) {
+	public void setBirthday(LocalDate birthday) {
 		this.birthday = birthday;
 	}
 
@@ -360,6 +363,15 @@ public class Member implements Serializable {
 	 */
 	public void setZipCode(String zipCode) {
 		this.zipCode = zipCode;
+	}
+
+	@JsonIgnore
+	public AuthLogin getAuthLogin() {
+		return authLogin;
+	}
+
+	public void setAuthLogin(AuthLogin authLogin) {
+		this.authLogin = authLogin;
 	}
 
 	// TODO 詰め替え

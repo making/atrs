@@ -1,7 +1,6 @@
 package com.example.atrs.member.api;
 
 import com.example.atrs.member.Member;
-import com.example.atrs.member.MemberMapper;
 import com.example.atrs.member.MemberService;
 
 import org.springframework.http.ResponseEntity;
@@ -19,17 +18,15 @@ import org.springframework.web.util.UriComponentsBuilder;
 @RestController
 @RequestMapping(path = "members")
 public class MemberRestController {
-	private final MemberMapper memberMapper;
 	private final MemberService memberService;
 
-	public MemberRestController(MemberMapper memberMapper, MemberService memberService) {
-		this.memberMapper = memberMapper;
+	public MemberRestController(MemberService memberService) {
 		this.memberService = memberService;
 	}
 
 	@GetMapping(path = "{id}")
 	public ResponseEntity<?> get(@PathVariable("id") String membershipNumber) {
-		Member member = this.memberMapper.findOne(membershipNumber);
+		Member member = this.memberService.findByMembershipNumber(membershipNumber);
 		if (member == null) {
 			return ResponseEntity.notFound().build();
 		}
@@ -45,7 +42,7 @@ public class MemberRestController {
 
 	@GetMapping(path = "me")
 	public ResponseEntity<?> getMe(@AuthenticationPrincipal Jwt jwt) {
-		Member member = this.memberMapper.findOne(jwt.getSubject());
+		Member member = this.memberService.findByMembershipNumber(jwt.getSubject());
 		return ResponseEntity.ok(member);
 	}
 
@@ -53,7 +50,7 @@ public class MemberRestController {
 	public ResponseEntity<?> updateMe(@AuthenticationPrincipal Jwt jwt,
 			@RequestBody Member member) {
 		member.setMembershipNumber(jwt.getSubject());
-		this.memberService.update(member, jwt.getTokenValue());
+		this.memberService.update(member, member.getCurrentPassword());
 		return ResponseEntity.ok(member);
 	}
 }

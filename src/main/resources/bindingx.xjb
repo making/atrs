@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<jaxb:bindings
+        xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://java.sun.com/xml/ns/jaxb http://java.sun.com/xml/ns/jaxb/bindingschema_2_0.xsd"
+        version="2.1">
+
+    <jaxb:globalBindings>
+        <jaxb:javaType name="java.time.LocalDate"
+                       xmlType="xs:date"
+                       parseMethod="com.example.atrs.legacrm.LocalDateAdapter.parse"
+                       printMethod="com.example.atrs.legacrm.LocalDateAdapter.print"/>
+        <jaxb:javaType name="java.time.Instant"
+                       xmlType="xs:dateTime"
+                       parseMethod="com.example.atrs.legacrm.InstantAdapter.parse"
+                       printMethod="com.example.atrs.legacrm.InstantAdapter.print"/>
+    </jaxb:globalBindings>
+</jaxb:bindings>
