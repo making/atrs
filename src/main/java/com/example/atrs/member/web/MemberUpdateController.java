@@ -16,19 +16,26 @@
  */
 package com.example.atrs.member.web;
 
+import java.text.ParseException;
+
 import com.example.atrs.auth.AuthLoginUserDetails;
 import com.example.atrs.common.message.MessageKeys;
 import com.example.atrs.member.Member;
 import com.example.atrs.member.MemberUpdateService;
-import com.example.atrs.member.MembershipSharedService;
+import com.nimbusds.jwt.JWT;
+import com.nimbusds.jwt.JWTParser;
 import org.terasoluna.gfw.common.message.ResultMessages;
 
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -44,16 +51,13 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @RequestMapping("member/update")
 public class MemberUpdateController {
 	private final MemberHelper memberHelper;
-	private final MembershipSharedService membershipSharedService;
 	private final MemberUpdateService memberUpdateService;
 	private final MemberUpdateValidator memberUpdateValidator;
 
 	public MemberUpdateController(MemberUpdateService memberUpdateService,
-			MemberHelper memberHelper, MembershipSharedService membershipSharedService,
-			MemberUpdateValidator memberUpdateValidator) {
+			MemberHelper memberHelper, MemberUpdateValidator memberUpdateValidator) {
 		this.memberUpdateService = memberUpdateService;
 		this.memberHelper = memberHelper;
-		this.membershipSharedService = membershipSharedService;
 		this.memberUpdateValidator = memberUpdateValidator;
 	}
 
@@ -95,7 +99,8 @@ public class MemberUpdateController {
 	@RequestMapping(method = RequestMethod.POST)
 	public String update(@Validated MemberUpdateForm memberUpdateForm,
 			BindingResult result, Model model, RedirectAttributes redirectAttributes,
-			@AuthenticationPrincipal AuthLoginUserDetails userDetails) {
+			@AuthenticationPrincipal AuthLoginUserDetails userDetails,
+			@CookieValue("atrs-auth") String token) throws ParseException {
 
 		if (result.hasErrors()) {
 			// 検証エラーがある場合は画面再表示
@@ -106,10 +111,14 @@ public class MemberUpdateController {
 		// 会員情報更新
 		Member member = memberHelper.toMember(memberUpdateForm);
 		member.setMembershipNumber(membershipNumber);
-		this.memberUpdateService.updateMember(member);
+		JWT jwt = JWTParser.parse(token);
+		this.memberUpdateService.updateMember(member, jwt);
 
-		// TODO
 		// Update UserDetails
+		AuthLoginUserDetails updated = new AuthLoginUserDetails(member);
+		Authentication authentication = new UsernamePasswordAuthenticationToken(updated,
+				updated.getPassword(), updated.getAuthorities());
+		SecurityContextHolder.getContext().setAuthentication(authentication);
 
 		// 更新完了メッセージ設定
 		ResultMessages messages = ResultMessages.success()

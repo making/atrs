@@ -18,8 +18,7 @@ public class LegacrmConfig {
 
 	@Bean
 	public WebServiceTemplateCustomizer webServiceTemplateCustomizer(
-			Jaxb2Marshaller jaxb2Marshaller, LegacrmProps props,
-			TraceClientInterceptor traceClientInterceptor) {
+			Jaxb2Marshaller jaxb2Marshaller, LegacrmProps props) {
 		return webServiceTemplate -> {
 			webServiceTemplate.setMarshaller(jaxb2Marshaller);
 			webServiceTemplate.setUnmarshaller(jaxb2Marshaller);
@@ -34,8 +33,8 @@ public class LegacrmConfig {
 			catch (Exception e) {
 				throw new IllegalStateException(e);
 			}
-			webServiceTemplate.setInterceptors(new ClientInterceptor[] {
-					securityInterceptor, traceClientInterceptor });
+			webServiceTemplate
+					.setInterceptors(new ClientInterceptor[] { securityInterceptor });
 		};
 	}
 }
